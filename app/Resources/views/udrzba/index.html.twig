@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% include 'menu.html.twig' with {'zalozka': 1} %}
+    <div class="container">
+        <h1 class="text-center">Vítejte na stránkách pro správu údržby</h1>
+        <div class="jumbotron">
+            <p>Pokračovat můžete pomocí menu na následující stránky:</p>
+            <ul>
+                <li>Pracovníci</li>
+                <li>Stroje</li>
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}

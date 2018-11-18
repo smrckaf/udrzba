@@ -1,0 +1,14 @@
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="{{ path("udrzba-index") }}">Údržba</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+                <li{{ zalozka == 1 ? " class=\"active\"" }}><a href="{{ path("udrzba-index") }}">Home</a></li>
+                <li{{ zalozka == 2 ? " class=\"active\"" }}><a href="{{ path("pracovnik-index") }}">Pracovníci</a></li>
+                <li{{ zalozka == 3 ? " class=\"active\"" }}><a href="{{ path("stroj-index") }}">Stroje</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>

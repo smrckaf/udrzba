@@ -3,12 +3,18 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Kompetence
  *
  * @ORM\Table(name="kompetence")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\KompetenceRepository")
+ * @ORM\Entity()
+ * @UniqueEntity(
+ *     fields={"pracovnik", "stroj"},
+ *     errorPath="stroj",
+ *     message="Pracovník již má některou ze zadaných kompetencí."
+ * )
  */
 class Kompetence
 {
@@ -17,20 +23,20 @@ class Kompetence
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var int
-     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Pracovnik")
      * @ORM\Column(name="pracovnik", type="integer")
      */
     private $pracovnik;
 
     /**
      * @var int
-     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Stroj")
      * @ORM\Column(name="stroj", type="integer")
      */
     private $stroj;

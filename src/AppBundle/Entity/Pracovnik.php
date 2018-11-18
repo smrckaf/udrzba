@@ -7,8 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Pracovnik
  *
- * @ORM\Table(name="pracovnik")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\PracovnikRepository")
+ * @ORM\Table()
+ * @ORM\Entity()
  */
 class Pracovnik
 {
@@ -17,9 +17,24 @@ class Pracovnik
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
+
+    /**
+     * @ORM\Column(name="jmeno", type="string", length=255)
+     */
+    private $jmeno;
+
+    /**
+     * @ORM\Column(name="prijmeni", type="string", length=255)
+     */
+    private $prijmeni;
+
+    /**
+     * @ORM\Column(name="heslo", type="string", length=255)
+     */
+    private $heslo;
 
     /**
      * @var bool
@@ -82,6 +97,53 @@ class Pracovnik
         return $this->id;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getJmeno()
+    {
+        return $this->jmeno;
+    }
+
+    /**
+     * @param mixed $jmeno
+     */
+    public function setJmeno($jmeno)
+    {
+        $this->jmeno = $jmeno;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrijmeni()
+    {
+        return $this->prijmeni;
+    }
+
+    /**
+     * @param mixed $prijmeni
+     */
+    public function setPrijmeni($prijmeni)
+    {
+        $this->prijmeni = $prijmeni;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHeslo()
+    {
+        return $this->heslo;
+    }
+
+    /**
+     * @param mixed $heslo
+     */
+    public function setHeslo($heslo)
+    {
+        $this->heslo = hash('sha256', $heslo);
+    }
     /**
      * Set smennost
      *
