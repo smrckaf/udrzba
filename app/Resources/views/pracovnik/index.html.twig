@@ -1,9 +1,69 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block title %}Pracovníci{% endblock %}
+
 {% block body %}
-    {% include 'menu.html.twig' with {'zalozka': 2} %}
+	{% include 'menu.html.twig' with {'zalozka': 2} %}
     <div class="container">
         <h1 class="text-center">Pracovníci</h1>
+		<p>
+            <a href="{{ path('pracovnik-upravit')}}" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Přidat nového pracovníka</a>
+		</p>
+    {% for pracovnik in pracovnici %}
+        {% if loop.first %}
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                <tr>
+                    <th class="col-sm-3 text-center">Jméno</th>
+                    <th class="col-sm-3 text-center">Příjmení</th>
+                    <th class="col-sm-1 text-center">Sazba/hod</th>
+                    <th class="col-sm-3 text-center">Kompetence</th>
+                    <th class="col-sm-2 text-center">Operace</th>
+                </tr>
+                </thead>
+                <tbody>
+        {% endif %}
+        <tr>
+            <td class="text-center">
+                {{ pracovnik.jmeno }}
+            </td>
+            <td class="text-center">
+                {{ pracovnik.prijmeni }}
+            </td>
+            <td class="text-center">
+                {{ pracovnik.hodsazba ~ " Kč" }}
+            </td>
+            <td class="text-center">
+                {#
+                {% for stroj in pracovnik.kompetence %}
+                    {{ stroj.nazev }}
+                    {{ (not loop.last ? ", ") }}
+                {% endfor %}
+                #}
+            </td>
+            <td class="text-center">
+                <a href="{{ path('pracovnik-upravit', {'pracovnik': pracovnik.id})}}" class="btn btn-info" title="Upravit pracovníka">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                </a>
+                <a href="{{ path('pracovnik-smazat', {'pracovnik': pracovnik.id})}}" class="btn btn-danger" onclick="return confirm('Opravdu si přejete smazat vybraného pracovníka?')" title="Odstranit pracovníka">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </a>
+            </td>
+        </tr>
+        {% if loop.last %}
+                </tbody>
+            </table>
+        {% endif %}
+    {% else %}
+        <p>Zatím nejsou zadáni žádní pracovníci.</p>
+    {% endfor %}
     </div>
+{% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
 {% endblock %}

@@ -10,11 +10,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *
  * @ORM\Table(name="kompetence")
  * @ORM\Entity()
- * @UniqueEntity(
- *     fields={"pracovnik", "stroj"},
- *     errorPath="stroj",
- *     message="Pracovník již má některou ze zadaných kompetencí."
- * )
  */
 class Kompetence
 {
@@ -29,7 +24,7 @@ class Kompetence
 
     /**
      * @var int
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Pracovnik")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Pracovnik", inversedBy="kompetence")
      * @ORM\Column(name="pracovnik", type="integer")
      */
     private $pracovnik;
@@ -41,6 +36,14 @@ class Kompetence
      */
     private $stroj;
 
+    /**
+     * Kompetence constructor.*
+     */
+    public function __construct(Pracovnik $pracovnik, Stroj $stroj)
+    {
+        $this->pracovnik = $pracovnik;
+        $this->stroj = $stroj;
+    }
 
     /**
      * Get id

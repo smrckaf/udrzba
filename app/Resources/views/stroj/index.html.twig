@@ -1,9 +1,56 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block title %}Stroje{% endblock %}
+
 {% block body %}
-    {% include 'menu.html.twig' with {'zalozka': 3} %}
+	{% include 'menu.html.twig' with {'zalozka': 3} %}
     <div class="container">
         <h1 class="text-center">Stroje</h1>
+		<p>
+            <a href="{{ path('stroj-upravit')}}" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Přidat nový stroj</a>
+		</p>
+    {% for stroj in stroje %}
+        {% if loop.first %}
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                <tr>
+                    <th class="col-sm-5 text-center">Old ID</th>
+                    <th class="col-sm-5 text-center">Název</th>
+                    <th class="col-sm-2 text-center">Operace</th>
+                </tr>
+                </thead>
+                <tbody>
+        {% endif %}
+        <tr>
+            <td class="text-center">
+                {{ stroj.idOld }}
+            </td>
+            <td class="text-center">
+                {{ stroj.nazev }}
+            </td>
+            <td class="text-center">
+                <a href="{{ path('stroj-upravit', {'stroj': stroj.id})}}" class="btn btn-info" title="Upravit stroj">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                </a>
+                <a href="{{ path('stroj-smazat', {'stroj': stroj.id})}}" class="btn btn-danger" onclick="return confirm('Opravdu si přejete smazat vybraný stroj?')" title="Odstranit stroj">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </a>
+            </td>
+        </tr>
+        {% if loop.last %}
+                </tbody>
+            </table>
+        {% endif %}
+    {% else %}
+        <p>Zatím nejsou zadány žádné stroje.</p>
+    {% endfor %}
     </div>
+{% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
 {% endblock %}

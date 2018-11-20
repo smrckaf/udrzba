@@ -9,9 +9,14 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Entity\Pracovnik;
+use AppBundle\Form\UpravitPracovnikaType;
 use AppBundle\Manager\UdrzbaManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 
 /**
  * @Route("/pracovnik")
@@ -40,5 +45,37 @@ class PracovnikController extends Controller
         return $this->render("pracovnik/index.html.twig", [
             'pracovnici' => $pracovnici,
         ]);
+    }
+
+    /**
+     * @Route("/upravit/{pracovnik}", name="pracovnik-upravit")
+     */
+    public function upravit(FormFactoryInterface $formFactory, Request $request, FlashBagInterface $flashBag, Pracovnik $pracovnik = null)
+    {
+        if ($pracovnik === null)
+            $pracovnik = new Pracovnik();
+        $form = $formFactory->create(UpravitPracovnikaType::class, $pracovnik);
+        $form->handleRequest($request);
+
+        if ($form->isValid() && $form->isSubmitted())
+        {
+            $this->udrzbaManager->ulozitPracovnika($pracovnik);
+            $flashBag->add('success', 'Pracovník byl úspěšně přidán/upraven.');
+            return $this->redirectToRoute('pracovnik-index');
+        }
+        return $this->render('pracovnik/upravit.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/smazat/{pracovnik}", name="pracovnik-smazat")
+     */
+    public function smazat(Pracovnik $pracovnik, FlashBagInterface $flashBag)
+    {
+        $this->udrzbaManager->smazatPracovnika($pracovnik);
+        $flashBag->add('success', 'Pracovník byl úspěšně smazán.');
+
+        return $this->redirectToRoute('pracovnik-index');
     }
 }

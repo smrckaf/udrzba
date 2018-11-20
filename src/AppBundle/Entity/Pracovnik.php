@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -46,7 +47,7 @@ class Pracovnik
     /**
      * @var string
      *
-     * @ORM\Column(name="kvalifikace", type="string", length=255)
+     * @ORM\Column(name="kvalifikace", type="string", length=255, nullable=true)
      */
     private $kvalifikace;
 
@@ -61,21 +62,21 @@ class Pracovnik
     /**
      * @var string
      *
-     * @ORM\Column(name="email", type="string", length=255)
+     * @ORM\Column(name="email", type="string", length=255, nullable=true)
      */
     private $email;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="poznamka", type="string", length=255)
+     * @ORM\Column(name="poznamka", type="string", length=255, nullable=true)
      */
     private $poznamka;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="token", type="string", length=255)
+     * @ORM\Column(name="token", type="string", length=255, nullable=true)
      */
     private $token;
 
@@ -86,6 +87,35 @@ class Pracovnik
      */
     private $role;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Stroj")
+     * @ORM\JoinColumn(name="stroj_id", referencedColumnName="id")
+     */
+    private $stroje;
+
+    /**
+     * Pracovnik constructor.
+     */
+    public function __construct()
+    {
+        $this->stroje = new ArrayCollection();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStroje()
+    {
+        return $this->stroje;
+    }
+
+    /**
+     * @param mixed $stroje
+     */
+    public function setStroje($stroje)
+    {
+        $this->stroje = $stroje;
+    }
 
     /**
      * Get id
