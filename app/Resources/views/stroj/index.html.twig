@@ -19,7 +19,8 @@
                 <thead>
                 <tr>
                     <th class="col-sm-5 text-center">Old ID</th>
-                    <th class="col-sm-5 text-center">Název</th>
+                    <th class="col-sm-4 text-center">Název</th>
+                    <th class="col-sm-1 text-center">Status</th>
                     <th class="col-sm-2 text-center">Operace</th>
                 </tr>
                 </thead>
@@ -31,6 +32,9 @@
             </td>
             <td class="text-center">
                 {{ stroj.nazev }}
+            </td>
+            <td class="text-center">
+                {{ stroj.status }}
             </td>
             <td class="text-center">
                 <a href="{{ path('stroj-upravit', {'stroj': stroj.id})}}" class="btn btn-info" title="Upravit stroj">

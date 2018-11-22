@@ -41,6 +41,12 @@ class UpravitStrojType extends AbstractType
             ],
         ]);
 
+        $builder->add('status', TextType::class, [
+            'label' => 'Status stroje',
+            'required' => true,
+        ]);
+
+
         $builder->add('odeslat', SubmitType::class, [
             'label' => 'Odeslat',
             'attr' => [

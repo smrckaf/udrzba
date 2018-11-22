@@ -42,6 +42,19 @@ class Prevzal
      */
     private $prevzetidatcas;
 
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="role_obsluhy", type="integer")
+     */
+    private $role_obsluhy;
+
+
+
+
+
+
+
 
     /**
      * Get id
@@ -124,5 +137,33 @@ class Prevzal
     {
         return $this->prevzetidatcas;
     }
+
+
+
+
+    /**
+     * Set role_obsluhy
+     *
+     * @param integer $role_obsluhy
+     *
+     * @return Prevzal
+     */
+    public function setRole_obsluhy($role_obsluhy)
+    {
+        $this->role_obsluhy = $role_obsluhy;
+
+        return $this;
+    }
+
+    /**
+     * Get role_obsluhy
+     *
+     * @return int
+     */
+    public function getRole_obsluhy()
+    {
+        return $this->role_obsluhy;
+    }
+
 }
 

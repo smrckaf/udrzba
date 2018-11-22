@@ -21,8 +21,10 @@
                     <th class="col-sm-3 text-center">Jméno</th>
                     <th class="col-sm-3 text-center">Příjmení</th>
                     <th class="col-sm-1 text-center">Sazba/hod</th>
-                    <th class="col-sm-3 text-center">Kompetence</th>
+                    <th class="col-sm-2 text-center">Id zařízení</th>
+                    <th class="col-sm-1 text-center">Kompetence</th>
                     <th class="col-sm-2 text-center">Operace</th>
+
                 </tr>
                 </thead>
                 <tbody>
@@ -36,6 +38,9 @@
             </td>
             <td class="text-center">
                 {{ pracovnik.hodsazba ~ " Kč" }}
+            </td>
+            <td class="text-center">
+                {{ pracovnik.idzarizeni }}
             </td>
             <td class="text-center">
                 {#

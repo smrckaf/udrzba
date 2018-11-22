@@ -37,6 +37,15 @@ class Stroj
 
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="status", type="integer")
+     */
+    private $status;
+
+
+
+    /**
      * Get id
      *
      * @return int
@@ -69,6 +78,42 @@ class Stroj
     {
         return $this->idOld;
     }
+
+
+
+
+
+
+    /**
+     * Set status
+     *
+     * @param integer $status
+     *
+     * @return Stroj
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return int
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+
+
+
+
+
+
 
     /**
      * Set nazev

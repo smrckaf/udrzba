@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Jáchym
- * Date: 18.11.2018
- * Time: 19:31
- */
 
 namespace AppBundle\Controller;
 
@@ -17,6 +11,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\Controller\FOSRestController;
+use Symfony\Component\HttpFoundation\Response;
+use FOS\RestBundle\View\View;
+
+
+
+
+
+
+
+
+
 
 /**
  * @Route("/pracovnik")
@@ -78,4 +85,10 @@ class PracovnikController extends Controller
 
         return $this->redirectToRoute('pracovnik-index');
     }
+
+
+
+
+
+
 }

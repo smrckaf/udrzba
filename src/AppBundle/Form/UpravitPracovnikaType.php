@@ -87,6 +87,12 @@ class UpravitPracovnikaType extends AbstractType
             'label' => 'Role',
             'required' => false,
         ]);
+        $builder->add('idzarizeni', TextType::class, [
+            'label' => 'Idzarizeni',
+            'required' => false,
+        ]);
+
+
 
         $builder->add('stroje', EntityType::class, [
             'class'     => Stroj::class,

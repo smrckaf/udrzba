@@ -69,6 +69,13 @@ class Pracovnik
     /**
      * @var string
      *
+     * @ORM\Column(name="idzarizeni", type="string", length=255, nullable=true)
+     */
+    private $idzarizeni;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="poznamka", type="string", length=255, nullable=true)
      */
     private $poznamka;
@@ -295,6 +302,35 @@ class Pracovnik
     {
         return $this->poznamka;
     }
+
+
+
+    /**
+     * Set idzarizeni
+     *
+     * @param string $idzarizeni
+     *
+     * @return Pracovnik
+     */
+    public function setIdzarizeni($idzarizeni)
+    {
+        $this->idzarizeni = $idzarizeni;
+
+        return $this;
+    }
+
+    /**
+     * Get idzarizeni
+     *
+     * @return string
+     */
+    public function getIdzarizeni()
+    {
+        return $this->idzarizeni;
+    }
+
+
+
 
     /**
      * Set token

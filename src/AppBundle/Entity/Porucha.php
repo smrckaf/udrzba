@@ -58,6 +58,15 @@ class Porucha
 
 
     /**
+     * @var datetime
+     *
+     * @ORM\Column(name="vyreseno", type="datetime")
+     */
+    private $vyreseno;
+
+
+
+    /**
      * Get id
      *
      * @return int
@@ -163,6 +172,9 @@ class Porucha
         return $this->priorita;
     }
 
+
+
+
     /**
      * Set poznamka
      *
@@ -186,5 +198,45 @@ class Porucha
     {
         return $this->poznamka;
     }
+    /**
+     * Set vyreseno
+     *
+     * @param datetime $vyreseno
+     *
+     * @return Porucha
+     */
+    public function setVyreseno($vyreseno)
+    {
+        $this->vyreseno = $vyreseno;
+
+        return $this;
+    }
+
+    /**
+     * Get vyreseno
+     *
+     * @return datetime
+     */
+    public function getVyreseno()
+    {
+        return $this->vyreseno;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
+
+
+
+
 
