@@ -9,7 +9,9 @@
 {% block body %}
 	{% include 'menu.html.twig' with {'zalozka': 2} %}
     <div class="container">
-        <h1 class="text-center">Pracovníci</h1>
+        <div class="page-header">
+            <h1 class="text-center">Pracovníci</h1>
+        </div>
 		<p>
             <a href="{{ path('pracovnik-upravit')}}" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Přidat nového pracovníka</a>
 		</p>
@@ -43,12 +45,11 @@
                 {{ pracovnik.idzarizeni }}
             </td>
             <td class="text-center">
-                {#
-                {% for stroj in pracovnik.kompetence %}
-                    {{ stroj.nazev }}
-                    {{ (not loop.last ? ", ") }}
+
+                {% for stroj in pracovnik.stroje %}
+                    {{ stroj.nazev }}{{ (not loop.last ? ", ") }}
                 {% endfor %}
-                #}
+
             </td>
             <td class="text-center">
                 <a href="{{ path('pracovnik-upravit', {'pracovnik': pracovnik.id})}}" class="btn btn-info" title="Upravit pracovníka">

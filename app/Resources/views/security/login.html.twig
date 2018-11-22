@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block title %}Pracovníci{% endblock %}
+
+{% block body %}
+	{% include 'menu.html.twig' with {'zalozka': 1} %}
+
+
+    <div class="container login-form">
+        {% if error %}
+            <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+
+        <form class="form-horizontal" action="{{ path('login') }}" method="post">
+            <div class="form-group">
+                <label for="username">E-mail:</label>
+                <input class="form-control" type="text" id="username" name="_username" value="{{ last_username }}" />
+            </div>
+
+            <div class="form-group">
+                <label for="password">Heslo:</label>
+                <input class="form-control" type="password" id="password" name="_password" />
+            </div>
+            {#
+                If you want to control the URL the user
+                is redirected to on success (more details below)
+                <input type="hidden" name="_target_path" value="/account" />
+            #}
+
+            <div class="form-group">
+                <button class="btn btn-success btn-block" type="submit">Přihlásit se</button>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}

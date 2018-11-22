@@ -15,14 +15,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\View\View;
-
-
-
-
-
-
-
-
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 
 /**
@@ -57,7 +50,7 @@ class PracovnikController extends Controller
     /**
      * @Route("/upravit/{pracovnik}", name="pracovnik-upravit")
      */
-    public function upravit(FormFactoryInterface $formFactory, Request $request, FlashBagInterface $flashBag, Pracovnik $pracovnik = null)
+    public function upravit(FormFactoryInterface $formFactory, Request $request, FlashBagInterface $flashBag, UserPasswordEncoderInterface $encoder, Pracovnik $pracovnik = null)
     {
         if ($pracovnik === null)
             $pracovnik = new Pracovnik();
@@ -66,6 +59,7 @@ class PracovnikController extends Controller
 
         if ($form->isValid() && $form->isSubmitted())
         {
+            $pracovnik->setHeslo($encoder->encodePassword($pracovnik, $pracovnik->getHeslo()));
             $this->udrzbaManager->ulozitPracovnika($pracovnik);
             $flashBag->add('success', 'Pracovník byl úspěšně přidán/upraven.');
             return $this->redirectToRoute('pracovnik-index');

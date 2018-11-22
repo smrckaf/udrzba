@@ -651,20 +651,34 @@ FOOTER Styling
 *******************************/
 
 .footer {
-    padding: 20px;
+    /*padding-top: 10px;
     background: #E9D4B7;
     font-size: 1.3em;
     margin-top: 40px;
+    border-top: 1px solid black;*/
+    background-color: rgba(0,0,0,.2);
+    color: rgba(255,255,255,.6);
+    padding-bottom: 1rem;
+    padding-top: 1rem;
 }
 
-.footer-text {
-    color: #3a3a3a;
+.blue {
+    background-color: #2196f3
 }
 
-.footer-text > a {
+.footer a {
+    color: #fff;
+}
+
+.footer-text > a:hover {
     color: #3a3a3a;
+    text-decoration: none;
 }
 
 .heart {
     color: red;
+}
+
+.login-form {
+    width: 30%;
 }

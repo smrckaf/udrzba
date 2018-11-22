@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Pracovnik
@@ -11,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table()
  * @ORM\Entity()
  */
-class Pracovnik
+class Pracovnik implements UserInterface
 {
     /**
      * @var int
@@ -21,6 +22,13 @@ class Pracovnik
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=255, nullable=false)
+     */
+    private $email;
 
     /**
      * @ORM\Column(name="jmeno", type="string", length=255)
@@ -42,7 +50,7 @@ class Pracovnik
      *
      * @ORM\Column(name="smennost", type="boolean")
      */
-    private $smennost;
+    private $smennost = false;
 
     /**
      * @var string
@@ -51,20 +59,12 @@ class Pracovnik
      */
     private $kvalifikace;
 
-
     /**
      * @var float
      *
      * @ORM\Column(name="hodsazba", type="float")
      */
     private $hodsazba;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="email", type="string", length=255, nullable=true)
-     */
-    private $email;
 
     /**
      * @var string
@@ -179,7 +179,7 @@ class Pracovnik
      */
     public function setHeslo($heslo)
     {
-        $this->heslo = hash('sha256', $heslo);
+        $this->heslo = $heslo;
     }
     /**
      * Set smennost
@@ -329,9 +329,6 @@ class Pracovnik
         return $this->idzarizeni;
     }
 
-
-
-
     /**
      * Set token
      *
@@ -378,6 +375,58 @@ class Pracovnik
     public function getRole()
     {
         return $this->role;
+    }
+
+
+    /* NUTNE PRO AUTENTIFIKACI!!! */
+    public function getUsername()
+    {
+        return $this->email;
+    }
+
+    public function getSalt()
+    {
+        // you *may* need a real salt depending on your encoder
+        // see section on salt below
+        return null;
+    }
+
+    public function getPassword()
+    {
+        return $this->heslo;
+    }
+
+    public function getRoles()
+    {
+        return array('ROLE_'. $this->role);
+    }
+
+    public function eraseCredentials()
+    {
+    }
+
+    /** @see \Serializable::serialize() */
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->email,
+            $this->heslo,
+            // see section on salt below
+            // $this->salt,
+        ));
+    }
+
+    /** @see \Serializable::unserialize() */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->email,
+            $this->heslo,
+            // see section on salt below
+            // $this->salt
+            ) = unserialize($serialized, array('allowed_classes' => false));
     }
 }
 
