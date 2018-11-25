@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Jáchym
+ * Pracovnik: Jáchym
  * Date: 18.11.2018
  * Time: 19:31
  */

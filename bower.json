@@ -1,0 +1,22 @@
+{
+  "name": "udrzba",
+  "homepage": "https://github.com/smrckaf/udrzba",
+  "authors": [
+    "Jáchym Hruška <hruska07@student.vspj.cz>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "web/vendor/",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^4.1.3"
+  }
+}

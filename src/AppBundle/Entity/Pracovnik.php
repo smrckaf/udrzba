@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Table()
  * @ORM\Entity()
  */
-class Pracovnik implements UserInterface
+class Pracovnik implements UserInterface, \Serializable
 {
     /**
      * @var int
@@ -96,7 +96,6 @@ class Pracovnik implements UserInterface
 
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Stroj")
-     * @ORM\JoinColumn(name="stroj_id", referencedColumnName="id")
      */
     private $stroje;
 
@@ -398,7 +397,7 @@ class Pracovnik implements UserInterface
 
     public function getRoles()
     {
-        return array('ROLE_'. $this->role);
+        return ['ROLE_'. $this->role];
     }
 
     public function eraseCredentials()
@@ -408,13 +407,13 @@ class Pracovnik implements UserInterface
     /** @see \Serializable::serialize() */
     public function serialize()
     {
-        return serialize(array(
+        return serialize([
             $this->id,
             $this->email,
             $this->heslo,
             // see section on salt below
             // $this->salt,
-        ));
+        ]);
     }
 
     /** @see \Serializable::unserialize() */
@@ -426,7 +425,7 @@ class Pracovnik implements UserInterface
             $this->heslo,
             // see section on salt below
             // $this->salt
-            ) = unserialize($serialized, array('allowed_classes' => false));
+            ) = unserialize($serialized/*, ['allowed_classes' => false]*/);
     }
 }
 

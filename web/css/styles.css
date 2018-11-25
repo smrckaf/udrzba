@@ -663,7 +663,8 @@ FOOTER Styling
 }
 
 .blue {
-    background-color: #2196f3
+    background-color: #2196f3;
+    margin-top: 20px;
 }
 
 .footer a {
@@ -681,4 +682,11 @@ FOOTER Styling
 
 .login-form {
     width: 30%;
+    margin: 0 auto;
+}
+
+.navbar {
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
 }

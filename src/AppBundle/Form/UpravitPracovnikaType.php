@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: hruska07
+ * Pracovnik: hruska07
  * Date: 02.07.2018
  * Time: 10:41
  */
@@ -95,10 +95,10 @@ class UpravitPracovnikaType extends AbstractType
             'label' => 'Role',
             'required' => true,
             'choices' => [
-                'admin' => 'ADMIN',
-                'vedoucí' => 'VEDOUCI',
-                'mistr' => 'MISTR',
                 'pracovník' => 'PRACOVNIK',
+                'mistr' => 'MISTR',
+                'vedoucí' => 'VEDOUCI',
+                'admin' => 'ADMIN',
             ]
         ]);
         $builder->add('idzarizeni', TextType::class, [
@@ -111,7 +111,7 @@ class UpravitPracovnikaType extends AbstractType
         $builder->add('stroje', EntityType::class, [
             'class'     => Stroj::class,
             'choice_label' => 'nazev',
-            'label'     => 'Kompetence (na stroje)',
+            'label'     => 'Kompetence (stroje)',
             'expanded'  => true,
             'multiple'  => true,
         ]);

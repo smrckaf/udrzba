@@ -1,0 +1,216 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block body %}
+    {% include 'menu.html.twig' with {'zalozka': 2} %}
+
+    <div class="container">
+        <div class="border-bottom pb-1 mt-4 mb-3">
+            <h1 class="text-center">Dashboard</h1>
+        </div>
+
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Všechny poruchy</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Pouze nepřiřazené</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Pracovníci údržby</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="contact-tab2" data-toggle="tab" href="#contact2" role="tab" aria-controls="contact2" aria-selected="false">Denní přehled</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                {% for porucha in poruchy %}
+                    {% if loop.first %}
+                        <table class="table table-bordered table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th class="text-center" scope="col">Pořadí</th>
+                            <th class="text-center" scope="col">ID úkolu</th>
+                            <th class="text-center" scope="col">Priorita</th>
+                            <th class="text-center" scope="col">Pracoviště</th>
+                            <th class="text-center" scope="col">Datum vzniku</th>
+                            <th class="text-center" scope="col">Čas vzniku</th>
+                            <th class="text-center" scope="col">Čas potvrzení</th>
+                            <th class="text-center" scope="col">Status</th>
+                            <th class="text-center" scope="col">Řešitel</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                    {% endif %}
+                    <tr{% if porucha.status == "nepřiřazeno" %} class="table-danger"{% elseif porucha.status == "hotovo" %} class="table-success"{% elseif porucha.status == "probíhá oprava" %} class="table-warning"{% endif %}>
+                        <td class="text-center">
+                            {{ porucha.poradi }}
+                        </td>
+                        <td class="text-center">
+                            {{ porucha.idUkolu }}
+                        </td>
+                        <td class="text-center">
+                            {{ porucha.priorita }}
+                        </td>
+                        <td class="text-center">
+                            {{ porucha.pracoviste }}
+                        </td>
+                        <td class="text-center">
+                            {{ porucha.datumVzniku }}
+                        </td>
+                        <td class="text-center">
+                            {{ porucha.casVzniku }}
+                        </td>
+                        <td class="text-center">
+                            {{ porucha.casPotvrzeni }}
+                        </td>
+                        <td class="text-center">
+                            {{ porucha.status }}
+                        </td>
+                        <td class="text-center">
+                            {{ porucha.resitel }}
+                        </td>
+                    </tr>
+                    {% if loop.last %}
+                        </tbody>
+                        </table>
+                    {% endif %}
+                {% else %}
+                    <p>Zatím nejsou registrovány žádné poruchy.</p>
+                {% endfor %}
+            </div>
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                {% for neprirazena in neprirazene %}
+                    {% if loop.first %}
+                        <table class="table table-bordered table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th class="text-center" scope="col">Pořadí</th>
+                            <th class="text-center" scope="col">ID úkolu</th>
+                            <th class="text-center" scope="col">Priorita</th>
+                            <th class="text-center" scope="col">Pracoviště</th>
+                            <th class="text-center" scope="col">Datum vzniku</th>
+                            <th class="text-center" scope="col">Čas vzniku</th>
+                            <th class="text-center" scope="col">Čas potvrzení</th>
+                            <th class="text-center" scope="col">Status</th>
+                            <th class="text-center" scope="col">Řešitel</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                    {% endif %}
+                    <tr class="table-danger">
+                        <td class="text-center">
+                            {{ neprirazena.poradi }}
+                        </td>
+                        <td class="text-center">
+                            {{ neprirazena.idUkolu }}
+                        </td>
+                        <td class="text-center">
+                            {{ neprirazena.priorita }}
+                        </td>
+                        <td class="text-center">
+                            {{ neprirazena.pracoviste }}
+                        </td>
+                        <td class="text-center">
+                            {{ neprirazena.datumVzniku }}
+                        </td>
+                        <td class="text-center">
+                            {{ neprirazena.casVzniku }}
+                        </td>
+                        <td class="text-center">
+                            {{ neprirazena.casPotvrzeni }}
+                        </td>
+                        <td class="text-center">
+                            {{ neprirazena.status }}
+                        </td>
+                        <td class="text-center">
+                            {{ neprirazena.resitel }}
+                        </td>
+                    </tr>
+                    {% if loop.last %}
+                        </tbody>
+                        </table>
+                    {% endif %}
+                {% else %}
+                    <p>Zatím nejsou registrovány žádné nepřiřazené poruchy.</p>
+                {% endfor %}
+            </div>
+            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                {% for pracovnik in pracovnici %}
+                    {% if loop.first %}
+                        <table class="table table-bordered table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th class="text-center" scope="col">Jméno</th>
+                            <th class="text-center" scope="col">Status</th>
+                            <th class="text-center" scope="col">Pracoviště</th>
+                            <th class="text-center" scope="col">OD</th>
+                            <th class="text-center" scope="col">DO</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                    {% endif %}
+                    <tr{% if pracovnik.status == "není určeno" %} class="table-info"{% elseif pracovnik.status == "hotovo" %} class="table-success"{% elseif pracovnik.status == "probíhá oprava" %} class="table-warning"{% endif %}>
+                        <td class="text-center">
+                            {{ pracovnik.jmeno }}
+                        </td>
+                        <td class="text-center">
+                            {{ pracovnik.status }}
+                        </td>
+                        <td class="text-center">
+                            {{ pracovnik.pracoviste }}
+                        </td>
+                        <td class="text-center">
+                            {{ pracovnik.od }}
+                        </td>
+                        <td class="text-center">
+                            {{ pracovnik.do }}
+                        </td>
+                    </tr>
+                    {% if loop.last %}
+                        </tbody>
+                        </table>
+                    {% endif %}
+                {% else %}
+                    <p>Zatím nejsou zadáni žádní pracovníci.</p>
+                {% endfor %}
+            </div>
+            <div class="tab-pane fade" id="contact2" role="tabpanel" aria-labelledby="contact-tab2">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-center" scope="col">Počet otevřených úkolů</th>
+                            <th class="text-center" scope="col">Počet případů bez notifikace</th>
+                            <th class="text-center" scope="col">Počet uzavřených případů</th>
+                            <th class="text-center" scope="col">Počet minut na opravách</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center">
+                                {{ prehled.pocetOtevrenych }}
+                            </td>
+                            <td class="text-center">
+                                {{ prehled.pocetBezNotifikace }}
+                            </td>
+                            <td class="text-center">
+                                {{ prehled.pocetUzavrenych }}
+                            </td>
+                            <td class="text-center">
+                                {{ prehled.pocetMinut }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+
+    </div>
+
+{% endblock %}
+

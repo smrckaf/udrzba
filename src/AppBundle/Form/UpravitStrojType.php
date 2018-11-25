@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: hruska07
+ * Pracovnik: hruska07
  * Date: 02.07.2018
  * Time: 10:41
  */

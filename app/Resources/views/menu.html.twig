@@ -1,18 +1,31 @@
-<nav class="navbar navbar-inverse">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="{{ path("udrzba-index") }}">Údržba</a>
-        </div>
+        <a class="navbar-brand" href="#">Údržba</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbar" aria-controls="myNavbar" aria-expanded="false" aria-label="Zobrazit/skrýt navigaci">
+            <span class="navbar-toggler-icon"></span>
+        </button>
         <div class="collapse navbar-collapse" id="myNavbar">
-            <ul class="nav navbar-nav">
-                <li{{ zalozka == 1 ? " class=\"active\"" }}><a href="{{ path("udrzba-index") }}">Home</a></li>
-                <li{{ zalozka == 2 ? " class=\"active\"" }}><a href="{{ path("pracovnik-index") }}">Pracovníci</a></li>
-                <li{{ zalozka == 3 ? " class=\"active\"" }}><a href="{{ path("stroj-index") }}">Stroje</a></li>
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li class="nav-item{{ zalozka == 1 ? " active" }}"><a class="nav-link" href="{{ path("udrzba-index") }}">Home</a></li>
+                {% if logged is not defined %}{% set logged = true %}{% endif %}
+                {% if logged %}
+                    <li class="nav-item{{ zalozka == 2 ? " active" }}"><a class="nav-link" href="{{ path("udrzba-dashboard") }}">Dashboard</a></li>
+                    <li class="nav-item{{ zalozka == 3 ? " active" }}"><a class="nav-link" href="{{ path("pracovnik-index") }}">Pracovníci</a></li>
+                    <li class="nav-item{{ zalozka == 4 ? " active" }}"><a class="nav-link" href="{{ path("stroj-index") }}">Stroje</a></li>
+                {% endif %}
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                {% if logged %}
+                    <li class="nav-item"><span class="navbar-text"><span class="fa fa-user"></span> {{ app.user.username }}</span></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ path("logout") }}"><span class="fa fa-lock"></span> Odhlásit se</a></li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{{ path("login") }}"><span class="fa fa-lock"></span> Přihlásit se</a></li>
+                {% endif %}
             </ul>
         </div>
     </div>
 </nav>
-<div class="container">
+<div class="container mt-2">
 {% for label, messages in app.session.flashbag.all %}
     {% for message in messages %}
         <div class="alert alert-{{ label }}">

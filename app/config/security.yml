@@ -2,17 +2,29 @@
 # https://symfony.com/doc/current/security.html
 security:
     encoders:
+        Symfony\Component\Security\Core\User\User:
+            algorithm: bcrypt
+
         AppBundle\Entity\Pracovnik:
             algorithm: bcrypt
 
     # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
-        our_db_provider:
-            entity:
-                class: AppBundle:Pracovnik
-                property: email
+        chain_provider:
+            chain:
+                providers: [in_memory, user_db]
         in_memory:
-            memory: ~
+            memory:
+                users:
+                    admin:
+                        password: $2y$13$OCMN2VYeDWnbgr3xpXrkL.X7Yj5xx5nq3zC5OD2ufQeZoK0GQxuBm
+                        roles: 'ROLE_ADMIN'
+                    pracovnik:
+                        password: $2y$13$OCMN2VYeDWnbgr3xpXrkL.X7Yj5xx5nq3zC5OD2ufQeZoK0GQxuBm
+                        roles: 'ROLE_PRACOVNIK'
+        user_db:
+            entity: { class: AppBundle:Pracovnik, property: email }
+
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
@@ -21,23 +33,22 @@ security:
             security: false
 
         main:
-            pattern:    ^/stroj/
-            #http_basic: ~
-            provider: our_db_provider
-            # activate different ways to authenticate
-
-            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
-            #http_basic: ~
-
-            # https://symfony.com/doc/current/security/form_login_setup.html
+            pattern: ^/
+            provider: chain_provider
             form_login:
                 login_path: login
                 check_path: login
+                username_parameter: login_form[_username]
+                password_parameter: login_form[_password]
+            logout:
+                path: /logout
+            anonymous: ~
 
     access_control:
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: ROLE_ADMIN }
+		- { path: ^/, roles: ROLE_VEDOUCI }
     # require ROLE_ADMIN for /admin*
-    - { path: ^/stroj/, roles: ROLE_ADMIN }
-    - { path: ^/stroj/, roles: ROLE_VEDOUCI }
 
 # Nelmio CORS Configuration
 nelmio_cors:
