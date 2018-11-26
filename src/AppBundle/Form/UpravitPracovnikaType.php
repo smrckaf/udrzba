@@ -50,7 +50,10 @@ class UpravitPracovnikaType extends AbstractType
             'label' => 'Příjmení',
             'required' => true,
         ]);
-
+        $builder->add('login', TextType::class, [
+            'label' => 'Login',
+            'required' => true,
+        ]);
         $builder->add('heslo', RepeatedType::class, array(
             'type' => PasswordType::class,
             'invalid_message' => 'Hesla se musí shodovat.',

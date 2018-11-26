@@ -41,6 +41,13 @@ class Pracovnik implements UserInterface, \Serializable
     private $prijmeni;
 
     /**
+     * @ORM\Column(name="login", type="string", length=255)
+     */
+    private $login;
+
+
+
+    /**
      * @ORM\Column(name="heslo", type="string", length=255)
      */
     private $heslo;
@@ -164,6 +171,29 @@ class Pracovnik implements UserInterface, \Serializable
     {
         $this->prijmeni = $prijmeni;
     }
+
+
+
+    /**
+     * @return mixed
+     */
+    public function getLogin()
+    {
+        return $this->login;
+    }
+
+    /**
+     * @param mixed $heslo
+     */
+    public function setLogin($login)
+    {
+        $this->login = $login;
+    }
+
+
+
+
+
 
     /**
      * @return mixed
