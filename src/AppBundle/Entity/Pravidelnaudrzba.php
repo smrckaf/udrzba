@@ -31,7 +31,7 @@ class Pravidelnaudrzba
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="datum_udrzby", type="date")
+     * @ORM\Column(name="datum_udrzby", type="datetime")
      */
     private $datumUdrzby;
 
@@ -45,7 +45,7 @@ class Pravidelnaudrzba
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="provedeni", type="date")
+     * @ORM\Column(name="provedeni", type="datetime")
      */
     private $provedeni;
 

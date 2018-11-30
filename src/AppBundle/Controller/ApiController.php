@@ -12,9 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
-
-
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\View\View;
 
@@ -158,10 +155,45 @@ class ApiController extends FOSRestController
 
     /**
      * @Rest\Get("/porucha")
+     * Pro přístup ke všem poruchám
      */
     public function getPoruchaAction()
     {
-        $porucha = $this->getPorucha();
+        $poruchy = $this->get('doctrine')->getManager()->getRepository(Porucha::class)->findAll();
+
+        $result = [];
+
+        foreach ($poruchy as $porucha) {
+            $result[] = [
+                'id' => $porucha->getId(),
+                'stroj' => $porucha->getStroj(),
+                'casvzniku' => $porucha->getCasvzniku(),
+                'oblastpriciny' => $porucha->getOblastpriciny(),
+                'priorita' => $porucha->getPriorita(),
+                'poznamka' => $porucha->getPoznamka(),
+                'vyreseno' => $porucha->getVyreseno(),
+            ];
+        }
+
+        return new JsonResponse($result);
+    }
+
+    /**
+     * Pouze jedna porucha
+     * GET na například /api/porucha/1
+     * @Rest\Get("/porucha/{id}")
+     * @Rest\QueryParam(name="id", requirements="\d+", description="ID poruchy.")
+     * @param $id
+     * @return JsonResponse
+     */
+    public function getSinglePorucha($id)
+    {
+        dump($id);
+        $porucha = $this->get('doctrine')->getManager()->getRepository(Porucha::class)->find($id);
+
+        if (!$porucha) {
+            throw new ResourceNotFoundException('Porucha not found');
+        }
 
         return new JsonResponse([
             'id' => $porucha->getId(),
