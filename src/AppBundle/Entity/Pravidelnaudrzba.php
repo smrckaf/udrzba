@@ -56,6 +56,15 @@ class Pravidelnaudrzba
      */
     private $provedl;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="poznudrzbare", type="string", length=255)
+     */
+    private $poznUdrzbare;
+
+
+
 
     /**
      * Get id
@@ -129,6 +138,7 @@ class Pravidelnaudrzba
         return $this;
     }
 
+
     /**
      * Get popisUdrzby
      *
@@ -138,6 +148,37 @@ class Pravidelnaudrzba
     {
         return $this->popisUdrzby;
     }
+
+
+
+
+
+
+    /**
+     * Set poznUdrzbare
+     *
+     * @param string $poznUdrzbare
+     *
+     * @return Pravidelnaudrzba
+     */
+    public function setPoznUdrzbare($poznUdrzbare)
+    {
+        $this->poznUdrzbare = $poznUdrzbare;
+
+        return $this;
+    }
+
+    /**
+     * Get poznudrzbare
+     *
+     * @return string
+     */
+    public function getPoznUdrzbare()
+    {
+        return $this->poznUdrzbare;
+    }
+
+
 
     /**
      * Set provedeni

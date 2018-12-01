@@ -3,6 +3,8 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Entity\Pokus;
+use AppBundle\Entity\Pokus2;
 use AppBundle\Entity\Pracovnik;
 use AppBundle\Entity\Porucha;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -120,19 +122,19 @@ class ApiController extends FOSRestController
     /**
      * @Rest\Get("/user")
      */
-    public function getAction()
-    {
-        $user = $this->getUser();
+    //public function getAction()
+    //{
+       // $user = $this->getUser();
 
-        return new JsonResponse([
-            'jmeno' => $user->getJmeno(),
-            'prijmeni' => $user->getPrijmeni(),
-        ]);
-    }
+        //return new JsonResponse([
+        //    'jmeno' => $user->getJmeno(),
+        //    'prijmeni' => $user->getPrijmeni(),
+       // ]);
+    //}
 
 
     /**
-     * @Rest\Put("/user/{id}")
+     * @Rest\Put("/pracovnik/{id}")
      */
     public function updateAction($id,Request $request)
     {
@@ -152,6 +154,9 @@ class ApiController extends FOSRestController
 
         else return new JsonResponse("User name or role cannot be empty", Response::HTTP_NOT_ACCEPTABLE);
     }
+
+
+
 
     /**
      * @Rest\Get("/porucha")
@@ -205,4 +210,40 @@ class ApiController extends FOSRestController
             'vyreseno' => $porucha->getVyreseno(),
         ]);
     }
+
+    /**
+     * @Rest\Post("/porucha/")
+     */
+    public function postPoruchaAction(Request $request)
+    {
+        $data = new Porucha;
+        //$id = $request->get('id');
+        $stroj = $request->get('stroj');
+        $casvzniku = $request->get('casvzniku');
+        $oblastpriciny = $request->get('oblastpriciny');
+        $priorita = $request->get('priorita');
+        $poznamka = $request->get('poznamka');
+        //$vyreseno = $request->get('vyreseno');
+
+        if(empty($stroj) || empty($casvzniku) || empty($oblastpriciny) || empty($priorita) || empty($poznamka))
+        {
+            return new JsonResponse("Posíláte prázdné hodnoty", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        //$id->setId($id);
+        $data->setStroj($stroj);
+        $data->setCasvzniku(new \DateTime($casvzniku));
+        $data->setOblastpriciny($oblastpriciny);
+        $data->setPriorita($priorita);
+        $data->setPoznamka($poznamka);
+        //$data->setVyreseno(new \DateTime($vyreseno));
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($data);
+
+        $em->flush();
+
+        return new JsonResponse("User Added Successfully", Response::HTTP_OK);
+    }
+
+
 }

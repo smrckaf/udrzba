@@ -58,7 +58,7 @@ class Porucha
 
 
     /**
-     * @var datetime
+     * @var \DateTime
      *
      * @ORM\Column(name="vyreseno", type="datetime")
      */
@@ -201,7 +201,7 @@ class Porucha
     /**
      * Set vyreseno
      *
-     * @param datetime $vyreseno
+     * @param \DateTime $vyreseno
      *
      * @return Porucha
      */
@@ -215,7 +215,7 @@ class Porucha
     /**
      * Get vyreseno
      *
-     * @return datetime
+     * @return \DateTime
      */
     public function getVyreseno()
     {
