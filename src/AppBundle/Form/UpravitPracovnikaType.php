@@ -104,6 +104,11 @@ class UpravitPracovnikaType extends AbstractType
                 'admin' => 'ADMIN',
             ]
         ]);
+
+        $builder->add('token', TextType::class, [
+            'label' => 'Token',
+            'required' => true,
+        ]);
         $builder->add('idzarizeni', TextType::class, [
             'label' => 'ID zařízení',
             'required' => false,

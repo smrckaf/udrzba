@@ -2,8 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="05e5837d-147a-408a-8702-8fe80b4e0c8e" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AppBundle/Controller/ApiController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppBundle/Controller/ApiController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/config/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/app/config/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/config/config_dev.yml" beforeDir="false" afterPath="$PROJECT_DIR$/app/config/config_dev.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/config/config_prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/app/config/config_prod.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/config/config_test.yml" beforeDir="false" afterPath="$PROJECT_DIR$/app/config/config_test.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/config/parameters.yml.dist" beforeDir="false" afterPath="$PROJECT_DIR$/app/config/parameters.yml.dist" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/config/routing.yml" beforeDir="false" afterPath="$PROJECT_DIR$/app/config/routing.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/config/routing_dev.yml" beforeDir="false" afterPath="$PROJECT_DIR$/app/config/routing_dev.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AppBundle/AppBundle.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppBundle/AppBundle.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AppBundle/Entity/Kompetence.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppBundle/Entity/Kompetence.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AppBundle/Entity/Logporuch.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppBundle/Entity/Logporuch.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AppBundle/Entity/Pracovnik.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppBundle/Entity/Pracovnik.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AppBundle/Entity/Pravidelnaudrzba.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppBundle/Entity/Pravidelnaudrzba.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AppBundle/Entity/Prevzal.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppBundle/Entity/Prevzal.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AppBundle/Entity/Stroj.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppBundle/Entity/Stroj.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AppBundle/Form/UpravitPracovnikaType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppBundle/Form/UpravitPracovnikaType.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -132,15 +145,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ApiController.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ApiController.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/AppBundle/Controller/ApiController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="506">
-              <caret line="23" column="3" lean-forward="true" selection-start-line="23" selection-start-column="3" selection-end-line="23" selection-end-column="3" />
-              <folding>
-                <element signature="e#41#72#0#PHP" expanded="true" />
-                <element signature="e#4585#4606#1#PHP" expanded="true" />
-              </folding>
+            <state relative-caret-position="-3696">
+              <caret line="20" column="3" selection-start-line="20" selection-start-column="3" selection-end-line="20" selection-end-column="3" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Pravidelnaudrzba.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/AppBundle/Entity/Pravidelnaudrzba.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="286">
+              <caret line="180" lean-forward="true" selection-start-line="180" selection-end-line="180" />
             </state>
           </provider>
         </entry>
@@ -177,18 +195,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="704">
               <caret line="32" selection-start-line="32" selection-end-line="32" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="UdrzbaController.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/AppBundle/Controller/UdrzbaController.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="902">
-              <caret line="48" column="63" selection-start-line="48" selection-start-column="63" selection-end-line="48" selection-end-column="63" />
-              <folding>
-                <element signature="e#129#165#0#PHP" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -288,6 +294,7 @@
         <option value="$PROJECT_DIR$/src/AppBundle/Entity/Pracovnik.php" />
         <option value="$PROJECT_DIR$/src/AppBundle/Form/UpravitPracovnikaType.php" />
         <option value="$PROJECT_DIR$/src/AppBundle/Controller/ApiController.php" />
+        <option value="$PROJECT_DIR$/src/AppBundle/Entity/Pravidelnaudrzba.php" />
       </list>
     </option>
   </component>
@@ -372,6 +379,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -435,7 +443,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -505,16 +512,17 @@
       <workItem from="1543494842729" duration="414000" />
       <workItem from="1543526058947" duration="756000" />
       <workItem from="1543564012631" duration="2194000" />
+      <workItem from="1543651358003" duration="1059000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="102052000" />
+    <option name="totallyTimeSpent" value="103111000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.17643923" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.17803837" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.15778251" side_tool="true" weight="0.32719395" />
@@ -542,7 +550,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/vendor/symfony/symfony/src/Symfony/Component/Config/FileLocator.php" />
     <entry file="file://$PROJECT_DIR$/app/config/routing.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
@@ -843,12 +850,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/AppBundle/Controller/ApiController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="506">
-          <caret line="23" column="3" lean-forward="true" selection-start-line="23" selection-start-column="3" selection-end-line="23" selection-end-column="3" />
-          <folding>
-            <element signature="e#41#72#0#PHP" expanded="true" />
-            <element signature="e#4585#4606#1#PHP" expanded="true" />
-          </folding>
+        <state relative-caret-position="-3696">
+          <caret line="20" column="3" selection-start-line="20" selection-start-column="3" selection-end-line="20" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/AppBundle/Entity/Pravidelnaudrzba.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="286">
+          <caret line="180" lean-forward="true" selection-start-line="180" selection-end-line="180" />
         </state>
       </provider>
     </entry>

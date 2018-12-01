@@ -427,7 +427,10 @@ class Pracovnik implements UserInterface, \Serializable
 
     public function getRoles()
     {
-        return ['ROLE_'. $this->role];
+        return [
+            'ROLE_API' => 'ROLE_API', // tato role musí být buď uložena v DB (sloupec role) nebo je nutné ponechat tento řádek
+            'ROLE_'. $this->role
+        ];
     }
 
     public function eraseCredentials()
