@@ -3,10 +3,11 @@
 namespace AppBundle\Controller;
 
 
-use AppBundle\Entity\Pokus;
-use AppBundle\Entity\Pokus2;
+
 use AppBundle\Entity\Pracovnik;
 use AppBundle\Entity\Porucha;
+use AppBundle\Entity\Prevzal;
+use AppBundle\Entity\Logporuch;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -245,5 +246,166 @@ class ApiController extends FOSRestController
         return new JsonResponse("User Added Successfully", Response::HTTP_OK);
     }
 
+    /**
+     * @Rest\Post("/prevzal/")
+     */
+    public function postPrevzalAction(Request $request)
+    {
+        $data = new Prevzal();
+        //$id = $request->get('id');
 
+        $id_poruchy = $request->get('id_poruchy');
+        $id_pracovnika = $request->get('id_pracovnika');
+        $prevzetidatcas = $request->get('prevzetidatcas');
+        $role_obsluhy = $request->get(  'role_obsluhy');
+
+
+        if(empty($id_poruchy) || empty($id_pracovnika) || empty($prevzetidatcas) || empty($role_obsluhy))
+        {
+            return new JsonResponse("Posíláte prázdné hodnoty", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        //$id->setId($id);
+        $data->setIdPoruchy($id_poruchy);
+        $data->setIdPracovnika($id_pracovnika);
+        $data->setPrevzetidatcas(new \DateTime($prevzetidatcas));
+        $data->setRole_obsluhy($role_obsluhy);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($data);
+
+        $em->flush();
+
+        return new JsonResponse("Prevzeti poruchy bylo uspesne", Response::HTTP_OK);
+    }
+
+    /**
+     * @Rest\Get("/prevzal")
+     * Pro přístup ke všem poruchám
+     */
+    public function getPrevzalAction()
+    {
+        $prevzeti = $this->get('doctrine')->getManager()->getRepository(Prevzal::class)->findAll();
+
+        $result = [];
+
+        foreach ($prevzeti as $prevzal) {
+            $result[] = [
+                'id' => $prevzal->getId(),
+                '$id_poruchy' => $prevzal->getIdPoruchy(),
+                '$id_pracovnika' => $prevzal->getIdPracovnika(),
+                'prevzetidatcas' => $prevzal->getPrevzetidatcas(),
+                '$role_obsluhy' => $prevzal->getRole_obsluhy(),
+
+
+            ];
+        };
+
+        return new JsonResponse($result);
+    }
+
+    /**
+     * Pouze jedno prevzal
+     * GET na například /api/prevzal/1
+     * @Rest\Get("/prevzal/{id}")
+     * @Rest\QueryParam(name="id", requirements="\d+", description="ID poruchy.")
+     * @param $id
+     * @return JsonResponse
+     */
+    public function getSinglePrevzal($id)
+    {
+        dump($id);
+        $prevzal = $this->get('doctrine')->getManager()->getRepository(Prevzal::class)->find($id);
+
+        if (!$prevzal) {
+            throw new ResourceNotFoundException('Prevzal not found');
+        }
+
+        return new JsonResponse([
+            'id' => $prevzal->getId(),
+            '$id_poruchy' => $prevzal->getIdPoruchy(),
+            '$id_pracovnika' => $prevzal->getIdPracovnika(),
+            'prevzetidatcas' => $prevzal->getPrevzetidatcas(),
+            '$role_obsluhy' => $prevzal->getRole_obsluhy(),
+        ]);
+    }
+
+    /**
+     * @Rest\Post("/logporuch/")
+     */
+    public function postlogporuchAction(Request $request)
+    {
+        $data = new Logporuch();
+        //$id = $request->get('id');
+
+
+
+        $idprevzal = $request->get('idprevzal');
+        $pretusenistrojbezi = $request->get('pretusenistrojbezi');
+        $prerusenistrojestoji = $request->get('prerusenistrojestoji');
+        $pokracovani = $request->get(  'pokracovani');
+
+
+        if(empty($idprevzal) || empty($pretusenistrojbezi) || empty($prerusenistrojestoji) || empty($pokracovani))
+        {
+            return new JsonResponse("Posíláte prázdné hodnoty", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        //$id->setId($id);
+        $data->setIdprevzal($idprevzal);
+        $data->setPretusenistrojbezi(new \DateTime($pretusenistrojbezi));
+        $data->setPrerusenistrojestoji(new \DateTime($prerusenistrojestoji));
+        $data->setPokracovani(new \DateTime($pokracovani));
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($data);
+
+        $em->flush();
+
+        return new JsonResponse("Prevzeti Logporuchy bylo uspesne", Response::HTTP_OK);
+    }
+
+    /**
+     * @Rest\Get("/logporuch")
+     * Pro přístup ke všem poruchám
+     */
+    public function getLogporuchAction()
+    {
+        $logporucha = $this->get('doctrine')->getManager()->getRepository(Logporuch::class)->findAll();
+
+        $result = [];
+
+        foreach ($logporucha as $logporuch) {
+            $result[] = [
+                'id' => $logporuch->getId(),
+                'idprevzal' => $logporuch->getIdprevzal(),
+                'pretusenistrojbezi' => $logporuch->getPretusenistrojbezi(),
+                'prerusenistrojestoji' => $logporuch->getPrerusenistrojestoji(),
+                'pokracovani' => $logporuch->getPokracovani(),
+            ];
+        };
+
+        return new JsonResponse($result);
+    }
+    /**
+     * Pouze jedno prevzal
+     * GET na například /api/logporuch/1
+     * @Rest\Get("/logporuch/{id}")
+     * @Rest\QueryParam(name="id", requirements="\d+", description="ID logporuch.")
+     * @param $id
+     * @return JsonResponse
+     */
+    public function getSingleLogporuch($id)
+    {
+        dump($id);
+        $logporuch = $this->get('doctrine')->getManager()->getRepository(Logporuch::class)->find($id);
+
+        if (!$logporuch) {
+            throw new ResourceNotFoundException('Prevzal not found');
+        }
+
+        return new JsonResponse([
+            'id' => $logporuch->getId(),
+            'idprevzal' => $logporuch->getIdprevzal(),
+            'pretusenistrojbezi' => $logporuch->getPretusenistrojbezi(),
+            'prerusenistrojestoji' => $logporuch->getPrerusenistrojestoji(),
+            'pokracovani' => $logporuch->getPokracovani(),
+        ]);
+    }
 }

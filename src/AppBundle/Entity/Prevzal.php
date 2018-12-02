@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Prevzal
  *
  * @ORM\Table(name="prevzal")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\PrevzalRepository")
+ * @ORM\Entity()
  */
 class Prevzal
 {

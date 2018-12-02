@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Logporuch
  *
  * @ORM\Table(name="logporuch")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\LogporuchRepository")
+ * @ORM\Entity()
  */
 class Logporuch
 {
