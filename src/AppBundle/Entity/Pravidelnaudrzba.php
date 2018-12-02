@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Pravidelnaudrzba
  *
  * @ORM\Table(name="pravidelnaudrzba")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\PravidelnaudrzbaRepository")
+ * @ORM\Entity()
  */
 class Pravidelnaudrzba
 {
@@ -24,7 +24,8 @@ class Pravidelnaudrzba
     /**
      * @var int
      *
-     * @ORM\Column(name="id_stroje", type="integer")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Stroj")
+     * @ORM\JoinColumn(name="id_stroje")
      */
     private $idStroje;
 
@@ -38,28 +39,29 @@ class Pravidelnaudrzba
     /**
      * @var string
      *
-     * @ORM\Column(name="popis_udrzby", type="string", length=255)
+     * @ORM\Column(name="popis_udrzby", type="string", length=255, nullable=true)
      */
     private $popisUdrzby;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="provedeni", type="datetime")
+     * @ORM\Column(name="provedeni", type="datetime", nullable=true)
      */
     private $provedeni;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="provedl", type="integer")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Pracovnik")
+     * @ORM\JoinColumn(name="provedl", nullable=true)
      */
     private $provedl;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="poznudrzbare", type="string", length=255)
+     * @ORM\Column(name="poznudrzbare", type="string", length=255, nullable=true)
      */
     private $poznUdrzbare;
 

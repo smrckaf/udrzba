@@ -11,6 +11,7 @@ namespace AppBundle\Manager;
 
 use AppBundle\Entity\Kompetence;
 use AppBundle\Entity\Pracovnik;
+use AppBundle\Entity\Pravidelnaudrzba;
 use AppBundle\Entity\Stroj;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -52,6 +53,19 @@ class UdrzbaManager
     public function smazatStroj(Stroj $stroj)
     {
         $this->em->remove($stroj);
+        $this->em->flush();
+    }
+
+    public function ulozitPravidelnouUdrzbu(Pravidelnaudrzba $pravidelnaudrzba)
+    {
+        if ($pravidelnaudrzba->getId() === null)
+            $this->em->persist($pravidelnaudrzba);
+        $this->em->flush();
+    }
+
+    public function smazatPravidelnouUdrzbu(Pravidelnaudrzba $pravidelnaudrzba)
+    {
+        $this->em->remove($pravidelnaudrzba);
         $this->em->flush();
     }
 
@@ -183,5 +197,40 @@ class UdrzbaManager
         $result["pocetMinut"] = "127";
 
         return $result;
+    }
+
+    /**
+     * @param $obdobi
+     * @return Pravidelnaudrzba[]
+     */
+    public function getPravidelneUdrzby($obdobi)
+    {
+        $qb = $this->em->createQueryBuilder()
+            ->select('p.id, p.provedeni, p.poznUdrzbare, p.popisUdrzby, p.datumUdrzby, s.nazev, u.jmeno, u.prijmeni')
+            ->from(Pravidelnaudrzba::class, 'p')
+            ->join('p.idStroje', 's')
+            ->leftJoin('p.provedl', 'u')
+            ->where('p.datumUdrzby > :datumOd')
+            ->setParameter('datumOd', new \DateTime);
+
+        switch ($obdobi) {
+            case 1:
+                $qb
+                    ->andWhere('p.datumUdrzby <= :datumDo')
+                    ->setParameter('datumDo', (new \DateTime)->modify('+7 days'));
+                break;
+            case 2:
+                $qb
+                    ->andWhere('p.datumUdrzby <= :datumDo')
+                    ->setParameter('datumDo', (new \DateTime)->modify('+1 month'));
+                break;
+            default:
+                break;
+        }
+
+        return $qb
+            ->orderBy('p.datumUdrzby', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 }
