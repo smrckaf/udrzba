@@ -102,7 +102,7 @@ class UpravitPracovnikaType extends AbstractType
                 'mistr' => 'MISTR',
                 'vedoucí' => 'VEDOUCI',
                 'admin' => 'ADMIN',
-            ]
+            ],
         ]);
 
         $builder->add('token', TextType::class, [

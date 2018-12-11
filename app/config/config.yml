@@ -36,7 +36,6 @@ twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
     form_themes: ['bootstrap_4_horizontal_layout.html.twig']
-
 # Doctrine Configuration
 doctrine:
     dbal:
@@ -94,3 +93,5 @@ fos_rest:
         view_response_listener: 'force'
         formats:
             json: true
+redjan_ym_fcm:
+    firebase_api_key: "AAAAVtZLqFI:APA91bEWy6NVDG38UNBtKwNM2VH5qQJO84lc5qOMzJHUNbOwzdB0h2DfdlbR9fOmUf40mjs6vJ8rZWBS8WC_jo23ZVG9eWcwft6eQTSVKPUKGj6030vmH_ioU5fvr7QY1PivLS4K2Ag7"

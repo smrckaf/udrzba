@@ -60,7 +60,7 @@ class Porucha
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="vyreseno", type="datetime")
+     * @ORM\Column(name="vyreseno", type="datetime" ,nullable=true )
      */
     private $vyreseno;
 

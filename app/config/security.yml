@@ -23,7 +23,7 @@ security:
                         password: $2y$13$OCMN2VYeDWnbgr3xpXrkL.X7Yj5xx5nq3zC5OD2ufQeZoK0GQxuBm
                         roles: 'ROLE_PRACOVNIK'
         user_db:
-            entity: { class: AppBundle:Pracovnik, property: email }
+            entity: { class: AppBundle:Pracovnik }
 
         api_provider:
             entity:

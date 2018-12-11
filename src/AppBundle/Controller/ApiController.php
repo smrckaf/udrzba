@@ -8,6 +8,8 @@ use AppBundle\Entity\Pracovnik;
 use AppBundle\Entity\Porucha;
 use AppBundle\Entity\Prevzal;
 use AppBundle\Entity\Logporuch;
+use AppBundle\Entity\LogObsluhy;
+use AppBundle\Entity\Stroj;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,6 +19,9 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\View\View;
+use AppBundle\Utility;
+
+
 
 
 /**
@@ -24,6 +29,21 @@ use FOS\RestBundle\View\View;
  */
 class ApiController extends FOSRestController
 {
+    /**
+     * @var Utility\Notifikace
+     */
+    private $notifikace;
+
+    /**
+     * ApiController constructor.
+     */
+
+    //pro posilani parametru notifikaci
+    public function __construct(Utility\Notifikace $notifikace)
+    {
+        $this->notifikace = $notifikace;
+    }
+
     /**
      * Tady nevím, jestli je tato metoda potřeba, možná bude stačit ta login, pak je možné to firebase id přesunout
      * až do loginu a ukládat to tam, tato metoda vytváří nové uživatele
@@ -120,18 +140,7 @@ class ApiController extends FOSRestController
     }
 
 
-    /**
-     * @Rest\Get("/user")
-     */
-    //public function getAction()
-    //{
-       // $user = $this->getUser();
 
-        //return new JsonResponse([
-        //    'jmeno' => $user->getJmeno(),
-        //    'prijmeni' => $user->getPrijmeni(),
-       // ]);
-    //}
 
 
     /**
@@ -230,6 +239,14 @@ class ApiController extends FOSRestController
         {
             return new JsonResponse("Posíláte prázdné hodnoty", Response::HTTP_NOT_ACCEPTABLE);
         }
+
+
+        //$this->notifikace->posliAction();
+       // return new JsonResponse([]);
+
+
+
+
         //$id->setId($id);
         $data->setStroj($stroj);
         $data->setCasvzniku(new \DateTime($casvzniku));
@@ -408,4 +425,184 @@ class ApiController extends FOSRestController
             'pokracovani' => $logporuch->getPokracovani(),
         ]);
     }
+
+    /**
+     * @Rest\Post("/poruchanotifikace")
+     */
+    public function postPoruchaNotifikaceAction(Request $request)
+    {
+        $data = new Porucha;
+        //$id = $request->get('id');
+        $stroj = $request->get('stroj');
+        $casvzniku = $request->get('casvzniku');
+        $oblastpriciny = $request->get('oblastpriciny');
+        $priorita = $request->get('priorita');
+        $poznamka = $request->get('poznamka');
+        //$vyreseno = $request->get('vyreseno');
+
+        if(empty($stroj) || empty($casvzniku) || empty($oblastpriciny) || empty($priorita) || empty($poznamka))
+        {
+            return new JsonResponse("Posíláte prázdné hodnoty", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        //$id->setId($id);
+        $data->setStroj($stroj);
+        $data->setCasvzniku(new \DateTime($casvzniku));
+        $data->setOblastpriciny($oblastpriciny);
+        $data->setPriorita($priorita);
+        $data->setPoznamka($poznamka);
+        //$data->setVyreseno(new \DateTime($vyreseno));
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($data);
+
+        $em->flush();
+        //sem dat notifikaci
+        $this->notifikace->posliAction('Stroj: ' . $stroj, 'body');
+
+
+        return new JsonResponse("User Added Successfully", Response::HTTP_OK);
+    }
+
+    /**
+     * @Rest\Post("/start")
+     */
+    //zacatek opravy typ S stroj stoji nebo pokracovani opravy typ P
+    // status stroje dat na na 0
+
+    public function StartAction(Request $request)
+    {
+        $dataL = new LogObsluhy();
+        $dataS = new Stroj();
+        $id_stroje = $request->get('id_stroje');
+        $id_poruchy = $request->get('id_poruchy');
+        $id_pracovnika = $request->get('id_pracovnika');
+        //$typ = $request->get('typ'); // S nebo P
+
+        //$status = $request->get('status');
+
+        //$id_stroje=1;
+        //$id_poruchy=3;
+        //$id_pracovnika=3;
+
+        $status=0; //stroj nepracuje, opravuje se
+
+        if(empty($id_stroje) ||empty($id_pracovnika) || empty($id_poruchy) ) //dodelat kontrolu statusu
+        {
+            return new JsonResponse("Posíláte prázdné hodnoty", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        //hledani v tabulce prevzal
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Prevzal p
+              WHERE p.idPoruchy= :idpor AND p.idPracovnika= :idprac")
+                    ->setParameters(array('idpor'=>$id_poruchy,'idprac'=>$id_pracovnika ));
+
+       //$prevzal = $query->getResult();
+
+        $prevzal = $query->setMaxResults(1)->getOneOrNullResult();
+        $output = $prevzal->getId();
+
+
+
+
+        //$id->setId($id);
+        $dataL->setIdprevzal($output);
+
+        //date_default_timezone_set('Europe/Prague');
+        $dataL->setStart(new \DateTime);
+        //$dataL->setTyp($typ);
+
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($dataL);
+
+        $em->flush();
+
+        //update statusu
+        $sn = $this->getDoctrine()->getManager();
+        $stroj = $this->getDoctrine()->getRepository('AppBundle:Stroj')->find($id_stroje);
+
+        if (empty($stroj)) {
+            return new JsonResponse("Nenasel se stroj", Response::HTTP_NOT_FOUND);
+        }
+        elseif(!empty($stroj)) {
+            $stroj->setStatus($status);
+            $sn->flush();
+            return new JsonResponse("User Updated Successfully", Response::HTTP_OK);
+        }
+
+        else return new JsonResponse("User name or role cannot be empty", Response::HTTP_NOT_ACCEPTABLE);
+        return new JsonResponse($output."  Prevzeti LoguObsluhy bylo uspesne", Response::HTTP_OK);
+    }
+
+
+
+    /**
+     * @Rest\Put("/stop")
+     */
+    //preruseni opravy typ P nebo ukonceni opravy typ U
+    // status stroje dat na na 1
+
+    public function StopAction(Request $request)
+    {
+        $dataL = new LogObsluhy();
+        $dataS = new Stroj();
+        $id_stroje = $request->get('id_stroje');
+        $id_poruchy = $request->get('id_poruchy');
+        $id_pracovnika = $request->get('id_pracovnika');
+        $typ = $request->get('typ'); // S nebo P
+
+        //$status = $request->get('status');
+
+        //$id_stroje=1;
+        //$id_poruchy=3;
+        //$id_pracovnika=3;
+
+        $status=0; //stroj nepracuje, opravuje se
+
+        if(empty($id_stroje) ||empty($id_pracovnika) || empty($id_poruchy) ) //dodelat kontrolu statusu
+        {
+            return new JsonResponse("Posíláte prázdné hodnoty", Response::HTTP_NOT_ACCEPTABLE);
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Prevzal p
+              WHERE p.idPoruchy= :idpor AND p.idPracovnika= :idprac")
+            ->setParameters(array('idpor'=>$id_poruchy,'idprac'=>$id_pracovnika ));
+
+        //$prevzal = $query->getResult();
+
+        $prevzal = $query->setMaxResults(1)->getOneOrNullResult();
+        $output = $prevzal->getId();
+        //return new JsonResponse($output."  nalezeni idPrevzal", Response::HTTP_OK);
+
+
+
+        //najdu v LoguObsluhy id, kde je prazdny zaznam konec v LogObsluhy se správnym id_prevzal
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+           "SELECT l
+              FROM AppBundle:LogObsluhy l
+              WHERE l.idprevzal= :idpor AND l.konec is NULL")
+            ->setParameter('idpor',$output);
+        $idLogObsluhy = $query->setMaxResults(1)->getOneOrNullResult();
+       if (empty($idLogObsluhy))
+       {
+           return new JsonResponse("  udaj pro update neni prazdny", Response::HTTP_OK);
+       }
+           $vysledek = $idLogObsluhy->getId();
+
+//update konec a typ do LogObsluhy
+
+        $sn = $this->getDoctrine()->getManager();
+        $logobsluhy = $this->getDoctrine()->getRepository('AppBundle:LogObsluhy')->find($vysledek);
+        $logobsluhy->setKonec(new \DateTime);
+        $logobsluhy -> setTyp($typ); // Preruseni nebo Konec
+        $sn->flush();
+return new JsonResponse("  Update LoguObsluhy bylo uspesne", Response::HTTP_OK);
+    }
+
 }

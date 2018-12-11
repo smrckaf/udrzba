@@ -10,7 +10,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * Pracovnik
  *
  * @ORM\Table()
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\PracovnikRepository")
  */
 class Pracovnik implements UserInterface, \Serializable
 {
@@ -410,7 +410,7 @@ class Pracovnik implements UserInterface, \Serializable
     /* NUTNE PRO AUTENTIFIKACI!!! */
     public function getUsername()
     {
-        return $this->email;
+        return $this->jmeno . ' ' . $this->prijmeni;
     }
 
     public function getSalt()
