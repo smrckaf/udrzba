@@ -229,5 +229,8 @@ class Pravidelnaudrzba
     {
         return $this->provedl;
     }
+
+
+
 }
 

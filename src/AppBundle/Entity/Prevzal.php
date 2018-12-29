@@ -23,16 +23,20 @@ class Prevzal
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="id_poruchy", type="integer")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Porucha")
+
      */
     private $idPoruchy;
 
     /**
      * @var int
+     * @ORM\Column(type="integer")
+     **
+
      *
-     * @ORM\Column(name="id_pracovnika", type="integer")
+     *
      */
+
     private $idPracovnika;
 
     /**

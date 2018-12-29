@@ -44,11 +44,19 @@ class LogObsluhy
 
 
     /**
-     * @var string
+     * @var int
      *
-     * @ORM\Column(name="typ", type="string", length=1, nullable=true)
+     * @ORM\Column(name="typ", type="integer", nullable=true)
      */
     private $typ;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="poznamka", type="string", length=255, nullable=true)
+     */
+    private $poznamka;
+
 
 
     /**
@@ -136,7 +144,7 @@ class LogObsluhy
     /**
      * Set typ
      *
-     * @param string $typ
+     * @param integer $typ
      *
      * @return LogObsluhy
      */
@@ -150,11 +158,35 @@ class LogObsluhy
     /**
      * Get typ
      *
-     * @return string
+     * @return int
      */
     public function getTyp()
     {
         return $this->typ;
+    }
+
+    /**
+     * Set poznamka
+     *
+     * @param string $poznamka
+     *
+     * @return LogObsluhy
+     */
+    public function setPoznamka($poznamka)
+    {
+        $this->poznamka = $poznamka;
+
+        return $this;
+    }
+
+    /**
+     * Get poznamka
+     *
+     * @return string
+     */
+    public function getPoznamka()
+    {
+        return $this->poznamka;
     }
 
 

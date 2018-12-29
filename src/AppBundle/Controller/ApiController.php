@@ -4,10 +4,12 @@ namespace AppBundle\Controller;
 
 
 
+use AppBundle\Entity\LogNotifikace;
 use AppBundle\Entity\Pracovnik;
 use AppBundle\Entity\Porucha;
+use AppBundle\Entity\Pravidelnaudrzba;
 use AppBundle\Entity\Prevzal;
-use AppBundle\Entity\Logporuch;
+
 use AppBundle\Entity\LogObsluhy;
 use AppBundle\Entity\Stroj;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -144,14 +146,17 @@ class ApiController extends FOSRestController
 
 
     /**
-     * @Rest\Put("/pracovnik/{id}")
+     * @Rest\Put("/pracovnikold/{id}")
      */
-    public function updateAction($id,Request $request)
+    public function updateOldAction($id,Request $request)
     {
         $data = new Pracovnik();
         $idzarizeni = $request->get('idzarizeni');
         $sn = $this->getDoctrine()->getManager();
         $user = $this->getDoctrine()->getRepository('AppBundle:Pracovnik')->find($id);
+
+
+
 
         if (empty($user)) {
             return new JsonResponse("user not found", Response::HTTP_NOT_FOUND);
@@ -165,6 +170,42 @@ class ApiController extends FOSRestController
         else return new JsonResponse("User name or role cannot be empty", Response::HTTP_NOT_ACCEPTABLE);
     }
 
+    /**
+     * @Rest\Put("/pracovnik")
+     */
+    // poslani idzarizeni a tokenu, z tokenu se zjisti id uzivatet a u nej se updatuje idzarizeni
+    public function updateAction(Request $request)
+    {
+        $data = new Pracovnik();
+
+
+        $content = $request->getContent();
+        $data = json_decode($content, true);
+
+        $idzarizeni = $data['_idzarizeni'];
+
+        $token=$request->headers->get('X-Auth-Token');
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Pracovnik p
+              WHERE p.token= :token")
+            ->setParameter('token',$token);
+        $nalezene = $query->setMaxResults(1)->getOneOrNullResult();
+        $id_pracovnika = $nalezene->getId();
+        $sn = $this->getDoctrine()->getManager();
+        $user = $this->getDoctrine()->getRepository('AppBundle:Pracovnik')->find($id_pracovnika);
+        if (empty($user)) {
+            return new JsonResponse("nenasel se uzivatel", Response::HTTP_NOT_FOUND);
+        }
+        elseif(!empty($idzarizeni)) {
+            $user->setIdzarizeni($idzarizeni);
+            $sn->flush();
+            return new JsonResponse("idzarizeni Updated Successfully", Response::HTTP_OK);
+        }
+
+        else return new JsonResponse("idzarizeni cannot be empty", Response::HTTP_NOT_ACCEPTABLE);
+    }
 
 
 
@@ -221,47 +262,7 @@ class ApiController extends FOSRestController
         ]);
     }
 
-    /**
-     * @Rest\Post("/porucha/")
-     */
-    public function postPoruchaAction(Request $request)
-    {
-        $data = new Porucha;
-        //$id = $request->get('id');
-        $stroj = $request->get('stroj');
-        $casvzniku = $request->get('casvzniku');
-        $oblastpriciny = $request->get('oblastpriciny');
-        $priorita = $request->get('priorita');
-        $poznamka = $request->get('poznamka');
-        //$vyreseno = $request->get('vyreseno');
 
-        if(empty($stroj) || empty($casvzniku) || empty($oblastpriciny) || empty($priorita) || empty($poznamka))
-        {
-            return new JsonResponse("Posíláte prázdné hodnoty", Response::HTTP_NOT_ACCEPTABLE);
-        }
-
-
-        //$this->notifikace->posliAction();
-       // return new JsonResponse([]);
-
-
-
-
-        //$id->setId($id);
-        $data->setStroj($stroj);
-        $data->setCasvzniku(new \DateTime($casvzniku));
-        $data->setOblastpriciny($oblastpriciny);
-        $data->setPriorita($priorita);
-        $data->setPoznamka($poznamka);
-        //$data->setVyreseno(new \DateTime($vyreseno));
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($data);
-
-        $em->flush();
-
-        return new JsonResponse("User Added Successfully", Response::HTTP_OK);
-    }
 
     /**
      * @Rest\Post("/prevzal/")
@@ -293,6 +294,7 @@ class ApiController extends FOSRestController
 
         return new JsonResponse("Prevzeti poruchy bylo uspesne", Response::HTTP_OK);
     }
+
 
     /**
      * @Rest\Get("/prevzal")
@@ -345,91 +347,13 @@ class ApiController extends FOSRestController
         ]);
     }
 
-    /**
-     * @Rest\Post("/logporuch/")
-     */
-    public function postlogporuchAction(Request $request)
-    {
-        $data = new Logporuch();
-        //$id = $request->get('id');
-
-
-
-        $idprevzal = $request->get('idprevzal');
-        $pretusenistrojbezi = $request->get('pretusenistrojbezi');
-        $prerusenistrojestoji = $request->get('prerusenistrojestoji');
-        $pokracovani = $request->get(  'pokracovani');
-
-
-        if(empty($idprevzal) || empty($pretusenistrojbezi) || empty($prerusenistrojestoji) || empty($pokracovani))
-        {
-            return new JsonResponse("Posíláte prázdné hodnoty", Response::HTTP_NOT_ACCEPTABLE);
-        }
-        //$id->setId($id);
-        $data->setIdprevzal($idprevzal);
-        $data->setPretusenistrojbezi(new \DateTime($pretusenistrojbezi));
-        $data->setPrerusenistrojestoji(new \DateTime($prerusenistrojestoji));
-        $data->setPokracovani(new \DateTime($pokracovani));
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($data);
-
-        $em->flush();
-
-        return new JsonResponse("Prevzeti Logporuchy bylo uspesne", Response::HTTP_OK);
-    }
 
     /**
-     * @Rest\Get("/logporuch")
-     * Pro přístup ke všem poruchám
+     * @Rest\Post("/porucha/")
      */
-    public function getLogporuchAction()
-    {
-        $logporucha = $this->get('doctrine')->getManager()->getRepository(Logporuch::class)->findAll();
 
-        $result = [];
-
-        foreach ($logporucha as $logporuch) {
-            $result[] = [
-                'id' => $logporuch->getId(),
-                'idprevzal' => $logporuch->getIdprevzal(),
-                'pretusenistrojbezi' => $logporuch->getPretusenistrojbezi(),
-                'prerusenistrojestoji' => $logporuch->getPrerusenistrojestoji(),
-                'pokracovani' => $logporuch->getPokracovani(),
-            ];
-        };
-
-        return new JsonResponse($result);
-    }
-    /**
-     * Pouze jedno prevzal
-     * GET na například /api/logporuch/1
-     * @Rest\Get("/logporuch/{id}")
-     * @Rest\QueryParam(name="id", requirements="\d+", description="ID logporuch.")
-     * @param $id
-     * @return JsonResponse
-     */
-    public function getSingleLogporuch($id)
-    {
-        dump($id);
-        $logporuch = $this->get('doctrine')->getManager()->getRepository(Logporuch::class)->find($id);
-
-        if (!$logporuch) {
-            throw new ResourceNotFoundException('Prevzal not found');
-        }
-
-        return new JsonResponse([
-            'id' => $logporuch->getId(),
-            'idprevzal' => $logporuch->getIdprevzal(),
-            'pretusenistrojbezi' => $logporuch->getPretusenistrojbezi(),
-            'prerusenistrojestoji' => $logporuch->getPrerusenistrojestoji(),
-            'pokracovani' => $logporuch->getPokracovani(),
-        ]);
-    }
-
-    /**
-     * @Rest\Post("/poruchanotifikace")
-     */
-    public function postPoruchaNotifikaceAction(Request $request)
+    //zaslani poruchu pomoci api, pote ulozeni v tab porucha, zaslani notifikace a ulozeni notifikace ???
+    public function PoruchaNotifikaceAction(Request $request)
     {
         $data = new Porucha;
         //$id = $request->get('id');
@@ -439,6 +363,8 @@ class ApiController extends FOSRestController
         $priorita = $request->get('priorita');
         $poznamka = $request->get('poznamka');
         //$vyreseno = $request->get('vyreseno');
+
+
 
         if(empty($stroj) || empty($casvzniku) || empty($oblastpriciny) || empty($priorita) || empty($poznamka))
         {
@@ -456,37 +382,81 @@ class ApiController extends FOSRestController
         $em->persist($data);
 
         $em->flush();
-        //sem dat notifikaci
-        $this->notifikace->posliAction('Stroj: ' . $stroj, 'body');
+        $cisloporuchy= $data->getId();
+
+        //pokus o poslani notifikace na vsechny zarizeni
+
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Pracovnik p
+              ");
+
+        $nalezene = $query->getResult();
+
+        //poslani notifikace vsem zamestnancum, pak opravit na skupinu stroje
+        $datalognotifikace = new LogNotifikace;
+        foreach($nalezene as $d)
+        {
+            $zarizeni = $d->getIdzarizeni();
 
 
-        return new JsonResponse("User Added Successfully", Response::HTTP_OK);
+            //ulozeni do logu notifikace
+
+             $datalognotifikace->setIdzarizeni($zarizeni);
+             $datalognotifikace->setDatumcas(new \DateTime);
+             $datalognotifikace->setPorucha($cisloporuchy);
+             $datalognotifikace->setStroj($stroj);
+
+            $this->notifikace->posliAction('Stroj: ' . $stroj, 'body',$zarizeni);
+            $em->persist($datalognotifikace);
+
+            $em->flush();
+        }
+
+
+
+
+        return new JsonResponse("Poruchy Added Successfully", Response::HTTP_OK);
     }
 
     /**
-     * @Rest\Post("/start")
+     * @Rest\Post("/startopravyold")
      */
-    //zacatek opravy typ S stroj stoji nebo pokracovani opravy typ P
-    // status stroje dat na na 0
-
-    public function StartAction(Request $request)
+     // status stroje dat na na 0
+    //zacatek opravy poslat 1, pokracovani opravy poslat 3
+     public function StartoldAction(Request $request)
     {
-        $dataL = new LogObsluhy();
+        $dataLogobsluhy = new LogObsluhy();
         $dataS = new Stroj();
-        $id_stroje = $request->get('id_stroje');
-        $id_poruchy = $request->get('id_poruchy');
-        $id_pracovnika = $request->get('id_pracovnika');
-        //$typ = $request->get('typ'); // S nebo P
 
-        //$status = $request->get('status');
+        $content = $request->getContent();
+        $data = json_decode($content, true);
+        $id_stroje = $data['_id_stroje'];
+        $id_poruchy = $data['_id_poruchy'];
+        $typ = $data['_typ'];
 
-        //$id_stroje=1;
-        //$id_poruchy=3;
-        //$id_pracovnika=3;
+        //hledani id pracovnika pro poslany token v tabulce pracovnik
+        $token=$request->headers->get('X-Auth-Token');
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Pracovnik p
+              WHERE p.token= :token")
+            ->setParameter('token',$token);
+        $nalezene = $query->setMaxResults(1)->getOneOrNullResult();
+        $id_pracovnika = $nalezene->getId();
+
+
+        //return new JsonResponse($id_stroje." ".$id_poruchy."  ".$id_pracovnika. "Poslane hodnoty", Response::HTTP_NOT_ACCEPTABLE);
+
+
+
+
 
         $status=0; //stroj nepracuje, opravuje se
 
-        if(empty($id_stroje) ||empty($id_pracovnika) || empty($id_poruchy) ) //dodelat kontrolu statusu
+        if(empty($id_stroje)  || empty($id_poruchy) || empty($typ) ) //dodelat kontrolu statusu
         {
             return new JsonResponse("Posíláte prázdné hodnoty", Response::HTTP_NOT_ACCEPTABLE);
         }
@@ -497,29 +467,25 @@ class ApiController extends FOSRestController
               FROM AppBundle:Prevzal p
               WHERE p.idPoruchy= :idpor AND p.idPracovnika= :idprac")
                     ->setParameters(array('idpor'=>$id_poruchy,'idprac'=>$id_pracovnika ));
-
-       //$prevzal = $query->getResult();
-
         $prevzal = $query->setMaxResults(1)->getOneOrNullResult();
-        $output = $prevzal->getId();
+        $cisloprevzeti = $prevzal->getId();
 
 
 
 
-        //$id->setId($id);
-        $dataL->setIdprevzal($output);
 
-        //date_default_timezone_set('Europe/Prague');
-        $dataL->setStart(new \DateTime);
-        //$dataL->setTyp($typ);
+        //Vlozeni noveho zaznamu do tabulky LogObsluhy
+        $dataLogobsluhy->setIdprevzal($cisloprevzeti);
+        $dataLogobsluhy->setStart(new \DateTime);
+        $dataLogobsluhy->setTyp($typ);//1 start/ 3 pokracovani
 
 
         $em = $this->getDoctrine()->getManager();
-        $em->persist($dataL);
+        $em->persist($dataLogobsluhy);
 
         $em->flush();
 
-        //update statusu
+        //update statusu stroje pracuje 1/nepracuje 0
         $sn = $this->getDoctrine()->getManager();
         $stroj = $this->getDoctrine()->getRepository('AppBundle:Stroj')->find($id_stroje);
 
@@ -538,27 +504,70 @@ class ApiController extends FOSRestController
 
 
 
-    /**
-     * @Rest\Put("/stop")
-     */
-    //preruseni opravy typ P nebo ukonceni opravy typ U
-    // status stroje dat na na 1
 
-    public function StopAction(Request $request)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * @Rest\Put("/stopopravyOld")
+     */
+    //preruseni opravy typ 3 nebo ukonceni opravy typ 4
+    // status 0 stroj nepracuje 1 stroj pracuje
+
+    public function StopOldAction(Request $request)
     {
         $dataL = new LogObsluhy();
         $dataS = new Stroj();
-        $id_stroje = $request->get('id_stroje');
-        $id_poruchy = $request->get('id_poruchy');
-        $id_pracovnika = $request->get('id_pracovnika');
-        $typ = $request->get('typ'); // S nebo P
+        //$id_stroje = $request->get('id_stroje');
+        //$id_poruchy = $request->get('id_poruchy');
+        //$id_pracovnika = $request->get('id_pracovnika');
+        //$typ = $request->get('typ'); // S nebo P
 
-        //$status = $request->get('status');
 
-        //$id_stroje=1;
-        //$id_poruchy=3;
-        //$id_pracovnika=3;
+        $content = $request->getContent();
+        $data = json_decode($content, true);
+        $id_stroje = $data['_id_stroje'];
+        $id_poruchy = $data['_id_poruchy'];
+        //$typ = $data['_typ'];   //3 preruseni  4 konec
+        //
+        /// /3 preruseni, 4 ukonceni
+        $status = $data['_status']; //0 stroj nepracuje, 1 stroj pracuje
 
+
+        //hledani id pracovnika pro poslany token v tabulce pracovnik
+        $token=$request->headers->get('X-Auth-Token');
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Pracovnik p
+              WHERE p.token= :token")
+            ->setParameter('token',$token);
+        $nalezene = $query->setMaxResults(1)->getOneOrNullResult();
+        $id_pracovnika = $nalezene->getId();
+
+
+        //return new JsonResponse($id_stroje." ".$id_poruchy."  ".$id_pracovnika. "Poslane hodnoty", Response::HTTP_NOT_ACCEPTABLE);
         $status=0; //stroj nepracuje, opravuje se
 
         if(empty($id_stroje) ||empty($id_pracovnika) || empty($id_poruchy) ) //dodelat kontrolu statusu
@@ -588,21 +597,480 @@ class ApiController extends FOSRestController
               FROM AppBundle:LogObsluhy l
               WHERE l.idprevzal= :idpor AND l.konec is NULL")
             ->setParameter('idpor',$output);
-        $idLogObsluhy = $query->setMaxResults(1)->getOneOrNullResult();
-       if (empty($idLogObsluhy))
+        $LogObsluhy = $query->setMaxResults(1)->getOneOrNullResult();
+       if (empty($LogObsluhy))
        {
            return new JsonResponse("  udaj pro update neni prazdny", Response::HTTP_OK);
        }
-           $vysledek = $idLogObsluhy->getId();
+           $idLogobsluhy = $LogObsluhy->getId();
+        $typ = $LogObsluhy->getTyp();
 
-//update konec a typ do LogObsluhy
+        //return new JsonResponse("typ ".$typ." idlogobsl ".$idLogobsluhy."   udaj pro update neni prazdny", Response::HTTP_OK);
+
+
+
+        //update konec a typ do LogObsluhy
 
         $sn = $this->getDoctrine()->getManager();
-        $logobsluhy = $this->getDoctrine()->getRepository('AppBundle:LogObsluhy')->find($vysledek);
+        $logobsluhy = $this->getDoctrine()->getRepository('AppBundle:LogObsluhy')->find($idLogobsluhy);
         $logobsluhy->setKonec(new \DateTime);
-        $logobsluhy -> setTyp($typ); // Preruseni nebo Konec
+
+       if ($typ=1)
+           $logobsluhy -> setTyp(4); // 2 Konec
+        if ($typ=2) $logobsluhy -> setTyp(3); // typ 1  začátek práce, 2 	začátek přerušení, 3 konec přerušení, 4 konec práce
+
         $sn->flush();
 return new JsonResponse("  Update LoguObsluhy bylo uspesne", Response::HTTP_OK);
     }
+
+    /**
+     * @Rest\Post("/prevzateporuchy")
+     */
+    //zacatek opravy typ S stroj stoji nebo pokracovani opravy typ P
+    // status stroje dat na na 0
+
+    public function pokusAction(Request $request)
+    {
+
+//hledani id pro poslany token v tabulce pracovnik
+        $token=$request->headers->get('X-Auth-Token');
+
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Pracovnik p
+              WHERE p.token= :token")
+            ->setParameter('token',$token);
+        $nalezene = $query->setMaxResults(1)->getOneOrNullResult();
+        $id = $nalezene->getId();//ok
+
+        //vypis vsech prevzatych z tabulky prevzal a porucha
+
+        //$prevzal = $this->get('doctrine')->getManager()->getRepository(Prevzal::class)->findBy(array('idPracovnika' => $id));
+
+        //$result = [];
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p, r
+              FROM AppBundle:Prevzal p
+              JOIN p.idPoruchy r
+              WHERE p.idPracovnika= :pracovnik")
+            ->setParameter('pracovnik',1);
+
+        // ->setParameter("autori",$autori);
+
+               $data = $query->getResult();
+        $result = [];
+
+       foreach ($data as $d) {
+            $result[] = [
+                'idprevzal' => $d->getId(),
+                'idporuchy' => $d->getIdPoruchy()->getId(),
+                'stroj' => $d->getIdPoruchy()->getStroj(),
+                'casvzniku' => $d->getIdPoruchy()->getCasvzniku(),
+                'oblastpriciny' => $d->getIdPoruchy()->getOblastpriciny(),
+                'priorita' => $d->getIdPoruchy()->getPriorita(),
+                'poznamka' => $d->getIdPoruchy()->getPoznamka(),
+                'vyreseno' => $d->getIdPoruchy()->getVyreseno(),
+                'idpracovnika' => $d->getIdPracovnika(),
+                'prevzeticas' => $d->getPrevzetidatcas(),
+
+            ];
+        }
+
+        return new JsonResponse($result);
+    }
+
+
+    /**
+     * @Rest\Post("/prevzetiporuchy")
+     */
+    //prevzeti pomocí dat poslanych v aplikaci json
+    public function postPrevzal2Action(Request $request)
+    {
+
+        //$id = $request->get('id');
+        $content = $request->getContent();
+        $data = json_decode($content, true);
+        $id_poruchy = $data['_id_poruchy'];
+        $role_obsluhy = $data['_roleobsluhy'];
+        //return new JsonResponse($id_poruchy."".$role_obsluhy. "Posíláte prázdné hodnoty", Response::HTTP_NOT_ACCEPTABLE);
+
+
+        //hledani id pro poslany token v tabulce pracovnik
+        $token=$request->headers->get('X-Auth-Token');
+
+        if(empty($id_poruchy) ||  empty($role_obsluhy))
+        {
+            return new JsonResponse("Posíláte prázdné hodnoty", Response::HTTP_NOT_ACCEPTABLE);
+        }
+
+
+
+
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Pracovnik p
+              WHERE p.token= :token")
+            ->setParameter('token',$token);
+        $nalezene = $query->setMaxResults(1)->getOneOrNullResult();
+        $id_pracovnika = $nalezene->getId();//ok
+
+       //return new JsonResponse($id_pracovnika."   ".$id_poruchy."  ".$role_obsluhy. "Posíláte prázdné hodnoty", Response::HTTP_NOT_ACCEPTABLE);
+
+
+
+
+        $data = new Prevzal();
+
+
+        $data->setIdPracovnika($id_pracovnika);
+        $data->setIdPoruchy($em->find(Porucha::class, $id_poruchy));
+        $data->setPrevzetidatcas(new \DateTime);
+        $data->setRole_obsluhy($role_obsluhy);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($data);
+
+        $em->flush();
+
+        return new JsonResponse("Prevzeti poruchy bylo uspesne", Response::HTTP_OK);
+
+    }
+
+    /**
+     * @Rest\Get("/poslilogobsluhy")
+     * Pro přístup ke všem poruchám
+     */
+    public function getLogObsluhyAction()
+    {
+        $logobsluhy = $this->get('doctrine')->getManager()->getRepository(LogObsluhy::class)->findAll();
+
+        $result = [];
+
+        foreach ($logobsluhy as $log) {
+            $result[] = [
+                'id' => $log->getId(),
+                'idprevzal' => $log->getIdprevzal(),
+                'start' => $log->getStart(),
+                'konec' => $log->getKonec(),
+                'typ' => $log->getTyp(),
+
+            ];
+        }
+
+        return new JsonResponse($result);
+    }
+
+    /**
+     * @Rest\Post("/poslijedenlogobsluhy")
+     * Pro přístup ke všem poruchám
+     */
+    public function JedenLogObsluhyAction(Request $request)
+    {
+        $content = $request->getContent();
+        $dataLogobsluhy = new LogObsluhy();
+        $dataS = new Stroj();
+
+        $content = $request->getContent();
+        $data = json_decode($content, true);
+        $id_poruchy = $data['_id_poruchy'];
+
+                //hledani id pracovnika pro poslany token v tabulce pracovnik
+        $token=$request->headers->get('X-Auth-Token');
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Pracovnik p
+              WHERE p.token= :token")
+            ->setParameter('token',$token);
+        $nalezene = $query->setMaxResults(1)->getOneOrNullResult();
+        $id_pracovnika = $nalezene->getId();
+
+        if(empty($id_poruchy))
+        {
+            return new JsonResponse("Posíláte prázdné hodnoty", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        //hledani v tabulce prevzal
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Prevzal p
+              WHERE p.idPoruchy= :idpor AND p.idPracovnika= :idprac")
+            ->setParameters(array('idpor'=>$id_poruchy,'idprac'=>$id_pracovnika ));
+        $prevzal = $query->setMaxResults(1)->getOneOrNullResult();
+        $cisloprevzeti = $prevzal->getId();
+
+        //return new JsonResponse($cisloprevzeti. " ".$id_pracovnika." testy", Response::HTTP_NOT_ACCEPTABLE);
+
+        $logobsluhy = $this->get('doctrine')->getManager()->getRepository(LogObsluhy::class)->findBy(
+            array('idprevzal' => $cisloprevzeti));
+       // $logobsluhy = $this->get('doctrine')->getManager()->getRepository(LogObsluhy::class)->findAll();
+        $result = [];
+
+        foreach ($logobsluhy as $log) {
+            $result[] = [
+                'id' => $log->getId(),
+                'idprevzal' => $log->getIdprevzal(),
+                'start' => $log->getStart(),
+                'konec' => $log->getKonec(),
+                'typ' => $log->getTyp(),
+
+            ];
+        }
+
+        return new JsonResponse($result);
+    }
+
+
+
+
+    /**
+     * @Rest\Post("/startopravy")
+     */
+
+    // status stroje dat na na 0
+    //zacatek opravy poslat 1, pokracovani opravy poslat 3
+    public function StartAction(Request $request)
+    {
+        $dataLogobsluhy = new LogObsluhy();
+        $dataS = new Stroj();
+
+        $content = $request->getContent();
+        $data = json_decode($content, true);
+        $id_stroje = $data['_id_stroje'];
+        $id_poruchy = $data['_id_poruchy'];
+        $status = $data['_status']; //0 stroj nepracuje, 1 stroj pracuje
+
+
+        //hledani id pracovnika pro poslany token v tabulce pracovnik
+        $token=$request->headers->get('X-Auth-Token');
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Pracovnik p
+              WHERE p.token= :token")
+            ->setParameter('token',$token);
+        $nalezene = $query->setMaxResults(1)->getOneOrNullResult();
+        $id_pracovnika = $nalezene->getId();
+
+
+        //return new JsonResponse($id_stroje." ".$id_poruchy."  ".$id_pracovnika. "Poslane hodnoty", Response::HTTP_NOT_ACCEPTABLE);
+
+
+
+
+
+
+
+        if(empty($id_stroje)  || empty($id_poruchy) || empty($status)) //dodelat kontrolu statusu
+        {
+            return new JsonResponse("Posílátye prázdné hodnoty", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        //hledani v tabulce prevzal
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Prevzal p
+              WHERE p.idPoruchy= :idpor AND p.idPracovnika= :idprac")
+            ->setParameters(array('idpor'=>$id_poruchy,'idprac'=>$id_pracovnika ));
+        $prevzal = $query->setMaxResults(1)->getOneOrNullResult();
+        $cisloprevzeti = $prevzal->getId();
+
+
+//hledani pro dané čísloprevzetí 1 v tabulce logObsluhy
+
+        $query2=$em->createQuery(
+            "SELECT l
+              FROM AppBundle:LogObsluhy l
+              WHERE l.idprevzal= :prev AND l.typ= :typ")
+            ->setParameters(array('prev'=>$cisloprevzeti,'typ'=>1 ));
+
+        $nalezeno = $query2->setMaxResults(1)->getOneOrNullResult();
+
+
+        if ($nalezeno==NULL)
+        {
+            //return new JsonResponse($cisloprevzeti. "  jsem V nenalezeno 1", Response::HTTP_OK);
+
+            $dataLogobsluhy->setIdprevzal($cisloprevzeti);
+            $dataLogobsluhy->setStart(new \DateTime);
+            $dataLogobsluhy->setTyp(1);//1 start/ 3 pokracovani
+        }
+        else
+        {
+            $dataLogobsluhy->setIdprevzal($cisloprevzeti);
+            $dataLogobsluhy->setStart(new \DateTime);
+            $dataLogobsluhy->setTyp(2);//1 start/ 3 pokracovani
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($dataLogobsluhy);
+
+        $em->flush();
+        //$cisloprevzeti = $nalezeno->getId();
+
+
+
+        //Vlozeni noveho zaznamu do tabulky LogObsluhy
+
+
+
+
+        //update statusu stroje pracuje 1/nepracuje 0
+        $sn = $this->getDoctrine()->getManager();
+        $stroj = $this->getDoctrine()->getRepository('AppBundle:Stroj')->find($id_stroje);
+
+         //stroj nepracuje, opravuje se
+        $stroj->setStatus($status);
+        $sn->flush();
+
+        return new JsonResponse("  Prevzeti LoguObsluhy bylo uspesne", Response::HTTP_OK);
+    }
+
+
+
+
+
+    /**
+     * @Rest\Put("/stopopravy")
+     */
+    //typ 1  začátek práce, 3 	stop pokracovani, 2 start pokracuj 4 stop konec práce
+    // status 0 stroj nepracuje 1 stroj pracuje
+
+    public function StopAction(Request $request)
+    {
+        $dataL = new LogObsluhy();
+        $dataS = new Stroj();
+
+        $content = $request->getContent();
+        $data = json_decode($content, true);
+        $id_stroje = $data['_id_stroje'];
+        $id_poruchy = $data['_id_poruchy'];
+        $status = $data['_status']; //0 stroj nepracuje, 1 stroj pracuje
+        $poznamka = $data['_poznamka'];
+
+
+        if(empty($id_stroje) || empty($id_poruchy) || $status <'0' || $status >'1' )
+        {
+            return new JsonResponse("Posilate prazdne hodnoty nebo spatny status (0,1) ", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        //hledani id pracovnika pro poslany token v tabulce pracovnik
+        $token=$request->headers->get('X-Auth-Token');
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Pracovnik p
+              WHERE p.token= :token")
+            ->setParameter('token',$token);
+        $nalezene = $query->setMaxResults(1)->getOneOrNullResult();
+        $id_pracovnika = $nalezene->getId();
+
+        // hleda cisloprevzeti z tabulky Prevzal na yaklade id pracovnika a cisla poruchy
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Prevzal p
+              WHERE p.idPoruchy= :idpor AND p.idPracovnika= :idprac")
+            ->setParameters(array('idpor'=>$id_poruchy,'idprac'=>$id_pracovnika ));
+        $prevzal = $query->setMaxResults(1)->getOneOrNullResult();
+        $cisloprevzeti = $prevzal->getId();
+
+
+
+        //hledani pro dané čísloprevzetí typ 2 v tabulce logObsluhy
+        $query2=$em->createQuery(
+            "SELECT l
+              FROM AppBundle:LogObsluhy l
+              WHERE l.idprevzal= :prev AND l.typ= :typ")
+            ->setParameters(array('prev'=>$cisloprevzeti,'typ'=>2 ));
+        $nalezeno2 = $query2->setMaxResults(1)->getOneOrNullResult();
+
+        //hledani pro dané čísloprevzetí typ 1 v tabulce logObsluhy
+        $query2=$em->createQuery(
+            "SELECT l
+              FROM AppBundle:LogObsluhy l
+              WHERE l.idprevzal= :prev AND l.typ= :typ")
+            ->setParameters(array('prev'=>$cisloprevzeti,'typ'=>1 ));
+        $nalezeno1 = $query2->setMaxResults(1)->getOneOrNullResult();
+
+
+
+
+
+
+        $vysledek='nedoslo k update, data byla jiz zadana';
+
+        if ($nalezeno2!=NULL)
+        {
+            //update sloupce konec tabulky logobsluhy
+            $idLogobsluhy = $nalezeno2->getId();
+            $logobsluhy = $this->getDoctrine()->getRepository('AppBundle:LogObsluhy')->find($idLogobsluhy);
+            $logobsluhy->setKonec(new \DateTime);
+            $logobsluhy->setTyp(3);
+            $vysledek='typ 3';
+        }
+
+        //hledani pro dané cisloprevzetí typ 1 v tabulce logObsluhy
+
+        if ($nalezeno1!=NULL and $nalezeno2==NULL)
+        {
+            //update sloupce konec tabulky logobsluhy toto je akce Konec
+            $idLogobsluhy = $nalezeno1->getId();
+            $logobsluhy = $this->getDoctrine()->getRepository('AppBundle:LogObsluhy')->find($idLogobsluhy);
+            $logobsluhy->setKonec(new \DateTime);
+            $logobsluhy->setTyp(4);
+
+            $logobsluhy->setPoznamka($poznamka);
+
+            $vysledek='typ 4';
+            //zapis vzreseni ke stroji
+            $porucha = $this->getDoctrine()->getRepository('AppBundle:Porucha')->find($id_poruchy);
+            $porucha->setVyreseno(new \DateTime);
+
+       }
+
+       // $em = $this->getDoctrine()->getManager();
+        //$em->persist($dataLogobsluhy);
+        //$em->flush();
+
+
+        //update statusu stroje pracuje 1/nepracuje 0 v tabulce stroj, tato promenna prijde z rest api
+        $sn = $this->getDoctrine()->getManager();
+        $stroj = $this->getDoctrine()->getRepository('AppBundle:Stroj')->find($id_stroje);
+        $stroj->setStatus($status);
+        $sn->flush();
+        return new JsonResponse("  Vysledek je: ".$vysledek, Response::HTTP_OK);
+    }
+
+    /**
+     * @Rest\Get("/zobrazudrzbu")
+     * zobrazi vsechny pravidelne udrzby
+     */
+    public function getZobrazUdrzbuAction()
+    {
+
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p,s FROM AppBundle:Pravidelnaudrzba p join p.idStroje s");
+        $result = [];
+
+
+            //    ->setParameter("autori",$autori);
+
+               $data = $query->getResult();
+               foreach ($data as $d) {
+                   //$stroj=$d->getStroje;
+
+                   $result[] = ['stroj' => $d->getIdStroje()
+
+
+                    ];
+                }
+
+        return new JsonResponse($result);
+
+    }
+
 
 }
