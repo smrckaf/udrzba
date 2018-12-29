@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    {% include 'menu.html.twig' with {'zalozka': 6} %}
+<div class="container">
+    <h1>Výpis logu notifikaces</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Id zařízení</th>
+                <th>Datum a čas notifikace</th>
+                <th>Porucha</th>
+                <th>Stroj</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for logNotifikace in logNotifikaces %}
+            <tr>
+                <td><a  href="{{ path('lognotifikace_show', { 'id': logNotifikace.id }) }}">{{ logNotifikace.id }}</a></td>
+                <td>{{ logNotifikace.idzarizeni }}</td>
+                <td>{% if logNotifikace.datumcas %}{{ logNotifikace.datumcas|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{{ logNotifikace.porucha }}</td>
+                <td>{{ logNotifikace.stroj }}</td>
+                <td>
+                    <ul style="list-style: none">
+                        <li>
+                            <a class="btn btn-info" href="{{ path('lognotifikace_show', { 'id': logNotifikace.id }) }}">zobrazit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    </div>
+{% endblock %}

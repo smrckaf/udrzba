@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+    {% include 'menu.html.twig' with {'zalozka': 6} %}
+    <div class="container">
+
+    <h1>Log notifikace</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ logNotifikace.id }}</td>
+            </tr>
+            <tr>
+                <th>Id zařizení</th>
+                <td>{{ logNotifikace.idzarizeni }}</td>
+            </tr>
+            <tr>
+                <th>Datum a čas notifikace</th>
+                <td>{% if logNotifikace.datumcas %}{{ logNotifikace.datumcas|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Porucha</th>
+                <td>{{ logNotifikace.porucha }}</td>
+            </tr>
+            <tr>
+                <th>Stroj</th>
+                <td>{{ logNotifikace.stroj }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+
+    <br>        <a class="btn btn-info" href="{{ path('lognotifikace_index') }}">zpět</a>
+
+
+</div>
+{% endblock %}

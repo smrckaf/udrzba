@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    {% include 'menu.html.twig' with {'zalozka': 7} %}
+
+
+
+
+
+
+<div class="container">
+
+
+
+    <table border="1" width="100%">
+        <tr><th colspan="2" bgcolor="#87cefa">Reporting</th></tr>
+
+        <tr>
+            <th>reakční doba na autorizaci požadavku</th><td>121</td>
+        </tr>
+        <tr>
+            <th>reakční doba do příchodu pracovníka údržby na pracoviště</th><td>121</td>
+        </tr>
+
+        <tr>
+            <th>doba plnění požadavku</th><td>121</td>
+        </tr>
+            <tr>
+            <th>náklady vynaložené na plnění požadavků v sumě za vybrané období a pracoviště</th><td>121</td>
+        </tr>
+    </table>
+    <br><br>
+
+
+    <table border="1" width="100%">
+
+
+        <tr>
+            <th colspan="5">přehled zadávání požadavků přes jednotlivé uživatele – obsluha stoje</th>
+        </tr>
+        <tr>
+            <td>číslo pracovníka</td><td>příjmení a jméno</td><td>stroj</td><td>oblast požadavku</td><td>četnost – možnost detailu</td>
+        </tr>
+
+    </table>
+    <br><br>
+    <table border="1" width="100%">
+
+
+        <tr>
+            <th colspan="5">přehled zadávaných požadavků přes jednotlivé stroje (skupiny strojů)</th>
+        </tr>
+        <tr>
+            <td>pracovník údržby</td><td>stroj</td><td>oblast požadavku</td><td>od – do</td><td>četnost – možnost detailu jednotlivých případů</td>
+        </tr>
+    </table>
+    <br><br>
+    <table border="1" width="100%">
+
+
+        <tr>
+            <th colspan="5">přehled řešených požadavků přes jednotlivé pracovníky údržby</th>
+        </tr>
+        <tr>
+            <td>stroj</td><td>oblast požadavku</td><td>kdo zadal</td><td>kdo řešil</td><td>četnost – možnost detailu jednotlivých případů</td>
+        </tr>
+
+    </table>
+
+</div>
+{% endblock %}

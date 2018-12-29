@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Vítejte!{% endblock %}</title>
+
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('vendor/bootstrap/dist/css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+        <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/font-awesome.min.css') }}">
+    {% endblock %}
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+</head>
+<body>
+
+<div style="padding: 30px; background-color:lightskyblue;">
+
+<div class="row">
+    <div class="col-sm-12" style="text-align:center; font-weight: bold;">D A S H B O A R D - Ú D R Ž B A</div>
+
+</div>
+
+
+    <div class="row">
+        <div class="col-sm-8" style="text-align:center; background-color:white;">
+            <table border="1" width="100%">
+                <tr><th colspan="8" bgcolor="#87cefa">PŘEHLED DENNÍCH PŘÍPADŮ</th></tr>
+
+                <tr>
+                <th>Pořadí</th><th>ID úkolu</th><th>Priorita</th><th>Pracoviště</th><th>Datum a čas vzniku</th><th>Čas potvrzení</th><th>Status</th><th>Řešitel</th>
+            </tr>
+            <tr>
+                <td>1</td><td>1</td><td>5</td><td>1</td><td>21.12.2018</td><td>10:22</td><td>12:55</td><td>Jan Novák</td>
+            </tr>
+            </table>
+
+        </div>
+        <div class="col-sm-4" style="background-color:white;">
+            <table border="1" width="100%">
+                <tr><th colspan="8" bgcolor="#87cefa">&nbsp;</th></tr>
+                <th colspan="8" align="ceter">Nepřiřazené úkoly</th>
+                        <tr>
+
+                        </tr>
+                            <td>ID5</td><td>C</td><td>18.1.2018</td><td>16:31</td><td>nepřiřazeno</td>
+                        </tr>
+            </table>
+            <br><br>
+            <table border="1" width="100%">
+                <th colspan="8" align="ceter">Pracovníci údržby</th>
+                <tr>
+
+                </tr>
+                <td>Jméno</td><td>Status</td><td>Pracoviště</td><td>OD</td><td>DO</td>
+                <tr>
+                <td>Jan Novák</td><td>Probíhá oprava</td><td>stroj 10</td><td>16:31</td><td>nepřiřazeno</td>
+                </tr>
+            </table>
+            <br><br>
+            <table border="1" width="100%">
+                <tr>
+                <th colspan="8" align="ceter">Denní přehled uskutečněných oprav</th>
+                </tr>
+                <tr>
+                <td>Počet otevřených úkolů</td><td colspan="3">2</td>
+                </tr>
+                <tr>
+                    <td>Počet případů bez notifikace</td><td colspan="3">2</td>
+                </tr><tr>
+                    <td>Počet uzavřených případů</td><td>2</td><td>&sum;
+
+                        času</td><td>127</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

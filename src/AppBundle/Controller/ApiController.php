@@ -171,6 +171,46 @@ class ApiController extends FOSRestController
     }
 
     /**
+     * @Rest\Put("/logout")
+     */
+    // odstrani-updatuje se id zarzeni
+    public function logoutAction(Request $request)
+    {
+        $data = new Pracovnik();
+
+
+        //$content = $request->getContent();
+        //$data = json_decode($content, true);
+
+        //$idzarizeni = $data['_idzarizeni'];
+//zjisi se cislo pracovnika z tokenu
+        $token=$request->headers->get('X-Auth-Token');
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Pracovnik p
+              WHERE p.token= :token")
+            ->setParameter('token',$token);
+        $nalezene = $query->setMaxResults(1)->getOneOrNullResult();
+        $id_pracovnika = $nalezene->getId();
+
+        $sn = $this->getDoctrine()->getManager();
+        $user = $this->getDoctrine()->getRepository('AppBundle:Pracovnik')->find($id_pracovnika);
+        if (empty($user)) {
+            return new JsonResponse("nenasel se uzivatel", Response::HTTP_NOT_FOUND);
+        }
+        else
+            {
+            $user->setIdzarizeni(NULL);
+            $sn->flush();
+            return new JsonResponse("idzarizeni bylo vynulovano-uzivatel je odhlasen", Response::HTTP_OK);
+        }
+
+
+    }
+
+
+    /**
      * @Rest\Put("/pracovnik")
      */
     // poslani idzarizeni a tokenu, z tokenu se zjisti id uzivatet a u nej se updatuje idzarizeni
@@ -233,6 +273,34 @@ class ApiController extends FOSRestController
 
         return new JsonResponse($result);
     }
+
+    /**
+     * @Rest\Get("/neprijateporuchy")
+     * Pro přístup ke všem neprijatymporuchám
+     */
+    public function getNeprijatePoruchyAction()
+    {
+        $poruchy = $this->get('doctrine')->getManager()->getRepository(Porucha::class)->findAll();
+
+        $result = [];
+
+        foreach ($poruchy as $porucha) {
+            $result[] = [
+                'id' => $porucha->getId(),
+                'stroj' => $porucha->getStroj(),
+                'casvzniku' => $porucha->getCasvzniku(),
+                'oblastpriciny' => $porucha->getOblastpriciny(),
+                'priorita' => $porucha->getPriorita(),
+                'poznamka' => $porucha->getPoznamka(),
+                'vyreseno' => $porucha->getVyreseno(),
+            ];
+        }
+
+        return new JsonResponse($result);
+    }
+
+
+
 
     /**
      * Pouze jedna porucha
@@ -1060,11 +1128,13 @@ return new JsonResponse("  Update LoguObsluhy bylo uspesne", Response::HTTP_OK);
 
                $data = $query->getResult();
                foreach ($data as $d) {
-                   //$stroj=$d->getStroje;
 
-                   $result[] = ['stroj' => $d->getIdStroje()
-
-
+                   $result[] = ['id' => $d->getId(),
+                                //'idstroje' => $d->getIdStroje(),
+                              'nazevstroje' => $d->getIdStroje()->getNazev(),
+                                'datum' => $d->getDatumUdrzby(),
+                                'popis' => $d->getPopisUdrzby(),
+                                'provedl' => ($d->getProvedl() != null ? $d->getProvedl()->getJmeno() : null),
                     ];
                 }
 
