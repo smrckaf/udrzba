@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% include 'menu.html.twig' with {'zalozka': 8} %}
+<div class="container">
+    <h1>Porucha</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ porucha.id }}</td>
+            </tr>
+            <tr>
+                <th>Stroj</th>
+                <td>{{ porucha.stroj }}</td>
+            </tr>
+            <tr>
+                <th>Casvzniku</th>
+                <td>{% if porucha.casvzniku %}{{ porucha.casvzniku|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Oblastpriciny</th>
+                <td>{{ porucha.oblastpriciny }}</td>
+            </tr>
+            <tr>
+                <th>Priorita</th>
+                <td>{{ porucha.priorita }}</td>
+            </tr>
+            <tr>
+                <th>Poznamka</th>
+                <td>{{ porucha.poznamka }}</td>
+            </tr>
+            <tr>
+                <th>Vyreseno</th>
+                <td>{% if porucha.vyreseno %}{{ porucha.vyreseno|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul style="list-style: none">
+        <li>
+            <a class="btn btn-info" href="{{ path('vypisporuch_index') }}">zpět</a>
+        </li>
+    </ul>
+{% endblock %}

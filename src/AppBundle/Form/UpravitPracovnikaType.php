@@ -102,6 +102,7 @@ class UpravitPracovnikaType extends AbstractType
                 'mistr' => 'MISTR',
                 'vedoucí' => 'VEDOUCI',
                 'admin' => 'ADMIN',
+                'prohlizec_dashboardu' => 'DASHBOARD',
             ],
         ]);
 

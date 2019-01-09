@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Porucha
  *
  * @ORM\Table(name="porucha")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\PoruchaRepository")
  */
 class Porucha
 {
@@ -63,6 +63,31 @@ class Porucha
      * @ORM\Column(name="vyreseno", type="datetime" ,nullable=true )
      */
     private $vyreseno;
+
+
+
+
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Prevzal", mappedBy="idPoruchy")
+     */
+    private $prevzate;
+
+
+
+
+    /**
+     * Get prevzate
+     *
+     * @return int
+     */
+    public function getPrevzate()
+    {
+        return $this->prevzate;
+    }
+
+
+
 
 
 

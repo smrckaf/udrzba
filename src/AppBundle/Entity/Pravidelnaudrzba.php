@@ -51,8 +51,6 @@ class Pravidelnaudrzba
     private $provedeni;
 
     /**
-     * @var int
-     *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Pracovnik")
      * @ORM\JoinColumn(name="provedl", nullable=true)
      */

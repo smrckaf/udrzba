@@ -22,11 +22,11 @@ class Prevzal
     private $id;
 
     /**
-     * @var int
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Porucha")
 
-     */
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Porucha", inversedBy="prevzate")
+      */
     private $idPoruchy;
+
 
     /**
      * @var int
@@ -36,7 +36,6 @@ class Prevzal
      *
      *
      */
-
     private $idPracovnika;
 
     /**
@@ -54,6 +53,10 @@ class Prevzal
     private $role_obsluhy;
 
 
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\LogObsluhy", mappedBy="prevzal")
+     */
+    private $logyobsluhy;
 
 
 

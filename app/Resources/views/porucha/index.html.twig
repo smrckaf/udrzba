@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+
+{% block body %}
+    {% include 'menu.html.twig' with {'zalozka': 8} %}
+<div class="container">
+    <h1>Přehled poruch</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Stroj</th>
+                <th>Casvzniku</th>
+                <th>Oblastpriciny</th>
+                <th>Priorita</th>
+                <th>Poznamka</th>
+                <th>Vyreseno</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for porucha in poruchas %}
+            <tr>
+                <td><a href="{{ path('vypisporuch_show', { 'id': porucha.id }) }}">{{ porucha.id }}</a></td>
+                <td>{{ porucha.stroj }}</td>
+                <td>{% if porucha.casvzniku %}{{ porucha.casvzniku|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{{ porucha.oblastpriciny }}</td>
+                <td>{{ porucha.priorita }}</td>
+                <td>{{ porucha.poznamka }}</td>
+                <td>{% if porucha.vyreseno %}{{ porucha.vyreseno|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>
+                    <ul style="list-style: none">
+                        <li>
+                            <a class="btn btn-info" href="{{ path('vypisporuch_show', { 'id': porucha.id }) }}">zobrazit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    
+{% endblock %}

@@ -22,11 +22,10 @@ class LogObsluhy
     private $id;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="idprevzal", type="integer")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Prevzal" , inversedBy="logyobsluhy")
+     * @ORM\JoinColumn(name="idprevzal", nullable=true)
      */
-    private $idprevzal;
+    private $prevzal;
 
     /**
      * @var \DateTime
@@ -189,6 +188,10 @@ class LogObsluhy
         return $this->poznamka;
     }
 
+    public function getSecti()
+    {
 
+        return $this->start - $this->konec;
+    }
 }
 

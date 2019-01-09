@@ -23,7 +23,9 @@
                     <th class="text-center" scope="col">Old ID</th>
                     <th class="text-center" scope="col">Název</th>
                     <th class="text-center" scope="col">Status</th>
+                    <th class="text-center" scope="col">Skupina</th>
                     <th class="text-center" scope="col">Operace</th>
+
                 </tr>
                 </thead>
                 <tbody>
@@ -38,6 +40,11 @@
             <td class="text-center">
                 {{ stroj.status }}
             </td>
+            <td class="text-center">
+                {{ stroj.skupina }}
+            </td>
+
+
             <td class="text-center">
                 <a href="{{ path('stroj-upravit', {'stroj': stroj.id})}}" class="btn btn-info" title="Upravit stroj">
                     <span class="fa fa-pencil"></span>

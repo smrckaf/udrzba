@@ -9,12 +9,14 @@
                 <li class="nav-item{{ zalozka == 1 ? " active" }}"><a class="nav-link" href="{{ path("udrzba-index") }}">Home</a></li>
                 {% if logged is not defined %}{% set logged = true %}{% endif %}
                 {% if logged %}
-                    <li class="nav-item{{ zalozka == 2 ? " active" }}"><a class="nav-link" href="{{ path("udrzba-dashboard") }}">Dashboard</a></li>
+                    <li class="nav-item{{ zalozka == 2 ? " active" }}"><a class="nav-link" href="{{ path("udrzba-dashboard") }}">Přehled</a></li>
                     <li class="nav-item{{ zalozka == 3 ? " active" }}"><a class="nav-link" href="{{ path("pracovnik-index") }}">Pracovníci</a></li>
                     <li class="nav-item{{ zalozka == 4 ? " active" }}"><a class="nav-link" href="{{ path("stroj-index") }}">Stroje</a></li>
                     <li class="nav-item{{ zalozka == 5 ? " active" }}"><a class="nav-link" href="{{ path("pravidelna-udrzba-index") }}">Plánovaná údržba</a></li>
                     <li class="nav-item{{ zalozka == 6 ? " active" }}"><a class="nav-link" href="{{ path("lognotifikace_index") }}">Log notifikací</a></li>
                     <li class="nav-item{{ zalozka == 7 ? " active" }}"><a class="nav-link" href="{{ path("reporting") }}">Reporting</a></li>
+                    <li class="nav-item{{ zalozka == 8 ? " active" }}"><a class="nav-link" href="{{ path("vypisporuch_index") }}">Poruchy</a></li>
+                    <li class="nav-item{{ zalozka == 8 ? " active" }}"><a class="nav-link" href="{{ path("dashboard2") }}">Dashboard</a></li>
                 {% endif %}
             </ul>
             <ul class="navbar-nav ml-auto">

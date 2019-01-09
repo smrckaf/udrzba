@@ -43,7 +43,12 @@ class Stroj
      */
     private $status;
 
-
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="skupina", type="string", length=255, nullable=true)
+     */
+    private $skupina;
 
     /**
      * Get id
@@ -138,5 +143,31 @@ class Stroj
     {
         return $this->nazev;
     }
+
+
+    /**
+     * Set skupina
+     *
+     * @param string $skupina
+     *
+     * @return Stroj
+     */
+    public function setSkupina($skupina)
+    {
+        $this->skupina = $skupina;
+
+        return $this;
+    }
+
+    /**
+     * Get skupina
+     *
+     * @return string
+     */
+    public function getSkupina()
+    {
+        return $this->skupina;
+    }
+
 }
 
