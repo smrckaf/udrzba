@@ -9,6 +9,9 @@
 namespace AppBundle\Form;
 
 
+use AppBundle\Entity\Lokace;
+use AppBundle\Entity\Skupina;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -45,8 +48,18 @@ class UpravitStrojType extends AbstractType
             'label' => 'Status stroje',
             'required' => true,
         ]);
-        $builder->add('skupina', TextType::class, [
+
+        $builder->add('skupina', EntityType::class, [
+            'class' => Skupina::class,
+            'choice_label' => 'nazev',
             'label' => 'Skupina',
+            'required' => false,
+        ]);
+
+        $builder->add('lokace', EntityType::class, [
+            'class' => Lokace::class,
+            'choice_label' => 'nazev',
+            'label' => 'Lokace',
             'required' => false,
         ]);
 

@@ -24,8 +24,8 @@
                     <th class="text-center" scope="col">Název</th>
                     <th class="text-center" scope="col">Status</th>
                     <th class="text-center" scope="col">Skupina</th>
+                    <th class="text-center" scope="col">Lokace</th>
                     <th class="text-center" scope="col">Operace</th>
-
                 </tr>
                 </thead>
                 <tbody>
@@ -41,7 +41,14 @@
                 {{ stroj.status }}
             </td>
             <td class="text-center">
-                {{ stroj.skupina }}
+                {% if stroj.skupina is not null %}
+                    {{ stroj.skupina.nazev }}
+                {% endif %}
+            </td>
+            <td class="text-center">
+                {% if stroj.lokace is not null %}
+                    {{ stroj.lokace.nazev }}
+                {% endif %}
             </td>
 
 

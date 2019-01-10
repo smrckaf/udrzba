@@ -44,11 +44,46 @@ class Stroj
     private $status;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="skupina", type="string", length=255, nullable=true)
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Skupina")
      */
     private $skupina;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Lokace")
+     */
+    private $lokace;
+
+    /**
+     * @return mixed
+     */
+    public function getSkupina()
+    {
+        return $this->skupina;
+    }
+
+    /**
+     * @param mixed $skupina
+     */
+    public function setSkupina($skupina)
+    {
+        $this->skupina = $skupina;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLokace()
+    {
+        return $this->lokace;
+    }
+
+    /**
+     * @param mixed $lokace
+     */
+    public function setLokace($lokace)
+    {
+        $this->lokace = $lokace;
+    }
 
     /**
      * Get id
@@ -84,11 +119,6 @@ class Stroj
         return $this->idOld;
     }
 
-
-
-
-
-
     /**
      * Set status
      *
@@ -113,13 +143,6 @@ class Stroj
         return $this->status;
     }
 
-
-
-
-
-
-
-
     /**
      * Set nazev
      *
@@ -143,31 +166,5 @@ class Stroj
     {
         return $this->nazev;
     }
-
-
-    /**
-     * Set skupina
-     *
-     * @param string $skupina
-     *
-     * @return Stroj
-     */
-    public function setSkupina($skupina)
-    {
-        $this->skupina = $skupina;
-
-        return $this;
-    }
-
-    /**
-     * Get skupina
-     *
-     * @return string
-     */
-    public function getSkupina()
-    {
-        return $this->skupina;
-    }
-
 }
 
