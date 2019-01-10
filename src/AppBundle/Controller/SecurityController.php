@@ -11,6 +11,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Form\LoginForm;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
@@ -36,6 +37,29 @@ class SecurityController extends Controller
             //'last_username' => $lastUsername,
             'error' => $error,
         ));
+    }
+
+    /**
+     * Redirect users after login based on the granted ROLE
+     * @Route("/redirect", name="redirect")
+     */
+    public function loginRedirectAction(Request $request)
+    {
+        if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY'))
+        {
+            return $this->redirectToRoute('login');
+            // throw $this->createAccessDeniedException();
+        }
+
+        if($this->get('security.authorization_checker')->isGranted('ROLE_DASHBOARD'))
+        {
+            return $this->redirectToRoute('dashboard2');
+        }
+        else
+        {
+            return $this->redirectToRoute('udrzba-index');
+        }
+
     }
 
     /**

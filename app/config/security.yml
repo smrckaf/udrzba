@@ -22,6 +22,9 @@ security:
                     pracovnik:
                         password: $2y$13$OCMN2VYeDWnbgr3xpXrkL.X7Yj5xx5nq3zC5OD2ufQeZoK0GQxuBm
                         roles: 'ROLE_PRACOVNIK'
+                    dashboard:
+                        password: $2y$13$OCMN2VYeDWnbgr3xpXrkL.X7Yj5xx5nq3zC5OD2ufQeZoK0GQxuBm
+                        roles: 'ROLE_DASHBOARD'
         user_db:
             entity: { class: AppBundle:Pracovnik }
 
@@ -53,18 +56,20 @@ security:
                 check_path: login
                 username_parameter: login_form[_username]
                 password_parameter: login_form[_password]
+                default_target_path: redirect
+                always_use_default_target_path: true
             logout:
                 path: /logout
             anonymous: ~
 
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/redirect, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/dashboard2, roles: [ROLE_DASHBOARD, ROLE_ADMIN, ROLE_VEDOUCI] }
         - { path: ^/api/, roles: ROLE_API }
-        - { path: ^/, roles: ROLE_ADMIN }
-        - { path: ^/, roles: ROLE_VEDOUCI }
+        - { path: ^/, roles: [ROLE_ADMIN, ROLE_VEDOUCI] }
 
     # require ROLE_ADMIN for /admin*
 

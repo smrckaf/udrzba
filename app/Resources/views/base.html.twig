@@ -8,9 +8,11 @@
             <link rel="stylesheet" href="{{ asset('vendor/bootstrap/dist/css/bootstrap.min.css') }}">
             <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
             <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/font-awesome.min.css') }}">
+            <link rel="stylesheet" href="{{ asset("css/theme.bootstrap_4.css") }}">
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
+    <body>
         <div class="main-content">
             {% block body %}{% endblock %}
         </div>
@@ -27,6 +29,14 @@
             <script src="{{ asset('js/main.js') }}"></script>
             <script src="{{ asset('vendor/bootstrap/site/docs/4.1/assets/js/vendor/jquery-slim.min.js') }}"></script>
             <script src="{{ asset('vendor/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+
+            <script src="{{ asset('js/jquery-latest.min.js') }}"></script>
+
+            <!-- Tablesorter: required for bootstrap -->
+
+            <script src="{{ asset('js/jquery.tablesorter.js') }}"></script>
+            <script src="{{ asset('js/jquery.tablesorter.widgets.js') }}"></script>
+
         {% endblock %}
     </body>
 </html>
