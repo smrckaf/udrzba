@@ -20,11 +20,13 @@
             <table class="table table-bordered table-striped table-hover">
                 <thead>
                 <tr>
-                    <th class="text-center" scope="col">Old ID</th>
+                    <th class="text-center" scope="col">ID (1P Control)</th>
                     <th class="text-center" scope="col">Název</th>
                     <th class="text-center" scope="col">Status</th>
+                    <th class="text-center" scope="col">Aktivní</th>
                     <th class="text-center" scope="col">Skupina</th>
                     <th class="text-center" scope="col">Lokace</th>
+                    <th class="text-center" scope="col">Obrázky</th>
                     <th class="text-center" scope="col">Operace</th>
                 </tr>
                 </thead>
@@ -32,13 +34,16 @@
         {% endif %}
         <tr>
             <td class="text-center">
-                {{ stroj.idOld }}
+                {{ stroj.id1pcontrol }}
             </td>
             <td class="text-center">
                 {{ stroj.nazev }}
             </td>
             <td class="text-center">
                 {{ stroj.status }}
+            </td>
+            <td class="text-center">
+                {% if stroj.jeAktivni %}ANO{% else %}NE{% endif %}
             </td>
             <td class="text-center">
                 {% if stroj.skupina is not null %}
@@ -50,15 +55,37 @@
                     {{ stroj.lokace.nazev }}
                 {% endif %}
             </td>
+            <td class="text-center">
+                {% if stroj.kmenovaData is not null %}
+                    {% if stroj.kmenovaData.obrazek1 is not null %}
+                        <a href="{{ asset('uploads/kmenova_data_images/' ~ stroj.kmenovaData.obrazek1) }}" data-lightbox="roadtrip{{ stroj.id }}" data-title="Obrázek 1"><span class="fa fa-2x fa-image"></span></a>
+                    {% endif %}
+                    {% if stroj.kmenovaData.obrazek2 is not null %}
+                        <a href="{{ asset('uploads/kmenova_data_images/' ~ stroj.kmenovaData.obrazek2) }}" data-lightbox="roadtrip{{ stroj.id }}"  data-title="Obrázek 2" class="d-none"></a>
+                    {% endif %}
+                    {% if stroj.kmenovaData.obrazek3 is not null %}
+                        <a href="{{ asset('uploads/kmenova_data_images/' ~ stroj.kmenovaData.obrazek3) }}" data-lightbox="roadtrip{{ stroj.id }}"  data-title="Obrázek 3" class="d-none"></a>
+                    {% endif %}
+                {% endif %}
+            </td>
 
 
             <td class="text-center">
-                <a href="{{ path('stroj-upravit', {'stroj': stroj.id})}}" class="btn btn-info" title="Upravit stroj">
+                <a data-toggle="collapse" href="#collapseExample{{ stroj.id }}" role="button" aria-expanded="false" aria-controls="collapseExample" class="btn btn-info" title="Upravit stroj">
                     <span class="fa fa-pencil"></span>
                 </a>
                 <a href="{{ path('stroj-smazat', {'stroj': stroj.id})}}" class="btn btn-danger" onclick="return confirm('Opravdu si přejete smazat vybraný stroj?')" title="Odstranit stroj">
                     <span class="fa fa-trash"></span>
                 </a>
+
+                <div class="collapse mt-2" id="collapseExample{{ stroj.id }}">
+                    <div class="list-group list-group-flush">
+                        <a class="list-group-item" href="{{ path("stroj-upravit", {'stroj': stroj.id}) }}" title="Upravit stroj">Stroj</a>
+                        <a class="list-group-item" href="{{ path("stroj-upravit-kmenova-data", {'stroj': stroj.id}) }}" title="Upravit kmenová data stroje">Kmenová data</a>
+                        <a class="list-group-item" href="{{ path("nastroj-index", {'stroj': stroj.id}) }}" title="Upravit nástroje stroje">Nástroje</a>
+                        <a class="list-group-item" href="{{ path("pripravek-index", {'stroj': stroj.id}) }}" title="Upravit přípravky stroje">Přípravky</a>
+                    </div>
+                </div>
             </td>
         </tr>
         {% if loop.last %}

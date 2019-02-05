@@ -9,9 +9,12 @@
 namespace AppBundle\Manager;
 
 
+use AppBundle\Entity\KmenovaData;
 use AppBundle\Entity\Kompetence;
+use AppBundle\Entity\Nastroj;
 use AppBundle\Entity\Pracovnik;
 use AppBundle\Entity\Pravidelnaudrzba;
+use AppBundle\Entity\Pripravek;
 use AppBundle\Entity\Stroj;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -233,4 +236,53 @@ class UdrzbaManager
             ->getQuery()
             ->getResult();
     }
+
+    public function getKmenovaDataByStroj(Stroj $stroj)
+    {
+        return $this->em->getRepository(KmenovaData::class)->findOneBy(['stroj' => $stroj]);
+    }
+
+    public function ulozitKmenovaData(KmenovaData $kmenovaData)
+    {
+        if ($kmenovaData->getId() === null)
+            $this->em->persist($kmenovaData);
+        $this->em->flush();
+    }
+
+    public function ulozitPripravek(Pripravek $pripravek)
+    {
+        if ($pripravek->getId() === null)
+            $this->em->persist($pripravek);
+        $this->em->flush();
+    }
+
+    public function ulozitNastroj(Nastroj $nastroj)
+    {
+        if ($nastroj->getId() === null)
+            $this->em->persist($nastroj);
+        $this->em->flush();
+    }
+
+    public function smazatPripravek(Pripravek $pripravek)
+    {
+        $this->em->remove($pripravek);
+        $this->em->flush();
+    }
+
+    public function smazatNastroj(Nastroj $nastroj)
+    {
+        $this->em->remove($nastroj);
+        $this->em->flush();
+    }
+
+    public function getPripravkyByStroj(Stroj $stroj)
+    {
+        return $this->em->getRepository(Pripravek::class)->findBy(['stroj' => $stroj]);
+    }
+
+    public function getNastrojeByStroj(Stroj $stroj)
+    {
+        return $this->em->getRepository(Nastroj::class)->findBy(['stroj' => $stroj]);
+    }
+
 }

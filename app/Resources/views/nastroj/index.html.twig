@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block title %}Nástroje{% endblock %}
+
+{% block body %}
+	{% include 'menu.html.twig' with {'zalozka': 4} %}
+    <div class="container">
+        <div class="border-bottom pb-1 mt-4 mb-3">
+            <h1 class="text-center">Nástroje</h1>
+        </div>
+
+        <h3>Informace o stroji</h3>
+        {% include 'stroj/stroj-detail.html.twig' with {'stroj': stroj} %}
+
+        <hr class="my-5">
+
+        <p>
+            <a href="{{ path('nastroj-upravit', {'stroj': stroj.id}) }}" class="btn btn-success"><span class="fa fa-plus"></span> Přidat nový nástroj</a>
+        </p>
+        {% for nastroj in nastroje %}
+            {% if loop.first %}
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th class="text-center" scope="col">Název</th>
+                        <th class="text-center" scope="col">Výrobce</th>
+                        <th class="text-center" scope="col">Typ</th>
+                        <th class="text-center" scope="col">Označení</th>
+                        <th class="text-center" scope="col">Rok výroby</th>
+                        <th class="text-center" scope="col">Poznámka</th>
+                        <th class="text-center" scope="col">Operace</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+            {% endif %}
+            <tr>
+                <td class="text-center">
+                    {{ nastroj.nazev }}
+                </td>
+                <td class="text-center">
+                    {{ nastroj.vyrobce }}
+                </td>
+                <td class="text-center">
+                    {{ nastroj.typ }}
+                </td>
+                <td class="text-center">
+                    {{ nastroj.oznaceni }}
+                </td>
+                <td class="text-center">
+                    {{ nastroj.rokVyroby }}
+                </td>
+                <td class="text-center">
+                    {{ nastroj.poznamka }}
+                </td>
+
+                <td class="text-center">
+                    <a href="{{ path('nastroj-upravit', {'nastroj': nastroj.id, 'stroj': stroj.id})}}" class="btn btn-info" title="Upravit nástroj">
+                        <span class="fa fa-pencil"></span>
+                    </a>
+                    <a href="{{ path('nastroj-smazat', {'nastroj': nastroj.id, 'stroj': stroj.id})}}" class="btn btn-danger" onclick="return confirm('Opravdu si přejete smazat vybraný nástroj?')" title="Odstranit nástroj">
+                        <span class="fa fa-trash"></span>
+                    </a>
+                </td>
+            </tr>
+            {% if loop.last %}
+                    </tbody>
+                </table>
+            {% endif %}
+        {% else %}
+            <p>Stroj zatím nemá žádné nástroje.</p>
+        {% endfor %}
+        </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
