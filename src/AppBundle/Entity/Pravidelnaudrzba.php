@@ -32,9 +32,26 @@ class Pravidelnaudrzba
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="datum_udrzby", type="datetime")
+     * @ORM\Column(name="datum_udrzbyod", type="datetime")
      */
-    private $datumUdrzby;
+    private $datumUdrzbyod;
+
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="datum_udrzbydo", type="datetime")
+     */
+    private $datumUdrzbydo;
+
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Pracovnik")
+     * @ORM\JoinColumn(name="kdozadal", nullable=true)
+     */
+    private $kdozadal;
+
+
 
     /**
      * @var string
@@ -101,27 +118,52 @@ class Pravidelnaudrzba
     }
 
     /**
-     * Set datumUdrzby
+     * Set datumUdrzbyod
      *
-     * @param \DateTime $datumUdrzby
+     * @param \DateTime $datumUdrzbyod
      *
      * @return Pravidelnaudrzba
      */
-    public function setDatumUdrzby($datumUdrzby)
+    public function setDatumUdrzbyod($datumUdrzbyod)
     {
-        $this->datumUdrzby = $datumUdrzby;
+        $this->datumUdrzbyod = $datumUdrzbyod;
 
         return $this;
     }
 
     /**
-     * Get datumUdrzby
+     * Get datumUdrzbyod
      *
      * @return \DateTime
      */
-    public function getDatumUdrzby()
+    public function getDatumUdrzbyod()
     {
-        return $this->datumUdrzby;
+        return $this->datumUdrzbyod;
+    }
+
+
+    /**
+     * Set datumUdrzbydo
+     *
+     * @param \DateTime $datumUdrzbydo
+     *
+     * @return Pravidelnaudrzba
+     */
+    public function setDatumUdrzbydo($datumUdrzbydo)
+    {
+        $this->datumUdrzbydo = $datumUdrzbydo;
+
+        return $this;
+    }
+
+    /**
+     * Get datumUdrzbydo
+     *
+     * @return \DateTime
+     */
+    public function getDatumUdrzbydo()
+    {
+        return $this->datumUdrzbydo;
     }
 
     /**
@@ -148,11 +190,6 @@ class Pravidelnaudrzba
     {
         return $this->popisUdrzby;
     }
-
-
-
-
-
 
     /**
      * Set poznUdrzbare
@@ -228,6 +265,29 @@ class Pravidelnaudrzba
         return $this->provedl;
     }
 
+    /**
+     * Set kdozadal
+     *
+     * @param integer $kdozadal
+     *
+     * @return Pravidelnaudrzba
+     */
+    public function setKdozadal($kdozadal)
+    {
+        $this->kdozadal = $kdozadal;
+
+        return $this;
+    }
+
+    /**
+     * Get kdozadal
+     *
+     * @return int
+     */
+    public function getKdozadal()
+    {
+        return $this->kdozadal;
+    }
 
 
 }

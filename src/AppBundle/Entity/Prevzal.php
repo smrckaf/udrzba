@@ -29,12 +29,9 @@ class Prevzal
 
 
     /**
-     * @var int
-     * @ORM\Column(type="integer")
-     **
-
-     *
-     *
+     * @var  Pracovnik
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Pracovnik")
+     * @ORM\JoinColumn(name="id_pracovnika")
      */
     private $idPracovnika;
 

@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Firma</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ firma.id }}</td>
+            </tr>
+            <tr>
+                <th>Nazev</th>
+                <td>{{ firma.nazev }}</td>
+            </tr>
+            <tr>
+                <th>Adresa</th>
+                <td>{{ firma.adresa }}</td>
+            </tr>
+            <tr>
+                <th>Web</th>
+                <td>{{ firma.web }}</td>
+            </tr>
+            <tr>
+                <th>Kontakt</th>
+                <td>{{ firma.kontakt }}</td>
+            </tr>
+            <tr>
+                <th>Ico</th>
+                <td>{{ firma.ico }}</td>
+            </tr>
+            <tr>
+                <th>Dic</th>
+                <td>{{ firma.dic }}</td>
+            </tr>
+            <tr>
+                <th>Dodacilhuta</th>
+                <td>{{ firma.dodacilhuta }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('firma_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('firma_edit', { 'id': firma.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Lokace</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ lokace.id }}</td>
+            </tr>
+            <tr>
+                <th>Nazev</th>
+                <td>{{ lokace.nazev }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('lokace_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('lokace_edit', { 'id': lokace.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

@@ -1,0 +1,39 @@
+<table class="table table-bordered table-striped table-hover">
+    <thead>
+    <tr>
+        <th class="text-center" scope="col">ID (1P Control)</th>
+        <th class="text-center" scope="col">Název</th>
+        <th class="text-center" scope="col">Status</th>
+        <th class="text-center" scope="col">Aktivní</th>
+        <th class="text-center" scope="col">Skupina</th>
+        <th class="text-center" scope="col">Lokace</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td class="text-center">
+            {{ stroj.id1pcontrol }}
+        </td>
+        <td class="text-center">
+            {{ stroj.nazev }}
+        </td>
+        <td class="text-center">
+            {{ stroj.status }}
+        </td>
+        <td class="text-center">
+            {% if stroj.jeAktivni %}ANO{% else %}NE{% endif %}
+        </td>
+        <td class="text-center">
+            {% if stroj.skupina is not null %}
+                {{ stroj.skupina.nazev }}
+            {% endif %}
+        </td>
+        <td class="text-center">
+            {% if stroj.lokace is not null %}
+                {{ stroj.lokace.nazev }}
+            {% endif %}
+        </td>
+    </tr>
+
+    </tbody>
+</table>

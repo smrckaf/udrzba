@@ -92,4 +92,21 @@ class PravidelnaUdrzbaController extends Controller
 
         return $this->redirectToRoute('pravidelna-udrzba-index', ['obdobi' => $obdobi]);
     }
+
+    /**
+     * @Route("/kalendar", name="pravidelna-udrzba-kalendar")
+     */
+    public function kalendar()
+    {
+
+
+        return $this->render("pravidelnaUdrzba/kalendar2.html.twig", [
+            'vyberstroj' => 1,
+        ]);
+    }
+
+
+
+
+
 }

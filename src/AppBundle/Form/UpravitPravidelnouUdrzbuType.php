@@ -9,6 +9,7 @@
 namespace AppBundle\Form;
 
 
+use AppBundle\Entity\Pracovnik;
 use AppBundle\Entity\Stroj;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -36,13 +37,18 @@ class UpravitPravidelnouUdrzbuType extends AbstractType
             'label'     => 'Stroj',
         ]);
 
-        $builder->add('datumUdrzby', DateTimeType::class, [
-            'label' => 'Plánované datum',
+        $builder->add('datumUdrzbyod', DateTimeType::class, [
+            'label' => 'Plánované datum od',
             'required' => true,
             'date_widget' => 'single_text',
             'time_widget' => 'single_text',
         ]);
-
+        $builder->add('datumUdrzbydo', DateTimeType::class, [
+            'label' => 'Plánované datum do',
+            'required' => true,
+            'date_widget' => 'single_text',
+            'time_widget' => 'single_text',
+        ]);
         $builder->add('popisUdrzby', TextType::class, [
             'label' => 'Popis údržby',
             'required' => false,
@@ -55,6 +61,14 @@ class UpravitPravidelnouUdrzbuType extends AbstractType
                 'class' => 'btn btn-info'
             ]
         ]);
+
+        $builder->add('kdozadal', EntityType::class, [
+            'class' => Pracovnik::class,
+            'choice_label' => 'prijmeni',
+            'label' => 'Pracovnik',
+            'required' => false,
+        ]);
+
     }
 
     public function configureOptions(OptionsResolver $resolver)

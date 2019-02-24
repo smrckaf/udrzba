@@ -7,6 +7,22 @@ Flexbox Layout
     display: flex;
 }
 
+h1, h2 {
+    font-family: Roboto;color: black ;
+}
+
+h3, h4, h5, h6 {
+    font-family: Roboto;font-weight: bold;
+}
+body
+{font-family: Roboto;
+
+}
+.hneda
+{
+  background-color:#1F0000 ;
+}
+
 .header {
     justify-content: space-between;
 }

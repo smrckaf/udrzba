@@ -14,7 +14,7 @@ class LoginForm extends AbstractType
     {
         $builder->add('_username', TextType::class, [
            'required' => true,
-           'label' => 'E-mail/login',
+           'label' => 'Uživatelské jméno/e-mail',
         ]);
 
         $builder->add('_password', PasswordType::class, [

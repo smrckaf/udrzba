@@ -66,6 +66,7 @@ class PracovnikController extends Controller
         }
         return $this->render('pracovnik/upravit.html.twig', [
             'form' => $form->createView(),
+            'skupiny' => $this->udrzbaManager->getNazvySkupin(),
         ]);
     }
 

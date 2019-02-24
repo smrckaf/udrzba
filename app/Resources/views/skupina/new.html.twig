@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% include 'menu.html.twig' with {'zalozka': 10} %}
+    <div class="container">
+    <h1>Vytvoření nové skupiny</h1>
+
+    {{ form_start(form) }}
+    <div style="width: 800px">
+        {{ form_widget(form) }}
+    </div>
+        <input class="btn btn-primary" type="submit" value="Vytvořit" />
+    {{ form_end(form) }}
+
+
+{% endblock %}

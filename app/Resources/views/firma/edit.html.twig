@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% include 'menu.html.twig' with {'zalozka': 12} %}
+<div class="container">
+    <h1>Editace firmy</h1>
+
+    {{ form_start(edit_form) }}
+        {{ form_widget(edit_form) }}
+    <input class="btn btn-primary" type="submit" value="Odeslat" />
+    {{ form_end(edit_form) }}
+
+
+{% endblock %}

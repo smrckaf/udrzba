@@ -1,6 +1,6 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="#">Údržba</a>
+<nav class="navbar navbar-expand-lg navbar-dark hneda">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#"><img src="{{ asset('images/logo.gif') }}"/></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbar" aria-controls="myNavbar" aria-expanded="false" aria-label="Zobrazit/skrýt navigaci">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -9,14 +9,19 @@
                 <li class="nav-item{{ zalozka == 1 ? " active" }}"><a class="nav-link" href="{{ path("udrzba-index") }}">Home</a></li>
                 {% if logged is not defined %}{% set logged = true %}{% endif %}
                 {% if logged %}
-                    <li class="nav-item{{ zalozka == 2 ? " active" }}"><a class="nav-link" href="{{ path("udrzba-dashboard") }}">Přehled</a></li>
+
                     <li class="nav-item{{ zalozka == 3 ? " active" }}"><a class="nav-link" href="{{ path("pracovnik-index") }}">Pracovníci</a></li>
                     <li class="nav-item{{ zalozka == 4 ? " active" }}"><a class="nav-link" href="{{ path("stroj-index") }}">Stroje</a></li>
                     <li class="nav-item{{ zalozka == 5 ? " active" }}"><a class="nav-link" href="{{ path("pravidelna-udrzba-index") }}">Plánovaná údržba</a></li>
                     <li class="nav-item{{ zalozka == 6 ? " active" }}"><a class="nav-link" href="{{ path("lognotifikace_index") }}">Log notifikací</a></li>
                     <li class="nav-item{{ zalozka == 7 ? " active" }}"><a class="nav-link" href="{{ path("reporting") }}">Reporting</a></li>
                     <li class="nav-item{{ zalozka == 8 ? " active" }}"><a class="nav-link" href="{{ path("vypisporuch_index") }}">Poruchy</a></li>
-                    <li class="nav-item{{ zalozka == 8 ? " active" }}"><a class="nav-link" href="{{ path("dashboard2") }}">Dashboard</a></li>
+                    <li class="nav-item{{ zalozka == 9 ? " active" }}"><a class="nav-link" href="{{ path("dashboard") }}">Dashboard</a></li>
+                    <li class="nav-item{{ zalozka == 10 ? " active" }}"><a class="nav-link" href="{{ path("skupina_index") }}">Skupiny strojů</a></li>
+                    <li class="nav-item{{ zalozka == 11 ? " active" }}"><a class="nav-link" href="{{ path("lokace_index") }}">Lokace strojů</a></li>
+                    <li class="nav-item{{ zalozka == 12 ? " active" }}"><a class="nav-link" href="{{ path("firma_index") }}">Seznam firem</a></li>
+
+
                 {% endif %}
             </ul>
             <ul class="navbar-nav ml-auto">

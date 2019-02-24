@@ -4,6 +4,35 @@
     {{ parent() }}
 {% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function() {
+            var html = '';
+            {% for nazev in skupiny %}
+                var skupina = $('input[data-skupina="{{ nazev.nazev }}"]');
+                if(skupina.length > 0){
+                    html += '<div class="skupina-div"><strong><input type="checkbox" class="vybrat-skupinu"> {{ nazev.nazev }} - vybrat skupinu</strong><br>'
+                    skupina.each(function(){
+                        html += $(this).closest('.form-check')[0].outerHTML;
+                    });
+                    html += '</div>';
+                }
+            {% endfor %}
+            $('#upravit_pracovnika_stroje').html(html);
+
+            $(".skupina-div input.vybrat-skupinu").on("change", function(){
+                if($(this).is(":checked")){
+                    $(this).closest(".skupina-div").find('input[type="checkbox"]').prop("checked", true);
+                } else {
+                    $(this).closest(".skupina-div").find('input[type="checkbox"]').prop("checked", false);
+
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
 {% block title %}Přidat/upravit pracovníka{% endblock %}
 
 {% block body %}
@@ -14,8 +43,4 @@
         </div>
 		{{ form(form) }}
     </div>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
 {% endblock %}

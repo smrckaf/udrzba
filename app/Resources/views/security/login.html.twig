@@ -11,9 +11,11 @@
 {% block body %}
 	{% include 'menu.html.twig' with {'zalozka': 1, 'logged': false} %}
 
-    <div class="container">
+    <div class="container hneda text-white" >
         <div class="border-bottom pb-1 mt-4 mb-3">
-            <h1 class="text-center">Toto je zabezpečený systém. Pokračujte tím, že se přihlásíte.</h1>
+           <h1 class="text-center text-white">Přihlášení do systému 1P control.</h1>
+
+
         </div>
         <div class="row justify-content-center">
             <div class="col-lg-4 col-sm-7">
@@ -28,7 +30,7 @@
                     {{ form_row(form._username) }}
                     {{ form_row(form._password) }}
 
-                    <button type="submit" class="btn btn-success btn-block">Přihlásit se</button>
+                    <button type="submit" class="btn btn-primary btn-block">Přihlásit se</button>
                 {{ form_end(form) }}
 
                 {#

@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    {% include 'menu.html.twig' with {'zalozka': 11} %}
+<div class="container">
+    <h1>Lokace strojů</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nazev</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for lokace in lokaces %}
+            <tr>
+                <td>{{ lokace.id }}</td>
+                <td>{{ lokace.nazev }}</td>
+                <td>
+                <a href="{{ path('lokace_delete', {'lokace': lokace.id})}}" class="btn btn-danger" onclick="return confirm('Opravdu si přejete smazat vybranou lokaci?')" title="Odstranit lokaci">
+                    <span class="fa fa-trash"></span>
+                </a>
+                <a href="{{ path('lokace_edit', { 'id': lokace.id }) }}" class="btn btn-info" title="Upravit lokaci">
+                    <span class="fa fa-pencil"></span>
+                </a>
+
+
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+            <a href="{{ path('lokace_new') }}"class="btn btn-success"><span class="fa fa-plus"></span>Vytvořit novou lokaci</a>
+
+{% endblock %}

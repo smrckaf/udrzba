@@ -13,6 +13,8 @@ use AppBundle\Entity\Lokace;
 use AppBundle\Entity\Skupina;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -36,8 +38,8 @@ class UpravitStrojType extends AbstractType
             'required' => true,
         ]);
 
-        $builder->add('idOld', IntegerType::class, [
-            'label' => 'Old ID',
+        $builder->add('id1pcontrol', IntegerType::class, [
+            'label' => 'ID (1P Control)',
             'required' => true,
             'attr' => [
                 'min' => 1,
@@ -60,6 +62,11 @@ class UpravitStrojType extends AbstractType
             'class' => Lokace::class,
             'choice_label' => 'nazev',
             'label' => 'Lokace',
+            'required' => false,
+        ]);
+
+        $builder->add('jeAktivni', CheckboxType::class, [
+            'label' => 'Je aktivní',
             'required' => false,
         ]);
 

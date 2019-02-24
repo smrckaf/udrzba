@@ -4,7 +4,8 @@
     "type": "project",
     "autoload": {
         "psr-4": {
-            "AppBundle\\": "src/AppBundle"
+            "AppBundle\\": "src/AppBundle",
+             "Ensis\\Bundle\\GridBundle\\": "src/grid-bundle/"
         },
         "classmap": [
             "app/AppKernel.php",
@@ -26,6 +27,7 @@
         "friendsofsymfony/rest-bundle": "^2.4",
         "incenteev/composer-parameter-handler": "^2.0",
         "jms/serializer-bundle": "^2.4",
+        "knplabs/knp-paginator-bundle": "^2.8",
         "nelmio/cors-bundle": "^1.5",
         "redjanym/fcm-bundle": "^1.1",
         "sensio/distribution-bundle": "^5.0.19",

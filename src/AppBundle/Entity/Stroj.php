@@ -26,7 +26,7 @@ class Stroj
      *
      * @ORM\Column(name="id_old", type="integer")
      */
-    private $idOld;
+    private $id1pcontrol;
 
     /**
      * @var string
@@ -35,11 +35,10 @@ class Stroj
      */
     private $nazev;
 
-
     /**
      * @var int
      *
-     * @ORM\Column(name="status", type="integer")
+     * @ORM\Column(name="status", type="integer", nullable=true)
      */
     private $status;
 
@@ -52,6 +51,48 @@ class Stroj
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Lokace")
      */
     private $lokace;
+
+    /**
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\KmenovaData")
+     */
+    private $kmenovaData;
+
+    /**
+     * @ORM\Column(type="boolean", options={"default": true})
+     */
+    private $jeAktivni = true;
+
+    /**
+     * @return KmenovaData
+     */
+    public function getKmenovaData()
+    {
+        return $this->kmenovaData;
+    }
+
+    /**
+     * @param mixed $kmenovaData
+     */
+    public function setKmenovaData($kmenovaData)
+    {
+        $this->kmenovaData = $kmenovaData;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getJeAktivni()
+    {
+        return $this->jeAktivni;
+    }
+
+    /**
+     * @param mixed $jeAktivni
+     */
+    public function setJeAktivni($jeAktivni)
+    {
+        $this->jeAktivni = $jeAktivni;
+    }
 
     /**
      * @return mixed
@@ -98,13 +139,13 @@ class Stroj
     /**
      * Set idOld
      *
-     * @param integer $idOld
+     * @param integer $id1pcontrol
      *
      * @return Stroj
      */
-    public function setIdOld($idOld)
+    public function setId1pcontrol($id1pcontrol)
     {
-        $this->idOld = $idOld;
+        $this->id1pcontrol = $id1pcontrol;
 
         return $this;
     }
@@ -114,9 +155,9 @@ class Stroj
      *
      * @return int
      */
-    public function getIdOld()
+    public function getId1pcontrol()
     {
-        return $this->idOld;
+        return $this->id1pcontrol;
     }
 
     /**

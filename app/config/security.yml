@@ -67,7 +67,7 @@ security:
         - { path: ^/redirect, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/dashboard2, roles: [ROLE_DASHBOARD, ROLE_ADMIN, ROLE_VEDOUCI] }
+        - { path: ^/dashboard, roles: [ROLE_DASHBOARD, ROLE_ADMIN, ROLE_VEDOUCI] }
         - { path: ^/api/, roles: ROLE_API }
         - { path: ^/, roles: [ROLE_ADMIN, ROLE_VEDOUCI] }
 

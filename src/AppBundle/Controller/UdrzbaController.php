@@ -51,7 +51,7 @@ class UdrzbaController extends Controller
 
 
     /**
-     * @Route("/dashboard", name="udrzba-dashboard")
+     * @Route("/prehled", name="udrzba-prehled")
      */
     public function dashboardAction()
     {

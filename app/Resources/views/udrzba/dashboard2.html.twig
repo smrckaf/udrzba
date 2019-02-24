@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="refresh" content="50">
     <title>{% block title %}Vítejte!{% endblock %}</title>
 
     {% block stylesheets %}
@@ -25,12 +26,35 @@
         <div class="col-sm-8" style="text-align:center; background-color:white;">
             <table border="1" width="100%">
                 <tr><th colspan="8" bgcolor="#87cefa">PŘEHLED DENNÍCH PŘÍPADŮ</th></tr>
-
                 <tr>
                 <th>Pořadí</th><th>ID úkolu</th><th>Priorita</th><th>Pracoviště</th><th>Datum a čas vzniku</th><th>Čas potvrzení</th><th>Status</th><th>Řešitel</th>
             </tr>
-            <tr>
-                <td>1</td><td>1</td><td>5</td><td>1</td><td>21.12.2018</td><td>10:22</td><td>12:55</td><td>Jan Novák</td>
+                {% set poradi = 0 %}
+                {% for poruchy in a %}
+                <tr>
+                    {%  set poradi = poradi + 1 %}
+                    <td> {{ poradi }}
+                    <td>{{ poruchy.id }}</td>
+                    <td>{{ poruchy.priorita }}</td>
+                    <td>{{ poruchy.stroj }}</td>
+                    <td>{{ poruchy.casvzniku|date('Y-m-d H:i:s')}}</td>
+                    <td>cas potvrzeni</td>
+                    <td class="text-white {{ poruchy.vyreseno is not null ? 'bg-success' : 'bg-danger' }}">
+                        {% if poruchy.vyreseno is not null %}
+                            vyřešeno
+                        {% else %}
+                            nevyřešeno
+                        {% endif %}
+
+
+                    </td>
+                    <td>
+                        {% for p in poruchy.prevzate %}
+                            {{p.idPracovnika.prijmeni}} {{p.idPracovnika.jmeno}}<br>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endfor %}
             </tr>
             </table>
 
@@ -41,9 +65,15 @@
                 <th colspan="8" align="ceter">Nepřiřazené úkoly</th>
                         <tr>
 
-                        </tr>
-                            <td>ID5</td><td>C</td><td>18.1.2018</td><td>16:31</td><td>nepřiřazeno</td>
-                        </tr>
+                            {% for neprirazene in n %}
+                <tr>
+                    <td>{{ neprirazene.id }}</td>
+                    <td>{{ neprirazene.priorita }}</td>
+                    <td>{{ neprirazene.casvzniku|date('Y-m-d H:i:s')}}</td>
+                    <td class="text-white bg-danger">nepřiřazeno </td>
+                </tr>
+                {% endfor %}
+
             </table>
             <br><br>
             <table border="1" width="100%">
@@ -51,10 +81,39 @@
                 <tr>
 
                 </tr>
-                <td>Jméno</td><td>Status</td><td>Pracoviště</td><td>OD</td><td>DO</td>
+                <td style="font-weight: bold; text-align: center">Jméno</td><td style="font-weight: bold; text-align: center">Status</td><td style="font-weight: bold; text-align: center">Pracoviště</td><td style="font-weight: bold; text-align: center">OD</td><td style="font-weight: bold; text-align: center">DO</td>
+
+                    {% for prac in p %}
                 <tr>
-                <td>Jan Novák</td><td>Probíhá oprava</td><td>stroj 10</td><td>16:31</td><td>nepřiřazeno</td>
+                     <td> {{prac.prijmeni}} {{prac.jmeno}}<br></td>
+
+
+                        {% if prac.vyreseno is not null %}
+                            <td class="text-white bg-success"> vyřešeno</td>
+                        {% elseif prac.prevzetidatcas is null %}
+                            <td class="text-white bg-info"> není určeno</td>
+                        {% else %}
+                            <td class="text-white bg-warning"> probíhá oprava</td>
+                        {% endif %}
+
+
+
+
+                    <td> {{prac.stroj}}</td>
+                    {% if prac.prevzetidatcas is not null %}
+                        <td>{{ prac.prevzetidatcas|date('Y-m-d H:i:s')}}</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                    {% if prac.vyreseno is not null %}
+                        <td>{{ prac.vyreseno|date('Y-m-d H:i:s')}}</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+
                 </tr>
+
+                {% endfor %}
             </table>
             <br><br>
             <table border="1" width="100%">
@@ -62,14 +121,14 @@
                 <th colspan="8" align="ceter">Denní přehled uskutečněných oprav</th>
                 </tr>
                 <tr>
-                <td>Počet otevřených úkolů</td><td colspan="3">2</td>
+                <td>Počet otevřených úkolů</td><td colspan="3">{{o}}</td>
                 </tr>
                 <tr>
-                    <td>Počet případů bez notifikace</td><td colspan="3">2</td>
+                    <td>Počet případů bez notifikace</td><td colspan="3">{{ b }}</td>
                 </tr><tr>
-                    <td>Počet uzavřených případů</td><td>2</td><td>&sum;
+                    <td>Počet uzavřených případů</td><td>{{u}}</td><td>&sum;
 
-                        času</td><td>127</td>
+                        času (h)</td><td>{{ s }}</td>
                 </tr>
             </table>
         </div>

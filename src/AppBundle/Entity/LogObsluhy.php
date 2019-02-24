@@ -71,13 +71,13 @@ class LogObsluhy
     /**
      * Set idprevzal
      *
-     * @param integer $idprevzal
+     * @param Prevzal $idprevzal
      *
      * @return LogObsluhy
      */
     public function setIdprevzal($idprevzal)
     {
-        $this->idprevzal = $idprevzal;
+        $this->prevzal = $idprevzal;
 
         return $this;
     }
@@ -85,11 +85,11 @@ class LogObsluhy
     /**
      * Get idprevzal
      *
-     * @return int
+     * @return Prevzal
      */
     public function getIdprevzal()
     {
-        return $this->idprevzal;
+        return $this->prevzal;
     }
 
     /**

@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% include 'menu.html.twig' with {'zalozka': 11} %}
+    <div class="container">
+    <h1>Editace lokace</h1>
+    {{ form_start(edit_form) }}
+    <div style="width: 800px">
+    {{ form_widget(edit_form) }}
+    </div>
+    <input class="btn btn-primary" type="submit" value="Odeslat" />
+    {{ form_end(edit_form) }}
+{% endblock %}

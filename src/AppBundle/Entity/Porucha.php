@@ -247,17 +247,11 @@ class Porucha
         return $this->vyreseno;
     }
 
-
-
-
-
-
-
-
-
-
-
-
+    /**
+     * Get rozdilcasu
+     *
+     * @return \DateTime
+     */
 
 }
 

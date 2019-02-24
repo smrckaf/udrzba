@@ -13,6 +13,7 @@ use AppBundle\Entity\Kompetence;
 use AppBundle\Entity\Stroj;
 use Doctrine\DBAL\Types\DecimalType;
 use Doctrine\DBAL\Types\FloatType;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -33,10 +34,15 @@ use Symfony\Component\Routing\RouterInterface;
 class UpravitPracovnikaType extends AbstractType
 {
     private $router;
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
 
-    public function __construct(RouterInterface $router)
+    public function __construct(RouterInterface $router, EntityManagerInterface $entityManager)
     {
         $this->router = $router;
+        $this->entityManager = $entityManager;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -113,17 +119,31 @@ class UpravitPracovnikaType extends AbstractType
         $builder->add('idzarizeni', TextType::class, [
             'label' => 'ID zařízení',
             'required' => false,
+            'attr'=>['readonly'=>true]
         ]);
-
-
 
         $builder->add('stroje', EntityType::class, [
             'class'     => Stroj::class,
+            'query_builder'     => function(EntityRepository $er){
+                return $er->createQueryBuilder("s")
+                    ->leftJoin("s.skupina", "sk")
+                    ->orderBy("sk.id", "ASC");
+            },
             'choice_label' => 'nazev',
             'label'     => 'Kompetence (stroje)',
             'expanded'  => true,
             'multiple'  => true,
+            'choice_attr'  => function($choiceValue, $key, $value){
+                $skupina = $choiceValue->getSkupina();
+                if($skupina === null){
+                    return ['data-skupina' => 'Mimo skupinu'];
+                }
+                return ['data-skupina' => $skupina->getNazev()];
+            },
         ]);
+
+
+
 
         $builder->add('odeslat', SubmitType::class, [
             'label' => 'Odeslat',

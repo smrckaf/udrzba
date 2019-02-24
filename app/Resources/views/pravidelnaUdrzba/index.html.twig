@@ -29,11 +29,14 @@
                     <thead>
                     <tr>
                         <th class="text-center" scope="col">Stroj</th>
-                        <th class="text-center" scope="col">Naplánované datum</th>
+                        <th class="text-center" scope="col">Naplánované datum od</th>
+                        <th class="text-center" scope="col">Naplánované datum do</th>
                         <th class="text-center" scope="col">Popis údržby</th>
+                        <th class="text-center" scope="col">Kdo zadal</th>
                         <th class="text-center" scope="col">Datum provedení</th>
                         <th class="text-center" scope="col">Provedl</th>
                         <th class="text-center" scope="col">Poznámka</th>
+                        <th class="text-center" scope="col">Operace</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -43,11 +46,23 @@
                     {{ pravidelnaUdrzba.nazev }}
                 </td>
                 <td class="text-center">
-                    {{ pravidelnaUdrzba.datumUdrzby|date("d.m.Y H:i") }}
+                    {{ pravidelnaUdrzba.datumUdrzbyod|date("d.m.Y H:i") }}
                 </td>
+                <td class="text-center">
+                    {{ pravidelnaUdrzba.datumUdrzbydo|date("d.m.Y H:i") }}
+                </td>
+
+
+
+
                 <td class="text-center">
                     {{ pravidelnaUdrzba.popisUdrzby }}
                 </td>
+                <td class="text-center">
+                    {{ pravidelnaUdrzba.kjmeno ~ " " ~ pravidelnaUdrzba.kprijmeni }}
+                </td>
+
+
                 <td class="text-center">
                     {% if pravidelnaUdrzba.provedeni is not null %}
                         {{ pravidelnaUdrzba.provedeni|date("d.m.Y H:i") }}

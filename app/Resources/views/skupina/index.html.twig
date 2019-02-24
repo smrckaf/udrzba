@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+
+{% block body %}
+	{% include 'menu.html.twig' with {'zalozka': 10} %}
+<div class="container">
+
+    <h1>Seznam skupin strojů</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Název</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for skupina in skupinas %}
+            <tr>
+                <td>{{ skupina.id }}</td>
+                <td>{{ skupina.nazev }}</td>
+                <td>
+                        <a href="{{ path('skupina2-smazat', {'skupina': skupina.id})}}" class="btn btn-danger" onclick="return confirm('Opravdu si přejete smazat vybranou skupinu?')" title="Odstranit skupinu">
+                            <span class="fa fa-trash"></span>
+                        </a>
+                            <a href="{{ path('skupina_edit', { 'id': skupina.id }) }}" class="btn btn-info" title="Upravit skupinu">
+                                <span class="fa fa-pencil"></span>
+                            </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+
+            <a href="{{ path('skupina_new') }}"class="btn btn-success"><span class="fa fa-plus"></span>Vytvořit novou skupinu</a>
+
+
+{% endblock %}

@@ -395,33 +395,36 @@ class ApiController extends FOSRestController
 
 
     /**
-     * @Rest\Post("/porucha/")
+     * @Rest\Post("/porucha")
      */
 
     //zaslani poruchu pomoci api, pote ulozeni v tab porucha, zaslani notifikace a ulozeni notifikace ???
     public function PoruchaNotifikaceAction(Request $request)
     {
-        $data = new Porucha;
-        //$id = $request->get('id');
-        $stroj = $request->get('stroj');
-        $casvzniku = $request->get('casvzniku');
-        $oblastpriciny = $request->get('oblastpriciny');
-        $priorita = $request->get('priorita');
-        $poznamka = $request->get('poznamka');
-        //$vyreseno = $request->get('vyreseno');
 
 
-        if (empty($stroj) || empty($casvzniku) || empty($oblastpriciny) || empty($priorita) || empty($poznamka)) {
+        $content = $request->getContent();
+        $data = json_decode($content, true);
+        $stroj = $data['_stroj'];
+        $oblastpriciny = $data['_oblastpriciny'];
+        $priorita = $data['_priorita'];
+        $poznamka = $data['_poznamka'];
+
+        if (empty($stroj) ||  empty($oblastpriciny) || empty($priorita) || empty($poznamka)) {
             return new JsonResponse("Posíláte prázdné hodnoty", Response::HTTP_NOT_ACCEPTABLE);
         }
+
+        //return new JsonResponse($stroj. " ". $oblastpriciny." ".$priorita." ".$poznamka.    "Poruchy Added Successfully", Response::HTTP_OK);
+
         //$id->setId($id);
         //Ulozeni poruchy do Porucha.php
+        $data = new Porucha;
         $data->setStroj($stroj);
-        $data->setCasvzniku(new \DateTime($casvzniku));
+        $data->setCasvzniku(new \DateTime);
         $data->setOblastpriciny($oblastpriciny);
         $data->setPriorita($priorita);
         $data->setPoznamka($poznamka);
-        //$data->setVyreseno(new \DateTime($vyreseno));
+
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($data);
@@ -429,7 +432,7 @@ class ApiController extends FOSRestController
         $em->flush();
         $cisloporuchy = $data->getId();
 
-        //pokus o poslani notifikace na vsechny zarizeni
+        //nalezeni vsech pracovniku
 
         $em = $this->getDoctrine()->getManager();
         $query = $em->createQuery(
@@ -446,7 +449,7 @@ class ApiController extends FOSRestController
         foreach ($nalezene as $d) {
             //jestli je pracovnik ve strojich
             foreach ($d->getStroje() as $stroj2) {
-                if ($stroj2->getId() == $stroj->getId()) {
+               if ($stroj2->getId() == (int)$stroj) {
 
                     $zarizeni = $d->getIdzarizeni();
 
@@ -458,11 +461,11 @@ class ApiController extends FOSRestController
                     $datalognotifikace->setPorucha($cisloporuchy);
                     $datalognotifikace->setStroj($stroj);
 
-                    $this->notifikace->posliAction('Stroj: ' . $stroj, 'body', $zarizeni);
+                    $this->notifikace->posliAction('Stroj: ' . $stroj, 'Hlášení poruchy!', $zarizeni);
                     $em->persist($datalognotifikace);
 
                     $em->flush();
-                }
+               }
             }
 
 
@@ -551,32 +554,6 @@ class ApiController extends FOSRestController
         else return new JsonResponse("User name or role cannot be empty", Response::HTTP_NOT_ACCEPTABLE);
         return new JsonResponse($output."  Prevzeti LoguObsluhy bylo uspesne", Response::HTTP_OK);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /**
@@ -767,7 +744,7 @@ return new JsonResponse("  Update LoguObsluhy bylo uspesne", Response::HTTP_OK);
               WHERE p.token= :token")
             ->setParameter('token',$token);
         $nalezene = $query->setMaxResults(1)->getOneOrNullResult();
-        $id_pracovnika = $nalezene->getId();//ok
+        $id_pracovnika = $nalezene;//ok
 
        //return new JsonResponse($id_pracovnika."   ".$id_poruchy."  ".$role_obsluhy. "Posíláte prázdné hodnoty", Response::HTTP_NOT_ACCEPTABLE);
 
@@ -843,6 +820,8 @@ return new JsonResponse("  Update LoguObsluhy bylo uspesne", Response::HTTP_OK);
         {
             return new JsonResponse("Posíláte prázdné hodnoty", Response::HTTP_NOT_ACCEPTABLE);
         }
+
+
         //hledani v tabulce prevzal
         $em = $this->getDoctrine()->getManager();
         $query=$em->createQuery(
@@ -850,13 +829,14 @@ return new JsonResponse("  Update LoguObsluhy bylo uspesne", Response::HTTP_OK);
               FROM AppBundle:Prevzal p
               WHERE p.idPoruchy= :idpor AND p.idPracovnika= :idprac")
             ->setParameters(array('idpor'=>$id_poruchy,'idprac'=>$id_pracovnika ));
+
         $prevzal = $query->setMaxResults(1)->getOneOrNullResult();
         $cisloprevzeti = $prevzal->getId();
 
-        //return new JsonResponse($cisloprevzeti. " ".$id_pracovnika." testy", Response::HTTP_NOT_ACCEPTABLE);
-
         $logobsluhy = $this->get('doctrine')->getManager()->getRepository(LogObsluhy::class)->findBy(
-            array('idprevzal' => $cisloprevzeti));
+            array('prevzal' => $cisloprevzeti));
+        //return new JsonResponse( $id_pracovnika." testy ".$cisloprevzeti, Response::HTTP_NOT_ACCEPTABLE);
+
        // $logobsluhy = $this->get('doctrine')->getManager()->getRepository(LogObsluhy::class)->findAll();
         $result = [];
 
@@ -1432,7 +1412,7 @@ return new JsonResponse($result);*/
             $result[] = [
                 'id' => $item->getId(),
                 'idstroje' => $item->getIdStroje()->getId(),
-                'datumudzrby' => $item->getDatumUdrzby(),
+                'datumudrzby' => $item->getDatumUdrzbyod(),
                 'popis' => $item->getPopisUdrzby(),
                 'provedeni'=>$item->getProvedeni(),
                 'poznudrzbare'=>$item->getPoznUdrzbare(),
@@ -1462,7 +1442,7 @@ return new JsonResponse($result);*/
             $response[] = [
                 'id' => $item->getId(),
                 'idstroje' => $item->getIdStroje()->getId(),
-                'datumudrzby' => $item->getDatumUdrzby(),
+                'datumudrzby' => $item->getDatumUdrzbydo(),
                 'popis' => $item->getPopisUdrzby(),
                 'provedeni'=>$item->getProvedeni(),
                 'poznudrzbare'=>$item->getPoznUdrzbare(),
@@ -1611,6 +1591,740 @@ return new JsonResponse($result);*/
   return new JsonResponse($result);*/
 
     }
+
+
+    /**
+     * @Rest\Post("/startopravy2")
+     */
+
+    // status stroje dat na 0
+    //zacatek opravy poslat 1, pokracovani opravy poslat 3
+    public function Start2Action(Request $request)
+    {
+        $dataLogobsluhy = new LogObsluhy();
+        $dataS = new Stroj();
+
+        $content = $request->getContent();
+        $data = json_decode($content, true);
+        $id_stroje = $data['_id_stroje'];
+        $id_poruchy = $data['_id_poruchy'];
+        //$status = $data['_status']; //0 stroj nepracuje, 1 stroj pracuje
+
+
+        //hledani id pracovnika pro poslany token v tabulce pracovnik
+        $token=$request->headers->get('X-Auth-Token');
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Pracovnik p
+              WHERE p.token= :token")
+            ->setParameter('token',$token);
+        $nalezene = $query->setMaxResults(1)->getOneOrNullResult();
+        $id_pracovnika = $nalezene->getId();
+
+        if(empty($id_stroje)  || empty($id_poruchy) ) //dodelat kontrolu statusu
+        {
+            return new JsonResponse("Posíláte prázdné hodnoty", Response::HTTP_NOT_ACCEPTABLE);
+        }
+
+
+
+        //hledani v tabulce prevzal
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Prevzal p
+              WHERE p.idPoruchy= :idpor AND p.idPracovnika= :idprac")
+            ->setParameters(array('idpor'=>$id_poruchy,'idprac'=>$id_pracovnika ));
+        $prevzal = $query->setMaxResults(1)->getOneOrNullResult();
+        $cisloprevzeti = $prevzal->getId();
+
+
+
+
+//hledani pro dané čísloprevzetí 1 v tabulce logObsluhy
+
+        $query2=$em->createQuery(
+            "SELECT l
+              FROM AppBundle:LogObsluhy l
+              WHERE l.prevzal= :prev AND l.typ= :typ")
+            ->setParameters(array('prev'=>$prevzal,'typ'=>1 ));
+        $nalezeno = $query2->setMaxResults(1)->getOneOrNullResult();
+
+        if ($nalezeno==NULL) //1 nenalezena
+        {
+            $query2=$em->createQuery(
+                "SELECT l
+              FROM AppBundle:LogObsluhy l
+              WHERE l.prevzal= :prev AND l.typ= :typ")
+                ->setParameters(array('prev'=>$prevzal,'typ'=>4 ));
+            $nalezeno2 = $query2->setMaxResults(1)->getOneOrNullResult();
+
+            if ($nalezeno2==NULL)       //4 nenalezena
+            {
+                // neni 1 ani 4 vlozime radek s 1
+                $dataLogobsluhy->setIdprevzal($prevzal);
+                $dataLogobsluhy->setStart(new \DateTime);
+                $dataLogobsluhy->setTyp(1);//1 start
+                $vysledek = 'Začátek opravy poruchy vložen.';
+
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($dataLogobsluhy);
+                $em->flush();
+            }
+            else //je 4 nalezena
+            {
+                $vysledek = 'Začátek opravy poruchy neproběhl. Porucha je již ukončena.';
+            }
+        }
+        else //1 je nalezena, hledame 2
+        {
+            //udelat zmenu z 2 na 3
+            $query2 = $em->createQuery(
+                "SELECT l
+              FROM AppBundle:LogObsluhy l
+              WHERE l.prevzal= :prev AND l.typ= :typ")
+                ->setParameters(array('prev' => $prevzal, 'typ' => 2));
+            $nalezeno2 = $query2->setMaxResults(1)->getOneOrNullResult();
+
+            if ($nalezeno2!=NULL) //2 nalezena
+            {
+
+                //update sloupce konec tabulky logobsluhy toto je akce Konec
+                $idLogobsluhy = $nalezeno2->getId();
+                $logobsluhy = $this->getDoctrine()->getRepository('AppBundle:LogObsluhy')->find($idLogobsluhy);
+                $logobsluhy->setKonec(new \DateTime);
+                $logobsluhy->setTyp(3);
+                $vysledek='Pokračování opravy poruchy.';
+                $em->flush();
+
+            }
+            else {
+                $vysledek = 'Pokračování opravy poruchy neproběhlo. Oprava poruchy nebyla přerušena.';
+            }
+        }
+
+        //Vlozeni noveho zaznamu do tabulky LogObsluhy
+
+
+        $status=0;
+
+        //update statusu stroje pracuje 1/nepracuje 0
+        $sn = $this->getDoctrine()->getManager();
+        $stroj = $this->getDoctrine()->getRepository('AppBundle:Stroj')->find($id_stroje);
+
+        //stroj nepracuje, opravuje se
+        $stroj->setStatus($status);
+        $sn->flush();
+
+        return new JsonResponse("Log Obsluhy: ".$vysledek, Response::HTTP_OK);
+    }
+
+
+    /**
+     * @Rest\Put("/konecopravy2")
+     */
+    //typ 1  začátek práce, 3 	stop pokracovani, 2 start pokracuj 4 stop konec práce
+    // status 0 stroj nepracuje 1 stroj pracuje
+
+    public function Konec2Action(Request $request)
+    {
+        $dataL = new LogObsluhy();
+        $dataS = new Stroj();
+
+        $content = $request->getContent();
+        $data = json_decode($content, true);
+        $id_stroje = $data['_id_stroje'];
+        $id_poruchy = $data['_id_poruchy'];
+        $status = $data['_status']; //0 stroj nepracuje, 1 stroj pracuje
+        $poznamka = $data['_poznamka'];
+
+
+        if(empty($id_stroje) || empty($id_poruchy) || $status <'0' || $status >'1' )
+        {
+            return new JsonResponse("Posilate prazdne hodnoty nebo spatny status (0,1) ", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        //hledani id pracovnika pro poslany token v tabulce pracovnik
+        $token=$request->headers->get('X-Auth-Token');
+
+
+
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Pracovnik p
+              WHERE p.token= :token")
+            ->setParameter('token',$token);
+        $nalezene = $query->setMaxResults(1)->getOneOrNullResult();
+        $id_pracovnika = $nalezene->getId();
+
+
+        // hleda cisloprevzeti z tabulky Prevzal na zaklade id pracovnika a cisla poruchy
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Prevzal p
+              WHERE p.idPoruchy= :idpor AND p.idPracovnika= :idprac")
+            ->setParameters(array('idpor'=>$id_poruchy,'idprac'=>$id_pracovnika ));
+        $prevzal = $query->setMaxResults(1)->getOneOrNullResult();
+        $cisloprevzeti = $prevzal->getId();
+
+
+
+//hledani pro dané čísloprevzetí typ 2 v tabulce logObsluhy
+        $query2=$em->createQuery(
+            "SELECT l
+              FROM AppBundle:LogObsluhy l
+              WHERE l.prevzal= :prev AND l.typ= :typ")
+            ->setParameters(array('prev'=>$cisloprevzeti,'typ'=>2 ));
+        $nalezeno2 = $query2->setMaxResults(1)->getOneOrNullResult();
+
+
+
+        $vysledek='';
+        if ($nalezeno2==NULL) //2 nenalezena
+            {
+            //oprava neni prerusena, hledame 1
+
+            $query2 = $em->createQuery(
+                "SELECT l
+              FROM AppBundle:LogObsluhy l
+              WHERE l.prevzal= :prev AND l.typ= :typ")
+                ->setParameters(array('prev' => $cisloprevzeti, 'typ' => 1));
+
+
+            $nalezeno1 = $query2->setMaxResults(1)->getOneOrNullResult();
+
+            if ($nalezeno1!=NULL) //1 nalezena, probehne update na 4
+            {
+
+
+                //update sloupce konec tabulky logobsluhy toto je akce Konec
+                $idLogobsluhy = $nalezeno1->getId();
+                $logobsluhy = $this->getDoctrine()->getRepository('AppBundle:LogObsluhy')->find($idLogobsluhy);
+                $logobsluhy->setKonec(new \DateTime);
+                $logobsluhy->setTyp(4);
+                $logobsluhy->setPoznamka($poznamka);
+
+                //zapis vyreseni ke stroji
+                $porucha = $this->getDoctrine()->getRepository('AppBundle:Porucha')->find($id_poruchy);
+                $porucha->setVyreseno(new \DateTime);
+                $vysledek='Ukončení poruchy proběhlo úspěšně';
+                $em->flush();
+            }
+            else {
+                    $vysledek = 'Ukončení poruchy proběhlo neúspěšně. Na poruše se nezačalo pracovat nebo oprava poruchy je již ukončená';
+                 }
+        }
+        else
+        {
+            $vysledek = 'Ukončení poruchy proběhlo neúspěšně. Oprava poruchy je přerušená.';
+        }
+        //update statusu stroje pracuje 1/nepracuje 0 v tabulce stroj, tato promenna prijde z rest api
+        $sn = $this->getDoctrine()->getManager();
+        $stroj = $this->getDoctrine()->getRepository('AppBundle:Stroj')->find($id_stroje);
+        $stroj->setStatus($status);
+        $sn->flush();
+        return new JsonResponse("  Vysledek je: ".$vysledek, Response::HTTP_OK);
+    }
+
+    /**
+     * @Rest\Post("/preruseniopravy2")
+     */
+    //pokud bude existovat 1, vytvoří se 2
+    // status 0 stroj nepracuje 1 stroj pracuje
+
+    public function preruseniopravyAction(Request $request)
+    {
+        $dataLogobsluhy = new LogObsluhy();
+        $dataS = new Stroj();
+
+        $content = $request->getContent();
+        $data = json_decode($content, true);
+        $id_stroje = $data['_id_stroje'];
+        $id_poruchy = $data['_id_poruchy'];
+        $status = $data['_status']; //0 stroj nepracuje, 1 stroj pracuje
+        //$poznamka = $data['_poznamka'];
+
+
+        if(empty($id_stroje) || empty($id_poruchy) || $status <'0' || $status >'1' )
+        {
+            return new JsonResponse("Posilate prazdne hodnoty nebo spatny status (0,1) ", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        //hledani id pracovnika pro poslany token v tabulce pracovnik
+        $token=$request->headers->get('X-Auth-Token');
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Pracovnik p
+              WHERE p.token= :token")
+            ->setParameter('token',$token);
+        $nalezene = $query->setMaxResults(1)->getOneOrNullResult();
+        $id_pracovnika = $nalezene->getId();
+
+        // hleda cisloprevzeti z tabulky Prevzal na zaklade id pracovnika a cisla poruchy
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Prevzal p
+              WHERE p.idPoruchy= :idpor AND p.idPracovnika= :idprac")
+            ->setParameters(array('idpor'=>$id_poruchy,'idprac'=>$id_pracovnika ));
+        $prevzal = $query->setMaxResults(1)->getOneOrNullResult();
+        $cisloprevzeti = $prevzal->getId();
+
+
+
+        //hledani pro dané čísloprevzetí typ 2 v tabulce logObsluhy
+        $query2=$em->createQuery(
+            "SELECT l
+              FROM AppBundle:LogObsluhy l
+              WHERE l.prevzal= :prev AND l.typ= :typ")
+            ->setParameters(array('prev'=>$cisloprevzeti,'typ'=>1 ));
+        $nalezeno1 = $query2->setMaxResults(1)->getOneOrNullResult();
+
+        if ($nalezeno1==NUll) {
+            $vysledek = 'Opravu poruchy nelze Přerušit. Na opravě se nezačalo pracovat.';
+        }
+        else
+        {
+            $query2=$em->createQuery(
+                "SELECT l
+              FROM AppBundle:LogObsluhy l
+              WHERE l.prevzal= :prev AND l.typ= :typ")
+                ->setParameters(array('prev'=>$cisloprevzeti,'typ'=>2 ));
+            $nalezeno2 = $query2->setMaxResults(1)->getOneOrNullResult();
+            if ($nalezeno2==NUll)
+            {
+                $dataLogobsluhy->setIdprevzal($prevzal);
+                $dataLogobsluhy->setStart(new \DateTime);
+                $dataLogobsluhy->setTyp(2);//1 start
+
+                $vysledek = 'Přerušení opravy poruchy proběhlo.';
+
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($dataLogobsluhy);
+                $em->flush();
+            }
+            else
+            {
+                $vysledek = 'Přerušení opravy poruchy proběhlo. Opravu poruchy je již přerušena.';
+            }
+        }
+
+        //update statusu stroje pracuje 1/nepracuje 0 v tabulce stroj, tato promenna prijde z rest api
+        $sn = $this->getDoctrine()->getManager();
+        $stroj = $this->getDoctrine()->getRepository('AppBundle:Stroj')->find($id_stroje);
+        $stroj->setStatus($status);
+        $sn->flush();
+        return new JsonResponse("  Vysledek je: ".$vysledek, Response::HTTP_OK);
+    }
+
+    /**
+     * @Rest\Get("/statistika")
+     */
+
+
+    /*
+      pošle počet přijatých neukončených poruch uživatelem
+      počet nepřijatých poruch celkem
+      počet pravidelných údržeb, které nejsou uzavřené
+   */
+
+    public function statistikaAction(Request $request)
+    {
+        $dataLogobsluhy = new LogObsluhy();
+        $dataS = new Stroj();
+
+        //hledani id pracovnika pro poslany token v tabulce pracovnik
+        $token=$request->headers->get('X-Auth-Token');
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Pracovnik p
+              WHERE p.token= :token")
+            ->setParameter('token',$token);
+        $nalezene = $query->setMaxResults(1)->getOneOrNullResult();
+        $id_pracovnika = $nalezene->getId();
+
+        // zjisti pocet prijatých poruch pracovnikem
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT count(p)
+              FROM AppBundle:Prevzal p
+              WHERE p.idPracovnika= :idprac")
+            ->setParameters(array('idprac'=>$id_pracovnika ));
+        $pocetprijatych = $query->getSingleScalarResult();
+
+        // zjisti pocet ukoncenych poruch (type 4) danym pracovnikem
+        $query=$em->createQuery(
+            "SELECT count(l)
+              FROM AppBundle:LogObsluhy l
+              JOIN l.prevzal p
+              WHERE p.idPracovnika= :idprac AND l.typ= :t")
+            ->setParameters(array('idprac'=>$id_pracovnika,'t'=>4));
+        $pocetukoncenych = $query->getSingleScalarResult();
+        $pocetprijatychneukoncenychporuch=$pocetprijatych-$pocetukoncenych;
+        //return new JsonResponse(" pocet prijatych: ". $pocetprijatych. " pocet ukoncenych: ".$pocetukoncenych, Response::HTTP_OK);
+
+// zjisti pocet poruch
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT count(p)
+              FROM AppBundle:Porucha p
+              ");
+        $pocetporuch = $query->getSingleScalarResult();
+
+        // zjisti pocet prijatých poruch vsemi pracovniky
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT count(p)
+              FROM AppBundle:Prevzal p");
+        $pocetprijatychporuchvsemi = $query->getSingleScalarResult();
+        $pocetneprijatychporuch=$pocetporuch-$pocetprijatychporuchvsemi;
+        //return new JsonResponse(" pocet poruch: ". $pocetporuch." pocetprijatychporuchvsemi: ".$pocetprijatychporuchvsemi, Response::HTTP_OK);
+
+        //počet pravidelných údržeb, které nejsou uzavřené
+        $query=$em->createQuery(
+            "SELECT count(p)
+              FROM AppBundle:Pravidelnaudrzba p
+              WHERE p.provedeni is NULL" );
+        $pocetneuzavrenychudrzeb = $query->getSingleScalarResult();
+
+        //return new JsonResponse("pocet_NeprijatePoruchy:". $pocetprijatychneukoncenychporuch. "pocet_PrijateNeukonceneUzivatele: ". $pocetneprijatychporuch. "pocet_Udrzby: ".$pocetneuzavrenychudrzeb, Response::HTTP_OK);
+
+        return new JsonResponse([ 'pocet_NeprijatePoruchy'=>(string)$pocetprijatychneukoncenychporuch,'pocet_PrijateNeukonceneUzivatele'=>(string)$pocetneprijatychporuch,'pocet_Udrzby' =>$pocetneuzavrenychudrzeb]);
+        //return new JsonResponse(['pocet_Udrzby' =>$pocetneuzavrenychudrzeb]);
+    }
+
+
+
+    /**
+     * @Rest\Post("/stroj")
+     */
+
+    //api pro vkladani stroju
+    public function StrojAction(Request $request)
+    {
+        $content = $request->getContent();
+        $data = json_decode($content, true);
+        $id1pcontrol = $data['_id1pcontrol'];
+        $nazev = $data['_nazev'];
+        
+
+        if (empty($id1pcontrol) ||  empty($nazev))
+        {
+            return new JsonResponse("Posíláte prázdné hodnoty", Response::HTTP_NOT_ACCEPTABLE);
+        }
+
+        $data = new Stroj;
+        $data->setId1pcontrol($id1pcontrol);
+        $data->setNazev($nazev);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($data);
+        $em->flush();
+
+        return new JsonResponse("Stroj byl vložen", Response::HTTP_OK);
+        }
+
+  /**
+     * @Rest\Post("/startopravy3")
+     */
+
+    //1 běží oprava
+    //2 přerušení opravy
+    //3 konec opravy
+
+    // pokud bude existovat 1 neudělá se nic, jinak nový řádek s hodnotou 1
+    //nesmi existova 3 - oprava ukoncena
+
+    public function Start3Action(Request $request)
+    {
+        $statusresult=0;
+        $dataLogobsluhy = new LogObsluhy();
+        $dataS = new Stroj();
+
+        $content = $request->getContent();
+        $data = json_decode($content, true);
+        $id_stroje = $data['_id_stroje'];
+        $id_poruchy = $data['_id_poruchy'];
+        //$status = $data['_status']; //0 stroj nepracuje, 1 stroj pracuje
+
+
+        //hledani id pracovnika pro poslany token v tabulce pracovnik
+        $token=$request->headers->get('X-Auth-Token');
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Pracovnik p
+              WHERE p.token= :token")
+            ->setParameter('token',$token);
+        $nalezene = $query->setMaxResults(1)->getOneOrNullResult();
+        $id_pracovnika = $nalezene->getId();
+
+        if(empty($id_stroje)  || empty($id_poruchy) ) //dodelat kontrolu statusu
+        {
+            $statusresult=0;
+            return new JsonResponse(["Status"=>$statusresult,"Message"=>"Posíláte prázdné hodnoty"], Response::HTTP_NOT_ACCEPTABLE);
+        }
+
+        //hledani v tabulce prevzal
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Prevzal p
+              WHERE p.idPoruchy= :idpor AND p.idPracovnika= :idprac")
+            ->setParameters(array('idpor'=>$id_poruchy,'idprac'=>$id_pracovnika ));
+        $prevzal = $query->setMaxResults(1)->getOneOrNullResult();
+        $cisloprevzeti = $prevzal->getId();
+
+//hledani pro dané čísloprevzetí 1 v tabulce logObsluhy
+
+        $query2=$em->createQuery(
+            "SELECT l
+              FROM AppBundle:LogObsluhy l
+              WHERE l.prevzal= :prev AND l.typ= :typ")
+            ->setParameters(array('prev'=>$prevzal,'typ'=>1 ));
+        $nalezeno = $query2->setMaxResults(1)->getOneOrNullResult();
+
+        if ($nalezeno==NULL) //1 nenalezena
+        {
+            $query2=$em->createQuery(
+                "SELECT l
+              FROM AppBundle:LogObsluhy l
+              WHERE l.prevzal= :prev AND l.typ= :typ")
+                ->setParameters(array('prev'=>$prevzal,'typ'=>3 ));
+            $nalezeno2 = $query2->setMaxResults(1)->getOneOrNullResult();
+
+            if ($nalezeno2==NULL)       //3 nenalezena
+            {
+                // neni 1 ani 3 vlozime radek s 1
+                $dataLogobsluhy->setIdprevzal($prevzal);
+                $dataLogobsluhy->setStart(new \DateTime);
+                $dataLogobsluhy->setTyp(1);//1 start
+                $vysledek = 'Začátek opravy poruchy vložen.';
+
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($dataLogobsluhy);
+                $em->flush();
+
+                // vlozeni statusu stroje
+                $status=0;
+                //update statusu stroje pracuje 1/nepracuje 0
+                $sn = $this->getDoctrine()->getManager();
+                $stroj = $this->getDoctrine()->getRepository('AppBundle:Stroj')->find($id_stroje);
+                //stroj nepracuje, opravuje se
+                $stroj->setStatus($status);
+                $sn->flush();
+
+                $statusresult=1;
+            }
+            else //je 3 nalezena
+            {
+                $statusresult=0;
+                $vysledek = 'Začátek opravy poruchy neproběhl. Porucha je již ukončena.';
+            }
+        }
+        else //1 je nalezena, hledame 2
+        {
+            $statusresult=0;
+            $vysledek = 'Oprava poruchy již běží.';
+        }
+        return new JsonResponse(["Status"=>$statusresult,"Message"=>$vysledek]);
+    }
+
+
+    /**
+     * @Rest\Put("/preruseniopravy3")
+     */
+    //pokud nebude existovat 1, neni co prerusovat
+    // bude existovat, zmeni se 1 na 2
+
+    public function preruseniopravy3Action(Request $request)
+    {
+        $statusresult=0;
+        $dataL = new LogObsluhy();
+        $dataS = new Stroj();
+
+        $content = $request->getContent();
+        $data = json_decode($content, true);
+        $id_stroje = $data['_id_stroje'];
+        $id_poruchy = $data['_id_poruchy'];
+        $status = $data['_status']; //0 stroj nepracuje, 1 stroj pracuje
+        //$poznamka = $data['_poznamka'];
+
+
+        if(empty($id_stroje) || empty($id_poruchy) || $status <'0' || $status >'1' )
+        {
+            return new JsonResponse("Posilate prazdne hodnoty nebo spatny status (0,1) ", Response::HTTP_NOT_ACCEPTABLE);
+        }
+        //hledani id pracovnika pro poslany token v tabulce pracovnik
+        $token=$request->headers->get('X-Auth-Token');
+
+
+
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Pracovnik p
+              WHERE p.token= :token")
+            ->setParameter('token',$token);
+        $nalezene = $query->setMaxResults(1)->getOneOrNullResult();
+        $id_pracovnika = $nalezene->getId();
+
+
+        // hleda cisloprevzeti z tabulky Prevzal na zaklade id pracovnika a cisla poruchy
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Prevzal p
+              WHERE p.idPoruchy= :idpor AND p.idPracovnika= :idprac")
+            ->setParameters(array('idpor'=>$id_poruchy,'idprac'=>$id_pracovnika ));
+        $prevzal = $query->setMaxResults(1)->getOneOrNullResult();
+        $cisloprevzeti = $prevzal->getId();
+
+
+
+//hledani pro dané čísloprevzetí typ 2 v tabulce logObsluhy
+
+
+        $vysledek='';
+        $query2 = $em->createQuery(
+            "SELECT l
+                  FROM AppBundle:LogObsluhy l
+                  WHERE l.prevzal= :prev AND l.typ= :typ")
+            ->setParameters(array('prev' => $cisloprevzeti, 'typ' => 1));
+
+        $nalezeno1 = $query2->setMaxResults(1)->getOneOrNullResult();
+
+        if ($nalezeno1!=NULL) //1 nalezena
+        {
+            //update sloupce konec tabulky logobsluhy toto je akce Konec
+            $idLogobsluhy = $nalezeno1->getId();
+            $logobsluhy = $this->getDoctrine()->getRepository('AppBundle:LogObsluhy')->find($idLogobsluhy);
+            $logobsluhy->setKonec(new \DateTime);
+            $logobsluhy->setTyp(2);
+            //$logobsluhy->setPoznamka($poznamka);
+
+            //zapis vyreseni ke stroji
+            $porucha = $this->getDoctrine()->getRepository('AppBundle:Porucha')->find($id_poruchy);
+            $porucha->setVyreseno(new \DateTime);
+            $statusresult=1;
+            $vysledek='Přerušení poruchy proběhlo úspěšně';
+            $em->flush();
+
+            //update statusu stroje pracuje 1/nepracuje 0 v tabulce stroj, tato promenna prijde z rest api
+            $status=1;
+            $sn = $this->getDoctrine()->getManager();
+            $stroj = $this->getDoctrine()->getRepository('AppBundle:Stroj')->find($id_stroje);
+            $stroj->setStatus($status);
+            $sn->flush();
+        }
+        else {
+            $statusresult=0;
+            $vysledek = 'Přerušení poruchy proběhlo neúspěšně. Na poruše se nezačalo pracovat nebo oprava poruchy je již ukončená';
+        }
+        return new JsonResponse(["Status"=>$statusresult,"Message"=>$vysledek]);
+
+    }
+
+
+    /**
+     * @Rest\Put("/konecopravy3")
+     */
+    //nebude existovat 1, nic nedelat, jinak 1 na 3
+
+
+    public function Konec3Action(Request $request)
+    {
+        $statusresult=0;
+        $dataL = new LogObsluhy();
+        $dataS = new Stroj();
+
+        $content = $request->getContent();
+        $data = json_decode($content, true);
+        $id_stroje = $data['_id_stroje'];
+        $id_poruchy = $data['_id_poruchy'];
+        $status = $data['_status']; //0 stroj nepracuje, 1 stroj pracuje
+        $poznamka = $data['_poznamka'];
+
+
+        if(empty($id_stroje) || empty($id_poruchy) || $status <'0' || $status >'1' )
+        {
+            $statusresult=0;
+            $vysledek="Posilate prazdne hodnoty nebo spatny status (0,1) ";
+            return new JsonResponse(["Status"=>$statusresult,"Message"=>$vysledek]);
+        }
+        //hledani id pracovnika pro poslany token v tabulce pracovnik
+        $token=$request->headers->get('X-Auth-Token');
+
+
+
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Pracovnik p
+              WHERE p.token= :token")
+            ->setParameter('token',$token);
+        $nalezene = $query->setMaxResults(1)->getOneOrNullResult();
+        $id_pracovnika = $nalezene->getId();
+
+
+        // hleda cisloprevzeti z tabulky Prevzal na zaklade id pracovnika a cisla poruchy
+        $em = $this->getDoctrine()->getManager();
+        $query=$em->createQuery(
+            "SELECT p
+              FROM AppBundle:Prevzal p
+              WHERE p.idPoruchy= :idpor AND p.idPracovnika= :idprac")
+            ->setParameters(array('idpor'=>$id_poruchy,'idprac'=>$id_pracovnika ));
+        $prevzal = $query->setMaxResults(1)->getOneOrNullResult();
+        $cisloprevzeti = $prevzal->getId();
+
+
+
+//hledani pro dané čísloprevzetí typ 2 v tabulce logObsluhy
+
+
+        $vysledek='';
+            $query2 = $em->createQuery(
+                "SELECT l
+                  FROM AppBundle:LogObsluhy l
+                  WHERE l.prevzal= :prev AND l.typ= :typ")
+                ->setParameters(array('prev' => $cisloprevzeti, 'typ' => 1));
+
+            $nalezeno1 = $query2->setMaxResults(1)->getOneOrNullResult();
+
+            if ($nalezeno1!=NULL) //1 nalezena
+            {
+                //update sloupce konec tabulky logobsluhy toto je akce Konec
+                $idLogobsluhy = $nalezeno1->getId();
+                $logobsluhy = $this->getDoctrine()->getRepository('AppBundle:LogObsluhy')->find($idLogobsluhy);
+                $logobsluhy->setKonec(new \DateTime);
+                $logobsluhy->setTyp(3);
+                $logobsluhy->setPoznamka($poznamka);
+
+                //zapis vyreseni ke stroji
+                $porucha = $this->getDoctrine()->getRepository('AppBundle:Porucha')->find($id_poruchy);
+                $porucha->setVyreseno(new \DateTime);
+
+                $statusresult=0;
+                $vysledek='Ukončení poruchy proběhlo úspěšně';
+                $em->flush();
+
+                //update statusu stroje pracuje 1/nepracuje 0 v tabulce stroj, tato promenna prijde z rest api
+                $status=1;
+                $sn = $this->getDoctrine()->getManager();
+                $stroj = $this->getDoctrine()->getRepository('AppBundle:Stroj')->find($id_stroje);
+                $stroj->setStatus($status);
+                $sn->flush();
+            }
+            else {
+                $statusresult=0;
+                $vysledek = 'Ukončení poruchy proběhlo neúspěšně. Na poruše se nezačalo pracovat nebo oprava poruchy je již ukončená';
+            }
+        return new JsonResponse(["Status"=>$statusresult,"Message"=>$vysledek]);
+    }
+
+
 
 
 

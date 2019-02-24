@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    {% include 'menu.html.twig' with {'zalozka': 12} %}
+<div class="container">
+    <h1>Firmy</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Název firmy</th>
+                <th>Adresa</th>
+                <th>Web</th>
+                <th>Kontakt</th>
+                <th>IČO</th>
+                <th>DIČ</th>
+                <th>Dodací lhůta</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for firma in firmas %}
+            <tr>
+                <td><a href="{{ path('firma_show', { 'id': firma.id }) }}">{{ firma.id }}</a></td>
+                <td>{{ firma.nazev }}</td>
+                <td>{{ firma.adresa }}</td>
+                <td>{{ firma.web }}</td>
+                <td>{{ firma.kontakt }}</td>
+                <td>{{ firma.ico }}</td>
+                <td>{{ firma.dic }}</td>
+                <td>{{ firma.dodacilhuta }}</td>
+                <td>
+                    <a href="{{ path('firma_delete', {'firma': firma.id})}}" class="btn btn-danger" onclick="return confirm('Opravdu si přejete smazat vybranou firmu?')" title="Odstranit firmu">
+                        <span class="fa fa-trash"></span>
+                    </a>
+
+                        <a href="{{ path('firma_edit', { 'id': firma.id }) }}" class="btn btn-info" title="Upravit firmu">
+                            <span class="fa fa-pencil"></span>
+
+
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+            <a href="{{ path('firma_new') }}"class="btn btn-success"><span class="fa fa-plus"></span>Vytvořit novou firmu</a>
+{% endblock %}

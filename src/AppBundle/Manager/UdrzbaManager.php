@@ -9,11 +9,18 @@
 namespace AppBundle\Manager;
 
 
+use AppBundle\Entity\KmenovaData;
 use AppBundle\Entity\Kompetence;
+use AppBundle\Entity\Nastroj;
+use AppBundle\Entity\Porucha;
+use AppBundle\Entity\Prevzal;
 use AppBundle\Entity\Pracovnik;
 use AppBundle\Entity\Pravidelnaudrzba;
+use AppBundle\Entity\Pripravek;
+use AppBundle\Entity\Skupina;
 use AppBundle\Entity\Stroj;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 class UdrzbaManager
 {
@@ -199,6 +206,16 @@ class UdrzbaManager
         return $result;
     }
 
+    public function getNazvySkupin()
+    {
+        $skupiny = $this->em->createQuery("SELECT s.nazev FROM " . Skupina::class . " s ORDER BY s.id ASC")
+            ->getResult();
+
+        $ret = array_merge([0 => ["nazev" => "Mimo skupinu"]], $skupiny);
+
+        return $ret;
+    }
+
     /**
      * @param $obdobi
      * @return Pravidelnaudrzba[]
@@ -206,31 +223,158 @@ class UdrzbaManager
     public function getPravidelneUdrzby($obdobi)
     {
         $qb = $this->em->createQueryBuilder()
-            ->select('p.id, p.provedeni, p.poznUdrzbare, p.popisUdrzby, p.datumUdrzby, s.nazev, u.jmeno, u.prijmeni')
+            ->select('p.id, p.provedeni, p.poznUdrzbare, p.popisUdrzby, p.datumUdrzbyod, p.datumUdrzbydo, s.nazev, u.jmeno, u.prijmeni,k.jmeno as kjmeno, k.prijmeni as kprijmeni')
             ->from(Pravidelnaudrzba::class, 'p')
             ->join('p.idStroje', 's')
             ->leftJoin('p.provedl', 'u')
-            ->where('p.datumUdrzby > :datumOd')
+            ->leftJoin('p.kdozadal', 'k')
+            ->where('p.datumUdrzbyod > :datumOd')
             ->setParameter('datumOd', new \DateTime);
 
         switch ($obdobi) {
             case 1:
                 $qb
-                    ->andWhere('p.datumUdrzby <= :datumDo')
+                    ->andWhere('p.datumUdrzbyod <= :datumDo')
                     ->setParameter('datumDo', (new \DateTime)->modify('+7 days'));
                 break;
             case 2:
                 $qb
-                    ->andWhere('p.datumUdrzby <= :datumDo')
+                    ->andWhere('p.datumUdrzbyod <= :datumDo')
                     ->setParameter('datumDo', (new \DateTime)->modify('+1 month'));
                 break;
             default:
                 break;
         }
-
         return $qb
-            ->orderBy('p.datumUdrzby', 'ASC')
+            ->orderBy('p.datumUdrzbyod', 'ASC')
             ->getQuery()
             ->getResult();
     }
+
+    public function getKmenovaDataByStroj(Stroj $stroj)
+    {
+        return $this->em->getRepository(KmenovaData::class)->findOneBy(['stroj' => $stroj]);
+    }
+
+    public function ulozitKmenovaData(KmenovaData $kmenovaData)
+    {
+        if ($kmenovaData->getId() === null)
+            $this->em->persist($kmenovaData);
+        $this->em->flush();
+    }
+
+    public function ulozitPripravek(Pripravek $pripravek)
+    {
+        if ($pripravek->getId() === null)
+            $this->em->persist($pripravek);
+        $this->em->flush();
+    }
+
+    public function ulozitNastroj(Nastroj $nastroj)
+    {
+        if ($nastroj->getId() === null)
+            $this->em->persist($nastroj);
+        $this->em->flush();
+    }
+
+    public function smazatPripravek(Pripravek $pripravek)
+    {
+        $this->em->remove($pripravek);
+        $this->em->flush();
+    }
+
+    public function smazatNastroj(Nastroj $nastroj)
+    {
+        $this->em->remove($nastroj);
+        $this->em->flush();
+    }
+
+    public function getPripravkyByStroj(Stroj $stroj)
+    {
+        return $this->em->getRepository(Pripravek::class)->findBy(['stroj' => $stroj]);
+    }
+
+    public function getNastrojeByStroj(Stroj $stroj)
+    {
+        return $this->em->getRepository(Nastroj::class)->findBy(['stroj' => $stroj]);
+    }
+
+    public function getPorucha()
+    {
+        //$porucha = $this->em->getRepository(Porucha::class)->findAll();
+        //if (!$porucha) {
+        //   throw new ResourceNotFoundException('Porucha not found');
+        // }
+        $porucha = $this->em->createQueryBuilder()
+            ->select('p, r ')
+            ->from(Porucha::class, 'p')
+            ->join('p.prevzate', 'r');
+        //sem nezapomenout pridat podminku na aktualni cas
+
+        return $porucha->getQuery()->getResult();
+    }
+
+    public function getNaprirazeneukoly()
+    {
+        $neprirazene = $this->em->createQueryBuilder()
+            ->select('p, r ')
+            ->from(Porucha::class, 'p')
+            ->leftJoin('p.prevzate', 'r')
+            ->where('r.prevzetidatcas is Null');
+        return $neprirazene->getQuery()->getResult();
+    }
+
+    public function getPracovniciudrzby()
+    {
+        $neprirazene = $this->em->createQueryBuilder()
+            ->select('prevz,por,prac')
+            ->from(Porucha::class, 'por')
+            ->Join('por.prevzate', 'prevz')
+            ->Join('prevz.idPracovnika', 'prac');
+        return $neprirazene->getQuery()->getResult();
+    }
+
+    public function getPocetotevrenychukolu()
+    {
+        $qb = $this->em->createQueryBuilder()
+            ->select('count(por.id)')
+            ->from(Porucha::class, 'por')
+            ->where('por.vyreseno is NULL');
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function getPocetuzavrenychpripadu()
+    {
+        $qb = $this->em->createQueryBuilder()
+            ->select('count(por.id)')
+            ->from(Porucha::class, 'por')
+            ->where('por.vyreseno is not NULL');
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function getPocetpripadubeznotifikace()
+    {
+        $pocetprijatychporuch = $this->em->createQueryBuilder()
+            ->select('count(pre.idPoruchy)')
+            ->from(Prevzal::class, 'pre')
+            ->groupBy('pre.idPoruchy');
+
+        $pocetporuch = $this->em->createQueryBuilder()
+            ->select('count(por)')
+            ->from(Porucha::class, 'por');
+
+    //sem nezapomenout pridat podminku na aktualni cas
+   // return $qb->getQuery()->getSingleScalarResult();
+        return $pocetporuch->getQuery()->getSingleScalarResult() -count($pocetprijatychporuch->getQuery()->getResult());
+
+
+    }
+    public function getSoucetcasu()
+    {
+        return $this->em->getConnection()->fetchColumn("SELECT sum(TIMESTAMPDIFF(SECOND, casvzniku, vyreseno)) AS sclr_0 FROM porucha where vyreseno is NOT NULL");
+
+    }
+
+
+
 }
