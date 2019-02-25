@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Kontaktniosobas list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Jmeno</th>
+                <th>Prijmeni</th>
+                <th>Pozice</th>
+                <th>Email</th>
+                <th>Telefon</th>
+                <th>Poznamka</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for kontaktniOsoba in kontaktniOsobas %}
+            <tr>
+                <td><a href="{{ path('kontaktniosoba_show', { 'id': kontaktniOsoba.id }) }}">{{ kontaktniOsoba.id }}</a></td>
+                <td>{{ kontaktniOsoba.jmeno }}</td>
+                <td>{{ kontaktniOsoba.prijmeni }}</td>
+                <td>{{ kontaktniOsoba.pozice }}</td>
+                <td>{{ kontaktniOsoba.email }}</td>
+                <td>{{ kontaktniOsoba.telefon }}</td>
+                <td>{{ kontaktniOsoba.poznamka }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('kontaktniosoba_show', { 'id': kontaktniOsoba.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('kontaktniosoba_edit', { 'id': kontaktniOsoba.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('kontaktniosoba_new') }}">Create a new kontaktniOsoba</a>
+        </li>
+    </ul>
+{% endblock %}

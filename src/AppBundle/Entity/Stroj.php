@@ -94,21 +94,7 @@ class Stroj
         $this->jeAktivni = $jeAktivni;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getSkupina()
-    {
-        return $this->skupina;
-    }
 
-    /**
-     * @param mixed $skupina
-     */
-    public function setSkupina($skupina)
-    {
-        $this->skupina = $skupina;
-    }
 
     /**
      * @return mixed
