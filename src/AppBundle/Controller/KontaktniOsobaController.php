@@ -31,6 +31,12 @@ class KontaktniOsobaController extends Controller
         ));
     }
 
+
+
+
+
+
+
     /**
      * Creates a new kontaktniOsoba entity.
      *

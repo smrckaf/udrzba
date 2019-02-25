@@ -67,6 +67,7 @@ class KontaktniOsoba
      * @var int
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Firma")
+     * @ORM\JoinColumn(name="firma")
      */
     private $firma;
 
