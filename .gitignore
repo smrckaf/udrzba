@@ -16,5 +16,5 @@
 /vendor/
 /web/bundles/
 workspace.xml
-/.idea/workspace.xml
 /web/uploads
+/.idea
