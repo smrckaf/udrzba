@@ -38,7 +38,7 @@
 
     <ul>
         <li>
-            <a href="{{ path('kontaktniosoba_index') }}">Back to the list</a>
+            <a href="{{ path('kontaktniosoba_index', {id: kontaktniOsoba.firma.id}) }}">Back to the list</a>
         </li>
         <li>
             <a href="{{ path('kontaktniosoba_edit', { 'id': kontaktniOsoba.id }) }}">Edit</a>

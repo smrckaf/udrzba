@@ -1,21 +1,15 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Kontaktniosoba edit</h1>
+    {% include 'menu.html.twig' with {'zalozka': 12} %}
+<div class="container">
+    <h1>Editace kontaktní osoby</h1>
 
     {{ form_start(edit_form) }}
         {{ form_widget(edit_form) }}
-        <input type="submit" value="Edit" />
-    {{ form_end(edit_form) }}
+      <input class="btn btn-primary" type="submit" value="Odeslat" />
 
-    <ul>
-        <li>
-            <a href="{{ path('kontaktniosoba_index') }}">Back to the list</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
+    {{ form_end(edit_form) }}
+</div>
+
 {% endblock %}

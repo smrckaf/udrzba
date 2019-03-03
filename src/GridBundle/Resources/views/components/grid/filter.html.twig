@@ -1,0 +1,33 @@
+<div id="filter" class="filter col-xs-12 collapse">
+    {{ form_start(filterForm) }}
+
+    <div class="col-xs-10 col-sm-11">
+        {%- for child in filterForm.children %}
+            <div class="col-sm-12 col-md-3">
+                {% if child.vars.name != 'find' %}
+                    {{ form_row(child) }}
+                {% endif %}
+            </div>
+        {% endfor -%}
+    </div>
+    <div class="filter-buttons col-xs-2 col-sm-1">
+        {#{{ form_widget(filterForm.find) }}#}
+        <div class="col-xs-12">
+            <button class="btn btn-floating blue" title="Vyhledat dle filtru"><i class="material-icons">search</i></button>
+        </div>
+        <div class="col-xs-12">
+            <div class="btn btn-floating white clear-filter" title="Vymazat filtr"><i class="material-icons black-text">clear</i></div>
+        </div>
+    </div>
+
+    {{ form_end(filterForm) }}
+</div>
+{% if grid.filterOverview|length > 0 %}
+    <div class="filter-overview">
+        <div class="pull-left ultra-bold-900-italic" style="padding: 1px; margin: 10px;">Filtrováno:</div>
+        {% for name, value in grid.filterOverview %}
+            {#<div class="label label-default">{{ name }}: {{ value }}</div>#}
+            <div class="btn btn-default btn-xs">{{ name }}: <span class="badge">{{ value }}</span></div>
+        {% endfor %}
+    </div>
+{% endif %}

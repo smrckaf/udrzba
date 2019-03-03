@@ -11,16 +11,16 @@ namespace AppBundle\Manager;
 
 use AppBundle\Entity\KmenovaData;
 use AppBundle\Entity\Kompetence;
+use AppBundle\Entity\NahradniDil;
 use AppBundle\Entity\Nastroj;
 use AppBundle\Entity\Porucha;
-use AppBundle\Entity\Prevzal;
 use AppBundle\Entity\Pracovnik;
 use AppBundle\Entity\Pravidelnaudrzba;
+use AppBundle\Entity\Prevzal;
 use AppBundle\Entity\Pripravek;
 use AppBundle\Entity\Skupina;
 use AppBundle\Entity\Stroj;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 class UdrzbaManager
 {
@@ -375,6 +375,21 @@ class UdrzbaManager
 
     }
 
+    public function getNahradniDilyByStroj($stroj)
+    {
+        return $this->em->getRepository(NahradniDil::class)->findBy(['stroj' => $stroj]);
+    }
 
+    public function ulozitNahradniDil(NahradniDil $nahradniDil)
+    {
+        if ($nahradniDil->getId() === null)
+            $this->em->persist($nahradniDil);
+        $this->em->flush();
+    }
 
+    public function smazatNahradniDil(NahradniDil $nahradniDil)
+    {
+        $this->em->remove($nahradniDil);
+        $this->em->flush();
+    }
 }

@@ -81,6 +81,22 @@ class Stroj
     /**
      * @return mixed
      */
+    public function getSkupina()
+    {
+        return $this->skupina;
+    }
+
+    /**
+     * @param mixed $skupina
+     */
+    public function setSkupina($skupina)
+    {
+        $this->skupina = $skupina;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getJeAktivni()
     {
         return $this->jeAktivni;

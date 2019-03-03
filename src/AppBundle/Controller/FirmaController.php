@@ -62,7 +62,7 @@ class FirmaController extends Controller
     /**
      * Finds and displays a firma entity.
      *
-     * @Route("/{id}", name="firma_show")
+     * @Route("/show/{id}", name="firma_show")
      * @Method("GET")
      */
     public function showAction(Firma $firma)

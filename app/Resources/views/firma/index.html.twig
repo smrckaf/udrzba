@@ -38,9 +38,12 @@
                         <span class="fa fa-trash"></span>
                     </a>
 
-                        <a href="{{ path('firma_edit', { 'id': firma.id }) }}" class="btn btn-info" title="Upravit firmu">
+                    <a href="{{ path('firma_edit', { 'id': firma.id }) }}" class="btn btn-info" title="Upravit firmu">
                             <span class="fa fa-pencil"></span>
+                    </a>
 
+
+                            <a class="btn btn-info" href="{{ path('kontaktniosoba_index',{ 'id': firma.id }) }}">Kontaktní osoby</a>
 
                 </td>
             </tr>

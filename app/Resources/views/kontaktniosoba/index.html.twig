@@ -1,25 +1,30 @@
 {% extends 'base.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
 
 {% block body %}
-    <h1>Kontaktniosobas list</h1>
+    {% include 'menu.html.twig' with {'zalozka': 12} %}
+<div class="container">
+    <h1>Seznam kontaktních osob firmy</h1>
 
     <table>
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Jmeno</th>
-                <th>Prijmeni</th>
+                <th>Jméno</th>
+                <th>Přijmeni</th>
                 <th>Pozice</th>
                 <th>Email</th>
-                <th>Telefon</th>
-                <th>Poznamka</th>
-                <th>Actions</th>
+                <th>Telefón</th>
+                <th>Poznámka</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
         {% for kontaktniOsoba in kontaktniOsobas %}
             <tr>
-                <td><a href="{{ path('kontaktniosoba_show', { 'id': kontaktniOsoba.id }) }}">{{ kontaktniOsoba.id }}</a></td>
+                <td>{{ kontaktniOsoba.id }}</td>
                 <td>{{ kontaktniOsoba.jmeno }}</td>
                 <td>{{ kontaktniOsoba.prijmeni }}</td>
                 <td>{{ kontaktniOsoba.pozice }}</td>
@@ -27,23 +32,18 @@
                 <td>{{ kontaktniOsoba.telefon }}</td>
                 <td>{{ kontaktniOsoba.poznamka }}</td>
                 <td>
-                    <ul>
-                        <li>
-                            <a href="{{ path('kontaktniosoba_show', { 'id': kontaktniOsoba.id }) }}">show</a>
-                        </li>
-                        <li>
-                            <a href="{{ path('kontaktniosoba_edit', { 'id': kontaktniOsoba.id }) }}">edit</a>
-                        </li>
-                    </ul>
+                    <a href="{{ path('kontaktniosoba_delete', {'id': kontaktniOsoba.id })}}" class="btn btn-danger" onclick="return confirm('Opravdu si přejete smazat kontaktní osobu??')" title="Odstranit kontaktní osobu">
+                        <span class="fa fa-trash"></span>
+                    </a>
+
+
+                    <a href="{{ path('kontaktniosoba_edit', { 'id': kontaktniOsoba.id, 'firma': firma.id }) }}" class="btn btn-info" title="Upravit">
+                    <span class="fa fa-pencil"></span>
+                    </a>
                 </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <ul>
-        <li>
-            <a href="{{ path('kontaktniosoba_new') }}">Create a new kontaktniOsoba</a>
-        </li>
-    </ul>
+            <a href="{{ path('kontaktniosoba_new',{ 'firma': firma.id }) }}"class="btn btn-success"><span class="fa fa-plus"></span>Vytvořit novou kontaktní osobu</a>
 {% endblock %}

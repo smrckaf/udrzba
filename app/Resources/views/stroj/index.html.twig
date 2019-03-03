@@ -12,9 +12,28 @@
         <div class="border-bottom pb-1 mt-4 mb-3">
             <h1 class="text-center">Stroje</h1>
         </div>
-		<p>
-            <a href="{{ path('stroj-upravit')}}" class="btn btn-success"><span class="fa fa-plus"></span> Přidat nový stroj</a>
-		</p>
+
+        <a href="{{ path('stroj-upravit')}}" class="btn btn-success mb-3"><span class="fa fa-plus"></span> Přidat nový stroj</a>
+
+        <div id="collapseParent">
+            {% for stroj in stroje %}
+                    <div class="collapse mt-2 mb-4" id="collapseExample{{ stroj.id }}" data-parent="#collapseParent">
+                        <div class="card">
+                            <div class="card-header">
+                                Upravit stroj
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">Vyberte podkategorii k úpravě</p>
+                                <a class="btn btn-primary" href="{{ path("stroj-upravit", {'stroj': stroj.id}) }}" title="Upravit stroj">Stroj</a>
+                                <a class="btn btn-primary" href="{{ path("stroj-upravit-kmenova-data", {'stroj': stroj.id}) }}" title="Upravit kmenová data stroje">Kmenová data</a>
+                                <a class="btn btn-primary" href="{{ path("nastroj-index", {'stroj': stroj.id}) }}" title="Upravit nástroje stroje">Nástroje</a>
+                                <a class="btn btn-primary" href="{{ path("pripravek-index", {'stroj': stroj.id}) }}" title="Upravit přípravky stroje">Přípravky</a>
+                                <a class="btn btn-primary" href="{{ path("nahradni-dil-index", {'stroj': stroj.id}) }}" title="Upravit náhradní díly stroje">Náhradní díly</a>
+                            </div>
+                        </div>
+                    </div>
+            {% endfor %}
+        </div>
         {#{{ grid_service.render(grid)|raw }}#}
         {% for stroj in stroje %}
         {% if loop.first %}
@@ -78,15 +97,6 @@
                 <a href="{{ path('stroj-smazat', {'stroj': stroj.id})}}" class="btn btn-danger" onclick="return confirm('Opravdu si přejete smazat vybraný stroj?')" title="Odstranit stroj">
                     <span class="fa fa-trash"></span>
                 </a>
-
-                <div class="collapse mt-2" id="collapseExample{{ stroj.id }}">
-                    <div class="list-group list-group-flush">
-                        <a class="list-group-item" href="{{ path("stroj-upravit", {'stroj': stroj.id}) }}" title="Upravit stroj">Stroj</a>
-                        <a class="list-group-item" href="{{ path("stroj-upravit-kmenova-data", {'stroj': stroj.id}) }}" title="Upravit kmenová data stroje">Kmenová data</a>
-                        <a class="list-group-item" href="{{ path("nastroj-index", {'stroj': stroj.id}) }}" title="Upravit nástroje stroje">Nástroje</a>
-                        <a class="list-group-item" href="{{ path("pripravek-index", {'stroj': stroj.id}) }}" title="Upravit přípravky stroje">Přípravky</a>
-                    </div>
-                </div>
             </td>
         </tr>
         {% if loop.last %}
