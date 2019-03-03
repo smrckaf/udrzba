@@ -18,3 +18,4 @@
 workspace.xml
 /web/uploads
 /.idea
+/app/config/parameters.yml.dist
