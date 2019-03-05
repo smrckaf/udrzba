@@ -1,0 +1,47 @@
+<script>
+    function changeCntItem(count){
+        window.location = '?limit='+count;
+    }
+</script>
+<div class="row">
+    <div class="col-xs-12 col-sm-9 col-md-10 text-center">
+{% if pageCount > 1 %}
+    <ul class="pagination">
+        {% if first is defined and current != first %}
+            <li><a title="{{ 'helper.paginator.first'|trans({}, 'base') }}" href="{{ path(route, query|merge({(pageParameterName): first})) }}"><i class="material-icons">first_page</i></a></li>
+        {% endif %}
+
+        {% if previous is defined %}
+            <li><a title="{{ 'helper.paginator.previous'|trans({}, 'base') }}" href="{{ path(route, query|merge({(pageParameterName): previous})) }}"><i class="material-icons">chevron_left</i></a></li>
+        {% endif %}
+
+        {% for page in pagesInRange %}
+            {% if page != current %}
+                <li><a title="{{ 'helper.paginator.goto'|trans({}, 'base') }}" href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page }}</a></li>
+            {% else %}
+                <li class="active"><a href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page }}</a></li>
+            {% endif %}
+
+        {% endfor %}
+
+        {% if next is defined %}
+            <li><a title="{{ 'helper.paginator.next'|trans({}, 'base') }}" href="{{ path(route, query|merge({(pageParameterName): next})) }}"><i class="material-icons">chevron_right</i></a></li>
+        {% endif %}
+
+        {% if last is defined and current != last %}
+            <li><a title="{{ 'helper.paginator.last'|trans({}, 'base') }}" href="{{ path(route, query|merge({(pageParameterName): last})) }}"><i class="material-icons">last_page</i></a></li>
+        {% endif %}
+    </ul>
+{% endif %}
+    </div>
+    <div class="col-xs-12 col-sm-3 col-md-2 text-right input-field">
+        <select class="form-control" name="cnt_item" onchange="changeCntItem(this.value);">
+            <option {{ app.request.query.get('limit') == 5 ? 'selected' : '' }} value="5">5 / {{ 'helper.paginator.page'|trans({}, 'base') }}</option>
+            <option {{ app.request.query.get('limit') == 15 ? 'selected' : '' }} value="15">15 / {{ 'helper.paginator.page'|trans({}, 'base') }}</option>
+            <option {{ app.request.query.get('limit') == 25 ? 'selected' : '' }} value="25">25 / {{ 'helper.paginator.page'|trans({}, 'base') }}</option>
+            <option {{ app.request.query.get('limit') == 50 or app.request.query.get('limit') == '' ? 'selected' : '' }} value="50">50 / {{ 'helper.paginator.page'|trans({}, 'base') }}</option>
+            <option {{ app.request.query.get('limit') == 75 ? 'selected' : '' }} value="75">75 / {{ 'helper.paginator.page'|trans({}, 'base') }}</option>
+            <option {{ app.request.query.get('limit') == 100 ? 'selected' : '' }} value="100">100 / {{ 'helper.paginator.page'|trans({}, 'base') }}</option>
+        </select>
+    </div>
+</div>

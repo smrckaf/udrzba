@@ -2,7 +2,6 @@ imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
     - { resource: services.yml }
-    - { resource: ../../src/grid-bundle/Resources/config/services.yml }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
@@ -38,6 +37,9 @@ twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
     form_themes: ['bootstrap_4_horizontal_layout.html.twig']
+    globals:
+      grid_service: "@grid_service"
+
 # Doctrine Configuration
 doctrine:
     dbal:
@@ -97,3 +99,15 @@ fos_rest:
             json: true
 redjan_ym_fcm:
     firebase_api_key: "AAAAVtZLqFI:APA91bEWy6NVDG38UNBtKwNM2VH5qQJO84lc5qOMzJHUNbOwzdB0h2DfdlbR9fOmUf40mjs6vJ8rZWBS8WC_jo23ZVG9eWcwft6eQTSVKPUKGj6030vmH_ioU5fvr7QY1PivLS4K2Ag7"
+
+knp_paginator:
+    page_range: 50                      # default page range used in pagination control
+    default_options:
+        page_name: page                # page query parameter name
+        sort_field_name: sort          # sort field query parameter name
+        sort_direction_name: direction # sort direction query parameter name
+        distinct: true                 # ensure distinct results, useful when ORM queries are using GROUP BY statements
+    template:
+        #        pagination: KnpPaginatorBundle:Pagination:sliding.html.twig     # sliding pagination controls template
+        pagination: '@Grid/components/grid/pagination_mdb.html.twig'     # sliding pagination controls template
+        sortable: '@KnpPaginator/Pagination/sortable_link.html.twig' # sort link template

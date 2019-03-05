@@ -21,7 +21,7 @@ class AppKernel extends Kernel
             new JMS\SerializerBundle\JMSSerializerBundle(),
             new Nelmio\CorsBundle\NelmioCorsBundle(),
             new RedjanYm\FCMBundle\RedjanYmFCMBundle(),
-            new \Ensis\Bundle\GridBundle\EnsisGridBundle(),
+            new GridBundle\GridBundle(),
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
         ];
 

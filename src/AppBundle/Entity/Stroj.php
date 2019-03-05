@@ -63,7 +63,103 @@ class Stroj
     private $jeAktivni = true;
 
     /**
-     * @return KmenovaData
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId1pcontrol()
+    {
+        return $this->id1pcontrol;
+    }
+
+    /**
+     * @param int $id1pcontrol
+     */
+    public function setId1pcontrol($id1pcontrol)
+    {
+        $this->id1pcontrol = $id1pcontrol;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNazev()
+    {
+        return $this->nazev;
+    }
+
+    /**
+     * @param string $nazev
+     */
+    public function setNazev($nazev)
+    {
+        $this->nazev = $nazev;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param int $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSkupina()
+    {
+        return $this->skupina;
+    }
+
+    /**
+     * @param mixed $skupina
+     */
+    public function setSkupina($skupina)
+    {
+        $this->skupina = $skupina;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLokace()
+    {
+        return $this->lokace;
+    }
+
+    /**
+     * @param mixed $lokace
+     */
+    public function setLokace($lokace)
+    {
+        $this->lokace = $lokace;
+    }
+
+    /**
+     * @return mixed
      */
     public function getKmenovaData()
     {
@@ -95,103 +191,5 @@ class Stroj
     }
 
 
-
-    /**
-     * @return mixed
-     */
-    public function getLokace()
-    {
-        return $this->lokace;
-    }
-
-    /**
-     * @param mixed $lokace
-     */
-    public function setLokace($lokace)
-    {
-        $this->lokace = $lokace;
-    }
-
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Set idOld
-     *
-     * @param integer $id1pcontrol
-     *
-     * @return Stroj
-     */
-    public function setId1pcontrol($id1pcontrol)
-    {
-        $this->id1pcontrol = $id1pcontrol;
-
-        return $this;
-    }
-
-    /**
-     * Get idOld
-     *
-     * @return int
-     */
-    public function getId1pcontrol()
-    {
-        return $this->id1pcontrol;
-    }
-
-    /**
-     * Set status
-     *
-     * @param integer $status
-     *
-     * @return Stroj
-     */
-    public function setStatus($status)
-    {
-        $this->status = $status;
-
-        return $this;
-    }
-
-    /**
-     * Get status
-     *
-     * @return int
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
-     * Set nazev
-     *
-     * @param string $nazev
-     *
-     * @return Stroj
-     */
-    public function setNazev($nazev)
-    {
-        $this->nazev = $nazev;
-
-        return $this;
-    }
-
-    /**
-     * Get nazev
-     *
-     * @return string
-     */
-    public function getNazev()
-    {
-        return $this->nazev;
-    }
 }
 

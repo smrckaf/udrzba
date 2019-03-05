@@ -1,0 +1,133 @@
+<div class="grid">
+    {% if filterForm != null %}
+        {% include '@Grid/components/grid/filter.html.twig' %}
+    {% endif %}
+
+    <table class="table vert-center table-striped table-condensed table-hover">
+        <thead>
+        <tr>
+            {% for column in grid.getColumns() %}
+                {% set title = '' %}
+                {% set titleTranslationKey = column.getName() ~ '_title' %}
+                {% if titleTranslationKey|trans({}, 'base') != titleTranslationKey %}
+                    {% set title = titleTranslationKey|trans({}, 'base') %}
+                {% endif %}
+                {% if column.isSortable() %}
+                    <th class="{{ column.getClasses() }}"{% if title != '' %} title="{{ title }}"{% endif %}>
+                        {{ knp_pagination_sortable(grid.pagination, column.getName()|trans({}, 'base'), (column.getTableAlias() is not empty ? column.getTableAlias() ~ '.' : '') ~ column.getSourceColumnName()) }}
+                        {% if title != '' %}<span class="badge">?</span>{% endif %}
+                    </th>
+                {% else %}
+                    <th class="{{ column.getClasses() }}"{% if title != '' %} title="{{ title }}"{% endif %}>
+                        {{ column.getName()|trans({}, 'base') }}
+                        {% if title != '' %}<span class="badge">?</span>{% endif %}
+                    </th>
+                {% endif %}
+            {% endfor %}
+
+            <th class="col-xs-4 col-sm-2 col-lg-2 text-right">
+                {% if filterForm != null %}
+                    <button class="btn-floating btn-sm waves-effect waves-light white" title="Filtr"
+                            data-toggle="collapse" data-target="#filter">
+                        <i class="material-icons black-text">filter_list</i>
+                    </button>
+                {% endif %}
+                {% for button in grid.getButtons() %}
+                    {% if button.getType() == 'add' %}
+                        <a href="{{ path(button.getAction(), button.getActionExtraParams()) }}"
+                           class="btn-floating btn-sm waves-effect waves-light green"
+                           {% if button.title is not null %}title="{{ button.title }}"{% endif %}>
+                            <i class="material-icons">add</i>
+                        </a>
+                    {% elseif button.block == 'header' and button.template != null %}
+                        {{ include(button.template, {'button': button}) }}
+                    {% endif %}
+
+                {% endfor %}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {# Pokud má grid data pro výpis, tak se vypíše tabulka, jinka jen info, že nejsou žádná data pro výpis #}
+        {% if grid.pagination|length > 0 %}
+            {% for data in grid.pagination %}
+
+                {#Podbarvení řádku podle stavu sloupečku v gridu#}
+                {% set classColors = '' %}
+                {% if grid.hasColorRows() %}
+                    {% for colorRow in grid.getColorRows() %}
+                        {% if colorRow.checkValue(attribute(data, colorRow.getSourceColumnName()), data) %}
+                            {% set classColors = classColors ~ " " ~ colorRow.getCssColor() %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                <tr class="{{ classColors }}">
+                    {# Výpis dat #}
+                    {% for column in grid.getColumns() %}
+                        <td class="{{ column.getClasses() }}">{{ column.doFormatting(attribute(data, column.getSourceColumnName()), data)|raw }}</td>
+                    {% endfor %}
+
+                    {# Tlačítka #}
+                    <td class="col-xs-4 col-sm-2 col-lg-2 text-right">
+                        {% for button in grid.getButtons() %}
+                            {% if button.getType() == 'edit' %}
+                                <a href="{{ path(button.getAction(), {'id': attribute(data, 'id')}|merge(button.getActionExtraParams())) }}"
+                                   class="btn-floating btn-sm waves-effect waves-light blue edit-btn"
+                                   {% if button.title is not null %}title="{{ button.title }}"{% endif %} >
+                                    <i class="material-icons">edit</i>
+                                </a>
+                            {% elseif button.getType() == 'delete' %}
+                                <a href="{{ path(button.getAction(), {'id': attribute(data, 'id')}|merge(button.getActionExtraParams())) }}"
+                                   class="btn-floating btn-sm waves-effect waves-light red delete-btn"
+                                   onclick="return confirm('Opravdu odstranit?');"
+                                   {% if button.title is not null %}title="{{ button.title }}"{% endif %} >
+                                    <i class="material-icons">delete</i>
+                                </a>
+                            {% elseif button.block == 'row' and button.template != null %}
+                                {{ include(button.template, {'button': button, 'data': data}) }}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="{{ grid.getInLineColumnsCount() }}">{{ 'clients.grid.empty_render_data'|trans({}, 'base') }}</td>
+            </tr>
+        {% endif %}
+        </tbody>
+
+        <tfoot>
+        {% if grid.footer and grid.footer|length > 0 %}
+            {% for column in grid.getColumns() %}
+                <td>{% if grid.footer[column.getSourceColumnName()] is defined %}{{ grid.footer[column.getSourceColumnName()]|raw }}{% endif %}</td>
+            {% endfor %}
+        {% endif %}
+        </tfoot>
+    </table>
+    <div class="col-xs-12 text-right">
+        {% for button in grid.getButtons() %}
+            {% if button.block == 'bottom' and button.template != null %}
+                {{ include(button.template, {'button': button}) }}
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    {% if grid.pagination|length > 0 and grid.hidePaginator == false %}
+        {# display navigation #}
+        <div class="navigation">
+            {{ knp_pagination_render(grid.pagination) }}
+        </div>
+        <div class="text-right">Celkem {{ grid.pagination.getTotalItemCount }}&nbsp;
+            {%- if grid.pagination.getTotalItemCount == 1 -%}
+                záznam.
+            {%- elseif grid.pagination.getTotalItemCount < 5 -%}
+                záznamy.
+            {%- else -%}
+                záznamů.
+            {%- endif -%}
+        </div>
+    {% endif %}
+</div>
+<div class="space-50"></div>

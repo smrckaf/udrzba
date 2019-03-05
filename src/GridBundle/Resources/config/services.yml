@@ -1,0 +1,4 @@
+services:
+    grid_service:
+        class: GridBundle\Components\Grid\GridService
+        arguments: ["@twig"]
