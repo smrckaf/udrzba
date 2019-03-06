@@ -27,7 +27,7 @@
         {% for porucha in poruchas %}
             <tr>
                 <td><a href="{{ path('vypisporuch_show', { 'id': porucha.id }) }}">{{ porucha.id }}</a></td>
-                <td>{{ porucha.stroj }}</td>
+                <td>{{ porucha.stroj.nazev }}</td>
                 <td>{% if porucha.casvzniku %}{{ porucha.casvzniku|date('Y-m-d H:i:s') }}{% endif %}</td>
                 <td>{{ porucha.oblastpriciny }}</td>
                 <td>{{ porucha.priorita }}</td>

@@ -36,7 +36,7 @@
                         <td> {{ poradi }}
                         <td>{{ poruchy.id }}</td>
                         <td>{{ poruchy.priorita }}</td>
-                        <td>{{ poruchy.stroj }}</td>
+                        <td>{{ poruchy.strojId }}</td>
                         <td>{{ poruchy.casvzniku|date('Y-m-d H:i:s')}}</td>
                         <td>cas potvrzeni</td>
                         <td class="text-white {{ poruchy.vyreseno is not null ? 'bg-success' : 'bg-danger' }}">
@@ -99,7 +99,7 @@
 
 
 
-                        <td> {{prac.stroj}}</td>
+                        <td> {{prac.strojNazev}}</td>
                         {% if prac.prevzetidatcas is not null %}
                             <td>{{ prac.prevzetidatcas|date('Y-m-d H:i:s')}}</td>
                         {% else %}

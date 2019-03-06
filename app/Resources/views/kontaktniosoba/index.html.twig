@@ -6,7 +6,7 @@
 {% block body %}
     {% include 'menu.html.twig' with {'zalozka': 12} %}
 <div class="container">
-    <h1>Seznam kontaktních osob firmy</h1>
+    <h1>Seznam kontaktních osob firmy {{ firma.nazev }}</h1>
 
     <table>
         <thead>

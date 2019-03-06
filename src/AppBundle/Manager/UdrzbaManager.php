@@ -327,10 +327,11 @@ class UdrzbaManager
     public function getPracovniciudrzby()
     {
         $neprirazene = $this->em->createQueryBuilder()
-            ->select('prac.jmeno, prac.prijmeni, por.stroj, por.vyreseno, prevz.prevzetidatcas')
+            ->select('prac.jmeno, prac.prijmeni, stroj.id AS strojId, stroj.nazev AS strojNazev, por.vyreseno, prevz.prevzetidatcas')
             ->from(Pracovnik::class, 'prac')
             ->leftJoin(Prevzal::class, 'prevz', 'WITH', 'prevz.idPracovnika = prac.id')
             ->leftJoin('prevz.idPoruchy', 'por')
+            ->leftJoin('por.stroj', 'stroj')
             ->where('prac.idzarizeni IS NOT NULL')
             ->orderBy('prac.id', 'ASC');
         return $neprirazene->getQuery()->getResult();

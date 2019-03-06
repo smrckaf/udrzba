@@ -75,6 +75,12 @@ class Porucha
     private $prevzate;
 
 
+    public function getStrojId(){
+        return $this->stroj->getId();
+    }
+    public function getStrojNazev(){
+        return $this->stroj->getNazev();
+    }
 
 
     /**
