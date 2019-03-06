@@ -24,7 +24,8 @@ class Porucha
     /**
      * @var int
      *
-     * @ORM\Column(name="stroj", type="integer")
+     * @ORM\ManyToOne(targetEntity="Stroj")
+     * @ORM\JoinColumn(name="stroj")
      */
     private $stroj;
 

@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block title %}Přidat/upravit náhradní díl{% endblock %}
+
+{% block body %}
+	{% include 'menu.html.twig' with {'zalozka': 4} %}
+    <div class="container">
+        <div class="border-bottom pb-1 mt-4 mb-3">
+            <h1 class="text-center">Přidat/upravit náhradní díl</h1>
+        </div>
+		{{ form(form) }}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}

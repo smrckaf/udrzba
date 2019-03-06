@@ -11,16 +11,16 @@ namespace AppBundle\Manager;
 
 use AppBundle\Entity\KmenovaData;
 use AppBundle\Entity\Kompetence;
+use AppBundle\Entity\NahradniDil;
 use AppBundle\Entity\Nastroj;
 use AppBundle\Entity\Porucha;
-use AppBundle\Entity\Prevzal;
 use AppBundle\Entity\Pracovnik;
 use AppBundle\Entity\Pravidelnaudrzba;
+use AppBundle\Entity\Prevzal;
 use AppBundle\Entity\Pripravek;
 use AppBundle\Entity\Skupina;
 use AppBundle\Entity\Stroj;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 class UdrzbaManager
 {
@@ -327,10 +327,12 @@ class UdrzbaManager
     public function getPracovniciudrzby()
     {
         $neprirazene = $this->em->createQueryBuilder()
-            ->select('prevz,por,prac')
-            ->from(Porucha::class, 'por')
-            ->Join('por.prevzate', 'prevz')
-            ->Join('prevz.idPracovnika', 'prac');
+            ->select('prac.jmeno, prac.prijmeni, por.stroj, por.vyreseno, prevz.prevzetidatcas')
+            ->from(Pracovnik::class, 'prac')
+            ->leftJoin(Prevzal::class, 'prevz', 'WITH', 'prevz.idPracovnika = prac.id')
+            ->leftJoin('prevz.idPoruchy', 'por')
+            ->where('prac.idzarizeni IS NOT NULL')
+            ->orderBy('prac.id', 'ASC');
         return $neprirazene->getQuery()->getResult();
     }
 
@@ -369,12 +371,34 @@ class UdrzbaManager
 
 
     }
-    public function getSoucetcasu()
+    public function getSoucetcasuold()
     {
         return $this->em->getConnection()->fetchColumn("SELECT sum(TIMESTAMPDIFF(SECOND, casvzniku, vyreseno)) AS sclr_0 FROM porucha where vyreseno is NOT NULL");
+
+    }
+    public function getSoucetcasu()
+    {
+        return $this->em->getConnection()->fetchColumn("SELECT sum(TIMESTAMPDIFF(SECOND, CASE WHEN start < date(now()) THEN date(now()) ELSE start END, CASE WHEN konec IS NULL THEN now() ELSE konec END))/3600 AS sclr_0 FROM log_obsluhy JOIN prevzal ON log_obsluhy.idprevzal = prevzal.id JOIN pracovnik ON pracovnik.id = prevzal.id_pracovnika WHERE (pracovnik.idzarizeni IS NOT NULL) AND (start BETWEEN date(now()) AND now() OR konec BETWEEN date(now()) AND now() OR (start < now() AND konec is null))");
 
     }
 
 
 
+    public function getNahradniDilyByStroj($stroj)
+    {
+        return $this->em->getRepository(NahradniDil::class)->findBy(['stroj' => $stroj]);
+    }
+
+    public function ulozitNahradniDil(NahradniDil $nahradniDil)
+    {
+        if ($nahradniDil->getId() === null)
+            $this->em->persist($nahradniDil);
+        $this->em->flush();
+    }
+
+    public function smazatNahradniDil(NahradniDil $nahradniDil)
+    {
+        $this->em->remove($nahradniDil);
+        $this->em->flush();
+    }
 }

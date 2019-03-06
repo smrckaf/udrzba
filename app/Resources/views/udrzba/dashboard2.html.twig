@@ -16,10 +16,10 @@
 
 <div style="padding: 30px; background-color:lightskyblue;">
 
-<div class="row">
-    <div class="col-sm-12" style="text-align:center; font-weight: bold;">D A S H B O A R D - Ú D R Ž B A</div>
+    <div class="row">
+        <div class="col-sm-12" style="text-align:center; font-weight: bold;">D A S H B O A R D - Ú D R Ž B A</div>
 
-</div>
+    </div>
 
 
     <div class="row">
@@ -27,35 +27,35 @@
             <table border="1" width="100%">
                 <tr><th colspan="8" bgcolor="#87cefa">PŘEHLED DENNÍCH PŘÍPADŮ</th></tr>
                 <tr>
-                <th>Pořadí</th><th>ID úkolu</th><th>Priorita</th><th>Pracoviště</th><th>Datum a čas vzniku</th><th>Čas potvrzení</th><th>Status</th><th>Řešitel</th>
-            </tr>
+                    <th>Pořadí</th><th>ID úkolu</th><th>Priorita</th><th>Pracoviště</th><th>Datum a čas vzniku</th><th>Čas potvrzení</th><th>Status</th><th>Řešitel</th>
+                </tr>
                 {% set poradi = 0 %}
                 {% for poruchy in a %}
-                <tr>
-                    {%  set poradi = poradi + 1 %}
-                    <td> {{ poradi }}
-                    <td>{{ poruchy.id }}</td>
-                    <td>{{ poruchy.priorita }}</td>
-                    <td>{{ poruchy.stroj }}</td>
-                    <td>{{ poruchy.casvzniku|date('Y-m-d H:i:s')}}</td>
-                    <td>cas potvrzeni</td>
-                    <td class="text-white {{ poruchy.vyreseno is not null ? 'bg-success' : 'bg-danger' }}">
-                        {% if poruchy.vyreseno is not null %}
-                            vyřešeno
-                        {% else %}
-                            nevyřešeno
-                        {% endif %}
+                    <tr>
+                        {%  set poradi = poradi + 1 %}
+                        <td> {{ poradi }}
+                        <td>{{ poruchy.id }}</td>
+                        <td>{{ poruchy.priorita }}</td>
+                        <td>{{ poruchy.stroj }}</td>
+                        <td>{{ poruchy.casvzniku|date('Y-m-d H:i:s')}}</td>
+                        <td>cas potvrzeni</td>
+                        <td class="text-white {{ poruchy.vyreseno is not null ? 'bg-success' : 'bg-danger' }}">
+                            {% if poruchy.vyreseno is not null %}
+                                vyřešeno
+                            {% else %}
+                                nevyřešeno
+                            {% endif %}
 
 
-                    </td>
-                    <td>
-                        {% for p in poruchy.prevzate %}
-                            {{p.idPracovnika.prijmeni}} {{p.idPracovnika.jmeno}}<br>
-                        {% endfor %}
-                    </td>
-                </tr>
+                        </td>
+                        <td>
+                            {% for p in poruchy.prevzate %}
+                                {{p.idPracovnika.prijmeni}} {{p.idPracovnika.jmeno}}<br>
+                            {% endfor %}
+                        </td>
+                    </tr>
                 {% endfor %}
-            </tr>
+                </tr>
             </table>
 
         </div>
@@ -63,9 +63,9 @@
             <table border="1" width="100%">
                 <tr><th colspan="8" bgcolor="#87cefa">&nbsp;</th></tr>
                 <th colspan="8" align="ceter">Nepřiřazené úkoly</th>
-                        <tr>
+                <tr>
 
-                            {% for neprirazene in n %}
+                    {% for neprirazene in n %}
                 <tr>
                     <td>{{ neprirazene.id }}</td>
                     <td>{{ neprirazene.priorita }}</td>
@@ -83,9 +83,9 @@
                 </tr>
                 <td style="font-weight: bold; text-align: center">Jméno</td><td style="font-weight: bold; text-align: center">Status</td><td style="font-weight: bold; text-align: center">Pracoviště</td><td style="font-weight: bold; text-align: center">OD</td><td style="font-weight: bold; text-align: center">DO</td>
 
-                    {% for prac in p %}
-                <tr>
-                     <td> {{prac.prijmeni}} {{prac.jmeno}}<br></td>
+                {% for prac in p %}
+                    <tr>
+                        <td> {{prac.prijmeni}} {{prac.jmeno}}<br></td>
 
 
                         {% if prac.vyreseno is not null %}
@@ -99,29 +99,29 @@
 
 
 
-                    <td> {{prac.stroj}}</td>
-                    {% if prac.prevzetidatcas is not null %}
-                        <td>{{ prac.prevzetidatcas|date('Y-m-d H:i:s')}}</td>
-                    {% else %}
-                        <td></td>
-                    {% endif %}
-                    {% if prac.vyreseno is not null %}
-                        <td>{{ prac.vyreseno|date('Y-m-d H:i:s')}}</td>
-                    {% else %}
-                        <td></td>
-                    {% endif %}
+                        <td> {{prac.stroj}}</td>
+                        {% if prac.prevzetidatcas is not null %}
+                            <td>{{ prac.prevzetidatcas|date('Y-m-d H:i:s')}}</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                        {% if prac.vyreseno is not null %}
+                            <td>{{ prac.vyreseno|date('Y-m-d H:i:s')}}</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
 
-                </tr>
+                    </tr>
 
                 {% endfor %}
             </table>
             <br><br>
             <table border="1" width="100%">
                 <tr>
-                <th colspan="8" align="ceter">Denní přehled uskutečněných oprav</th>
+                    <th colspan="8" align="ceter">Denní přehled uskutečněných oprav</th>
                 </tr>
                 <tr>
-                <td>Počet otevřených úkolů</td><td colspan="3">{{o}}</td>
+                    <td>Počet otevřených úkolů</td><td colspan="3">{{o}}</td>
                 </tr>
                 <tr>
                     <td>Počet případů bez notifikace</td><td colspan="3">{{ b }}</td>

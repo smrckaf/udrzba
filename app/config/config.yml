@@ -8,6 +8,7 @@ imports:
 parameters:
     locale: en
     kmenova_data_images_directory: '%kernel.project_dir%/web/uploads/kmenova_data_images'
+    nahradni_dily_docs_directory: '%kernel.project_dir%/web/uploads/nahradni_dily_docs'
 
 framework:
     #esi: ~

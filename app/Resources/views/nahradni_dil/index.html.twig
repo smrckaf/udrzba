@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block title %}Náhradní díly{% endblock %}
+
+{% block body %}
+	{% include 'menu.html.twig' with {'zalozka': 4} %}
+    <div class="container">
+        <div class="border-bottom pb-1 mt-4 mb-3">
+            <h1 class="text-center">Náhradní díly</h1>
+        </div>
+
+        <h3>Informace o stroji</h3>
+        {% include 'stroj/stroj-detail.html.twig' with {'stroj': stroj} %}
+
+        <hr class="my-5">
+
+        <p>
+            <a href="{{ path('nahradni-dil-upravit', {'stroj': stroj.id}) }}" class="btn btn-success"><span class="fa fa-plus"></span> Přidat nový náhradní díl</a>
+        </p>
+        {% for nahradniDil in nahradniDily %}
+            {% if loop.first %}
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th class="text-center" scope="col">Tovární označení</th>
+                        <th class="text-center" scope="col">Název</th>
+                        <th class="text-center" scope="col">Výrobce</th>
+                        <th class="text-center" scope="col">Počet kusů</th>
+                        <th class="text-center" scope="col">Cena za kus bez DPH [Kč]</th>
+                        <th class="text-center" scope="col">Životnost [hod]</th>
+                        <th class="text-center" scope="col">Periodická kontrola [hod]</th>
+                        <th class="text-center" scope="col">Dokument</th>
+                        <th class="text-center" scope="col">Dodavatel</th>
+                        <th class="text-center" scope="col">Kontakt na dodavatele</th>
+                        <th class="text-center" scope="col">Web</th>
+                        <th class="text-center" scope="col">Operace</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+            {% endif %}
+            <tr>
+                <td class="text-center">
+                    {{ nahradniDil.oznaceni }}
+                </td>
+                <td class="text-center">
+                    {{ nahradniDil.nazev }}
+                </td>
+                <td class="text-center">
+                    {{ nahradniDil.vyrobce }}
+                </td>
+                <td class="text-center">
+                    {{ nahradniDil.pocetKusu }}
+                </td>
+                <td class="text-center">
+                    {{ nahradniDil.cenaZaKusBezDPH }}
+                </td>
+                <td class="text-center">
+                    {{ nahradniDil.zivotnost }}
+                </td>
+                <td class="text-center">
+                    {{ nahradniDil.kontrola }}
+                </td>
+                <td class="text-center">
+                    {% if nahradniDil.dokument is not null %}
+                        <a download href="{{ asset('uploads/nahradni_dily_docs/' ~ nahradniDil.dokument) }}" data-title="Dokument"><span class="fa fa-2x fa-floppy-o"></span></a>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    {{ nahradniDil.dodavatel }}
+                </td>
+                <td class="text-center">
+                    {{ nahradniDil.kontaktNaDodavatele }}
+                </td>
+                <td class="text-center">
+                    {{ nahradniDil.web }}
+                </td>
+
+                <td class="text-center">
+                    <a href="{{ path('nahradni-dil-upravit', {'nahradniDil': nahradniDil.id, 'stroj': stroj.id})}}" class="btn btn-info" title="Upravit náhradní díl">
+                        <span class="fa fa-pencil"></span>
+                    </a>
+                    <a href="{{ path('nahradni-dil-smazat', {'nahradniDil': nahradniDil.id, 'stroj': stroj.id})}}" class="btn btn-danger" onclick="return confirm('Opravdu si přejete smazat vybraný náhradní díl?')" title="Odstranit náhradní díl">
+                        <span class="fa fa-trash"></span>
+                    </a>
+                </td>
+            </tr>
+            {% if loop.last %}
+                    </tbody>
+                </table>
+            {% endif %}
+        {% else %}
+            <p>Stroj zatím nemá žádné náhradní díly.</p>
+        {% endfor %}
+        </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}

@@ -58,6 +58,15 @@ class LogObsluhy
 
 
 
+    public function getStroj(){
+        return $this->getIdprevzal()->getIdPoruchy()->getStroj();
+    }
+
+
+    public function getPorucha(){
+        return $this->getIdprevzal()->getIdPoruchy();
+    }
+
     /**
      * Get id
      *

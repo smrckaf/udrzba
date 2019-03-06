@@ -8,13 +8,22 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\LogObsluhy;
+use AppBundle\Entity\Pracovnik;
+use AppBundle\Entity\Stroj;
 use AppBundle\Manager\UdrzbaManager;
+use GridBundle\Components\Grid\Columns\Column;
+use GridBundle\Components\Grid\Columns\DateTimeColumn;
+use GridBundle\Components\Grid\Filter\Filter;
+use GridBundle\Components\Grid\Grid;
+use GridBundle\Components\Grid\Paginator\Paginator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Utility;
+Use GridBundle\Components\Grid\Filter\Fields;
 
 
 
@@ -42,5 +51,72 @@ class reportingController extends Controller
         return $this->render("udrzba/reporting.html.twig");
     }
 
+    /**
+     * @Route("/reportingvypis", name="reporting-vypis")
+     */
+    // zde je pokusny vypis z GridBundle
+    public function vypis(Request $dotaz)
+    {
+        return $this->render('reporting/vypis.html.twig', [
+            'grid' => $this->createGrid($dotaz),
+        ]);
+    }
 
+    private function createGrid(Request $request)
+    {
+        $paginator = new Paginator(
+            $this->get('knp_paginator'),
+            $request->query->getInt('page', $request->query->get('page', 1)),
+            $request->query->getInt('limit', $this->getParameter('knp_paginator.page_range'))
+        );
+
+        $filter = new Filter('Filtr', $this->container, $request);
+        $pracovnici = [];
+        $prac = $this->getDoctrine()->getRepository(Pracovnik::class)->findBy([], ['prijmeni' => 'ASC']);
+        foreach($prac as $p){
+            $pracovnici[$p->getPrijmeni()] = $p->getId();
+        }
+        $filter->addField(new Fields\Select('prijmeni', 'Příjmeni', 'prac', 'id', $pracovnici));
+
+        $stroje = [];
+        $str = $this->getDoctrine()->getRepository(Stroj::class)->findBy([], ['nazev' => 'ASC']);
+        foreach($str as $p){
+            $stroje[$p->getNazev()] = $p->getId();
+        }
+        $filter->addField(new Fields\Select('nazev', 'Stroj', 'stroj', 'id', $stroje));
+        $filter->addField(new Fields\Date('od', 'Od', 'l', 'start'));
+
+
+        $grid = new Grid(
+            $this->getDoctrine()->getRepository(LogObsluhy::class)->createQueryBuilder('l')
+                ->join('l.prevzal', 'prev')
+                ->join('prev.idPoruchy', 'porucha')
+                ->join('porucha.stroj', 'stroj')
+                ->join('prev.idPracovnika', 'prac'),
+            $paginator,
+            $filter
+        );
+
+        $grid->addColumn(new Column('ID', 'id', 'l'));
+
+        $grid->addColumn(new Column('Pracovník', 'idprevzal', 'l', function ($id, LogObsluhy $logObsluhy) {
+            return $logObsluhy->getIdprevzal()->getIdPracovnika()->getPrijmeni();
+        }));
+        $grid->addColumn(new Column('Stroj', 'stroj', 'l', function ($id, LogObsluhy $logObsluhy) {
+            return $logObsluhy->getIdprevzal()->getIdPoruchy()->getStroj()->getNazev();
+        }));
+        $grid->addColumn(new Column('Datum poruchy', 'porucha', 'l', function ($id, LogObsluhy $logObsluhy) {
+            return $logObsluhy->getIdprevzal()->getIdPoruchy()->getCasVzniku()->format('d.m.Y');
+        }));
+//        $grid->addColumn(new Column('products.grid.category', 'cat_name', 'c'));
+        $grid->addColumn(new DateTimeColumn('Start', 'l', 'start'));
+        $grid->addColumn(new DateTimeColumn('Konec', 'l', 'konec'));
+
+//        $grid->addButton(new Button('add', Button::BTN_EDIT, 'homepage_edit'));
+//        $grid->addButton(new Button('add', Button::BTN_ADD, 'homepage'));
+
+        $grid->prepareRender();
+
+        return $grid;
+    }
 }

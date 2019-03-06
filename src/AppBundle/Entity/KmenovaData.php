@@ -78,11 +78,74 @@ class KmenovaData
     private $obrazek3;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $stredisko;
+
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     */
+    private $uvedenoDoProvozu;
+
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     */
+    private $zarukaDo;
+
+    /**
      * KmenovaData constructor.
      */
     public function __construct()
     {
 
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStredisko()
+    {
+        return $this->stredisko;
+    }
+
+    /**
+     * @param mixed $stredisko
+     */
+    public function setStredisko($stredisko)
+    {
+        $this->stredisko = $stredisko;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUvedenoDoProvozu()
+    {
+        return $this->uvedenoDoProvozu;
+    }
+
+    /**
+     * @param mixed $uvedenoDoProvozu
+     */
+    public function setUvedenoDoProvozu($uvedenoDoProvozu)
+    {
+        $this->uvedenoDoProvozu = $uvedenoDoProvozu;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getZarukaDo()
+    {
+        return $this->zarukaDo;
+    }
+
+    /**
+     * @param mixed $zarukaDo
+     */
+    public function setZarukaDo($zarukaDo)
+    {
+        $this->zarukaDo = $zarukaDo;
     }
 
     /**
