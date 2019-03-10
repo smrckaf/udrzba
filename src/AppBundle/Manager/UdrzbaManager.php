@@ -11,6 +11,7 @@ namespace AppBundle\Manager;
 
 use AppBundle\Entity\KmenovaData;
 use AppBundle\Entity\Kompetence;
+use AppBundle\Entity\Motohodiny;
 use AppBundle\Entity\NahradniDil;
 use AppBundle\Entity\Nastroj;
 use AppBundle\Entity\Porucha;
@@ -400,6 +401,74 @@ class UdrzbaManager
     public function smazatNahradniDil(NahradniDil $nahradniDil)
     {
         $this->em->remove($nahradniDil);
+        $this->em->flush();
+    }
+
+    public function getMotohodinyByStroj($stroj)
+    {
+        return $this->em->getRepository(Motohodiny::class)->findBy(['stroj' => $stroj], ['zapsano' => 'ASC']);
+    }
+
+    /**
+     * @param Stroj $stroj
+     * @return Motohodiny|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getLastMotohodinyByStroj(Stroj $stroj)
+    {
+        return $this->em->createQueryBuilder()
+            ->select('m')
+            ->from(Motohodiny::class, 'm')
+            ->where('m.stroj = :stroj')
+            ->setParameter('stroj', $stroj)
+            ->orderBy('m.zapsano', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Stroj $stroj
+     * @return int
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getMinMotohodinyForForm(Stroj $stroj) {
+        $lastMotohodiny = $this->getLastMotohodinyByStroj($stroj);
+        return ($lastMotohodiny !== null ? $lastMotohodiny->getHodnota() + 1 : 1);
+    }
+
+    public function ulozitMotohodiny(Motohodiny $motohodiny)
+    {
+        if ($motohodiny->getId() === null) {
+            $lastMotohodiny = $this->getLastMotohodinyByStroj($motohodiny->getStroj());
+            if ($lastMotohodiny !== null) {
+                $lastMotohodiny->setNasledujiciMotohodiny($motohodiny);
+            }
+
+            $motohodiny->setPredchoziMotohodiny($lastMotohodiny);
+            $this->em->persist($motohodiny);
+        }
+        $this->em->flush();
+    }
+
+    public function smazatMotohodiny(Motohodiny $motohodiny)
+    {
+        $this->pripravProOdstraneni($motohodiny);
+        $this->em->remove($motohodiny);
+        $this->em->flush();
+    }
+
+    public function pripravProOdstraneni(Motohodiny $motohodiny)
+    {
+        $predchoziMoto = $motohodiny->getPredchoziMotohodiny();
+        if ($predchoziMoto !== null) {
+            $predchoziMoto->setNasledujiciMotohodiny($motohodiny->getNasledujiciMotohodiny());
+        }
+
+        $nasledujiciMoto = $motohodiny->getNasledujiciMotohodiny();
+        if ($nasledujiciMoto !== null) {
+            $nasledujiciMoto->setPredchoziMotohodiny($motohodiny->getPredchoziMotohodiny());
+        }
         $this->em->flush();
     }
 }

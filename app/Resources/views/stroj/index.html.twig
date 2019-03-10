@@ -18,6 +18,7 @@
         <div id="collapseParent">
             {% for stroj in stroje %}
                     <div class="collapse mt-2 mb-4" id="collapseExample{{ stroj.id }}" data-parent="#collapseParent">
+                        {#
                         <div class="card">
                             <div class="card-header">
                                 Upravit stroj
@@ -31,6 +32,26 @@
                                 <a class="btn btn-primary" href="{{ path("nahradni-dil-index", {'stroj': stroj.id}) }}" title="Upravit náhradní díly stroje">Náhradní díly</a>
                             </div>
                         </div>
+                        #}
+
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path("stroj-upravit", {'stroj': stroj.id}) }}" title="Upravit stroj">Stroj</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path("stroj-upravit-kmenova-data", {'stroj': stroj.id}) }}" title="Upravit kmenová data stroje">Kmenová data</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path("nastroj-index", {'stroj': stroj.id}) }}" title="Upravit nástroje stroje">Nástroje</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path("pripravek-index", {'stroj': stroj.id}) }}" title="Upravit přípravky stroje">Přípravky</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path("nahradni-dil-index", {'stroj': stroj.id}) }}" title="Upravit náhradní díly stroje">Náhradní díly</a>
+                            </li>
+                        </ul>
+
                     </div>
             {% endfor %}
         </div>
@@ -93,6 +114,9 @@
             <td class="text-center">
                 <a data-toggle="collapse" href="#collapseExample{{ stroj.id }}" role="button" aria-expanded="false" aria-controls="collapseExample" class="btn btn-info" title="Upravit stroj">
                     <span class="fa fa-pencil"></span>
+                </a>
+                <a href="{{ path('motohodiny-index', {'stroj': stroj.id})}}" class="btn btn-warning" title="Spravovat motohodiny stroje">
+                    <span class="fa fa-clock-o"></span>
                 </a>
                 <a href="{{ path('stroj-smazat', {'stroj': stroj.id})}}" class="btn btn-danger" onclick="return confirm('Opravdu si přejete smazat vybraný stroj?')" title="Odstranit stroj">
                     <span class="fa fa-trash"></span>
