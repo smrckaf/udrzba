@@ -19,13 +19,13 @@
                 <th>IČO</th>
                 <th>DIČ</th>
                 <th>Dodací lhůta</th>
-                <th></th>
+                <th class="no-filter-sorter"></th>
             </tr>
         </thead>
         <tbody>
         {% for firma in firmas %}
             <tr>
-                <td><a href="{{ path('firma_show', { 'id': firma.id }) }}">{{ firma.id }}</a></td>
+                <td>{{ firma.id }}</td>
                 <td>{{ firma.nazev }}</td>
                 <td>{{ firma.adresa }}</td>
                 <td>{{ firma.web }}</td>

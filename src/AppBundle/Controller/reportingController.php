@@ -12,6 +12,7 @@ use AppBundle\Entity\LogObsluhy;
 use AppBundle\Entity\Pracovnik;
 use AppBundle\Entity\Stroj;
 use AppBundle\Manager\UdrzbaManager;
+use GridBundle\Components\Grid\Button;
 use GridBundle\Components\Grid\Columns\Column;
 use GridBundle\Components\Grid\Columns\DateTimeColumn;
 use GridBundle\Components\Grid\Filter\Filter;
@@ -44,7 +45,7 @@ class reportingController extends Controller
 
 
     /**
-     * @Route("/reporting", name="reporting")
+     * @Route("/reporting2", name="reporting2")
      */
     public function indexAction()
     {
@@ -52,7 +53,7 @@ class reportingController extends Controller
     }
 
     /**
-     * @Route("/reportingvypis", name="reporting-vypis")
+     * @Route("/reporting", name="reporting")
      */
     // zde je pokusny vypis z GridBundle
     public function vypis(Request $dotaz)
@@ -83,8 +84,15 @@ class reportingController extends Controller
         foreach($str as $p){
             $stroje[$p->getNazev()] = $p->getId();
         }
-        $filter->addField(new Fields\Select('nazev', 'Stroj', 'stroj', 'id', $stroje));
-        $filter->addField(new Fields\Date('od', 'Od', 'l', 'start'));
+        $filter->addField(new Fields\Date('od', 'datuod', 'l', 'start',Null ,Fields\Date::OPERATION_EQUAL_GREATER_THAN));
+        $filter->addField(new Fields\Date('do', 'datudo', 'l', 'start',Null ,Fields\Date::OPERATION_EQUAL_LESS_THAN));
+
+
+
+        //$filter->addField(new Fields\Date('od', 'Od', 'l', 'start'));
+
+
+
 
 
         $grid = new Grid(
@@ -112,7 +120,8 @@ class reportingController extends Controller
         $grid->addColumn(new DateTimeColumn('Start', 'l', 'start'));
         $grid->addColumn(new DateTimeColumn('Konec', 'l', 'konec'));
 
-//        $grid->addButton(new Button('add', Button::BTN_EDIT, 'homepage_edit'));
+       // $grid->addButton(new Button('add', Button::BTN_EDIT, 'homepage_edit'));
+        //udelat routu pro detail bude mit parametr id
 //        $grid->addButton(new Button('add', Button::BTN_ADD, 'homepage'));
 
         $grid->prepareRender();
