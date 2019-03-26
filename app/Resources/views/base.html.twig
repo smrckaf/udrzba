@@ -11,6 +11,7 @@
             <link rel="stylesheet" href="{{ asset("css/theme.bootstrap_4.css") }}">
             <link href="{{ asset('vendor/lightbox2/dist/css/lightbox.min.css') }}" rel="stylesheet">
             <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+            <link rel='stylesheet' href='/components/fullcalendar/dist/fullcalendar.min.css' />
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
@@ -29,6 +30,8 @@
         {% block javascripts %}
             {#<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>#}
             <script src="{{ asset('js/jquery-latest.min.js') }}"></script>
+            <script src='/components/moment/min/moment-with-locales.min.js'></script>
+            <script src="/components/fullcalendar/dist/fullcalendar.js"></script>
             <script src="{{ asset('vendor/bootstrap/site/docs/4.2/assets/js/vendor/jquery-slim.min.js') }}"></script>
             <script src="{{ asset('vendor/bootstrap/dist/js/bootstrap.min.js') }}"></script>
             <script src="{{ asset('js/main.js') }}"></script>
