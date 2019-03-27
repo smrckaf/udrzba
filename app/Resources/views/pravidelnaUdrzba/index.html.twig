@@ -4,6 +4,48 @@
     {{ parent() }}
 {% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        $( document ).ready(function() {
+            $('#calendar').fullCalendar({
+                themeSystem: 'bootstrap3',
+                locale: 'cs',
+                buttonText: {
+                    today:    'Dnes',
+                    month:    'Měsíc',
+                    week:     'Týden',
+                    day:      'Den',
+                    list:     'Seznam'
+                },
+                timeFormat: 'hh:mm',
+                slotLabelFormat:'HH:mm',
+                selectable: true,
+                eventClick: function(event) {
+                    if (event.url) {
+                        window.open(event.url);
+                        return false;
+                    }
+                },
+                eventSources: [
+                    {
+                        url: '/cz/turnaje-feed', // use the `url` property
+                        color: 'lightgrey',    // an option!
+                        textColor: 'black'  // an option!
+                    },
+                    {
+                        url: '/cz/user-feed', // use the `url` property
+                        color: 'lightcoral',    // an option!
+                        textColor: 'black'  // an option!
+                    }
+
+                ]
+            });
+        });
+    </script>
+{% endblock %}
+
 {% block title %}Plánovaná údržba{% endblock %}
 
 {% block body %}
