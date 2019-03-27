@@ -18,6 +18,7 @@ use AppBundle\Form\UpravitStrojType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 
@@ -52,6 +53,7 @@ class PravidelnaUdrzbaController extends Controller
         }
 
         $pravidelneUdrzby = $this->udrzbaManager->getPravidelneUdrzby($obdobi);
+
         return $this->render("pravidelnaUdrzba/index.html.twig", [
             'pravidelneUdrzby' => $pravidelneUdrzby,
             'form' => $form->createView(),
@@ -78,6 +80,7 @@ class PravidelnaUdrzbaController extends Controller
         }
         return $this->render('pravidelnaUdrzba/upravit.html.twig', [
             'form' => $form->createView(),
+            'pravidelnaUdrzba' => $pravidelnaUdrzba,
         ]);
     }
 
@@ -94,15 +97,26 @@ class PravidelnaUdrzbaController extends Controller
     }
 
     /**
-     * @Route("/kalendar", name="pravidelna-udrzba-kalendar")
+     * @Route("/kalendar-data", name="pravidelna-udrzba-kalendar")
      */
     public function kalendar()
     {
 
+        $data = array();
+        $obdobi = 3;
+        $pravidelneUdrzby = $this->udrzbaManager->getPravidelneUdrzby($obdobi);
 
-        return $this->render("pravidelnaUdrzba/kalendar2.html.twig", [
-            'vyberstroj' => 1,
-        ]);
+
+        foreach ($pravidelneUdrzby as $udrzba) {
+            $data[] = [
+                "id" =>$udrzba["id"],
+                "title" =>$udrzba["nazev"]." od ".$udrzba["datumUdrzbyod"]->format('H:i'),
+                "start" =>$udrzba["datumUdrzbyod"]->format('Y-m-d')."T".$udrzba["datumUdrzbyod"]->format('H:i:s'),
+                "end" =>$udrzba["datumUdrzbydo"]->format('Y-m-d')."T".$udrzba["datumUdrzbyod"]->format('H:i:s'),
+                "url" =>"/pravidelna-udrzba/upravit/".$udrzba["id"]."?obdobi=".$obdobi];
+        }
+
+        return new JsonResponse($data);
     }
 
 

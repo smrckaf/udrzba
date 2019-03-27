@@ -4,48 +4,6 @@
     {{ parent() }}
 {% endblock %}
 
-{% block javascripts %}
-    {{ parent() }}
-
-    <script>
-        $( document ).ready(function() {
-            $('#calendar').fullCalendar({
-                themeSystem: 'bootstrap3',
-                locale: 'cs',
-                buttonText: {
-                    today:    'Dnes',
-                    month:    'Měsíc',
-                    week:     'Týden',
-                    day:      'Den',
-                    list:     'Seznam'
-                },
-                timeFormat: 'hh:mm',
-                slotLabelFormat:'HH:mm',
-                selectable: true,
-                eventClick: function(event) {
-                    if (event.url) {
-                        window.open(event.url);
-                        return false;
-                    }
-                },
-                eventSources: [
-                    {
-                        url: '/cz/turnaje-feed', // use the `url` property
-                        color: 'lightgrey',    // an option!
-                        textColor: 'black'  // an option!
-                    },
-                    {
-                        url: '/cz/user-feed', // use the `url` property
-                        color: 'lightcoral',    // an option!
-                        textColor: 'black'  // an option!
-                    }
-
-                ]
-            });
-        });
-    </script>
-{% endblock %}
-
 {% block title %}Plánovaná údržba{% endblock %}
 
 {% block body %}
@@ -54,6 +12,7 @@
         <div class="border-bottom pb-1 mt-4 mb-3">
             <h1 class="text-center">Plánovaná údržba</h1>
         </div>
+        {#
 
         <h4>Filtr</h4>
         <div class="jumbotron p-1 pl-4 pr-4">
@@ -61,77 +20,12 @@
                 {{ form(form) }}
             </p>
         </div>
-
+ #}
 		<p>
             <a href="{{ path('pravidelna-udrzba-upravit', {'obdobi': obdobi})}}" class="btn btn-success"><span class="fa fa-plus"></span> Naplánovat novou údržbu</a>
 		</p>
-        {% for pravidelnaUdrzba in pravidelneUdrzby %}
-            {% if loop.first %}
-                <table class="table table-bordered table-striped table-hover">
-                    <thead>
-                    <tr>
-                        <th class="text-center" scope="col">Stroj</th>
-                        <th class="text-center" scope="col">Naplánované datum od</th>
-                        <th class="text-center" scope="col">Naplánované datum do</th>
-                        <th class="text-center" scope="col">Popis údržby</th>
-                        <th class="text-center" scope="col">Kdo zadal</th>
-                        <th class="text-center" scope="col">Datum provedení</th>
-                        <th class="text-center" scope="col">Provedl</th>
-                        <th class="text-center" scope="col">Poznámka</th>
-                        <th class="text-center" scope="col">Operace</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-            {% endif %}
-            <tr>
-                <td class="text-center">
-                    {{ pravidelnaUdrzba.nazev }}
-                </td>
-                <td class="text-center">
-                    {{ pravidelnaUdrzba.datumUdrzbyod|date("d.m.Y H:i") }}
-                </td>
-                <td class="text-center">
-                    {{ pravidelnaUdrzba.datumUdrzbydo|date("d.m.Y H:i") }}
-                </td>
 
-
-
-
-                <td class="text-center">
-                    {{ pravidelnaUdrzba.popisUdrzby }}
-                </td>
-                <td class="text-center">
-                    {{ pravidelnaUdrzba.kjmeno ~ " " ~ pravidelnaUdrzba.kprijmeni }}
-                </td>
-
-
-                <td class="text-center">
-                    {% if pravidelnaUdrzba.provedeni is not null %}
-                        {{ pravidelnaUdrzba.provedeni|date("d.m.Y H:i") }}
-                    {% endif %}
-                </td>
-                <td class="text-center">
-                    {{ pravidelnaUdrzba.jmeno ~ " " ~ pravidelnaUdrzba.prijmeni }}
-                </td>
-                <td class="text-center">
-                    {{ pravidelnaUdrzba.poznUdrzbare }}
-                </td>
-                <td class="text-center">
-                    <a href="{{ path('pravidelna-udrzba-upravit', {'pravidelnaUdrzba': pravidelnaUdrzba.id, 'obdobi': obdobi})}}" class="btn btn-info" title="Upravit naplánovanou údržbu">
-                        <span class="fa fa-pencil"></span>
-                    </a>
-                    <a href="{{ path('pravidelna-udrzba-smazat', {'pravidelnaUdrzba': pravidelnaUdrzba.id, 'obdobi': obdobi})}}" class="btn btn-danger" onclick="return confirm('Opravdu si přejete smazat naplánovanou údržbu?')" title="Odstranit naplánovanou údržbu">
-                        <span class="fa fa-trash"></span>
-                    </a>
-                </td>
-            </tr>
-            {% if loop.last %}
-                    </tbody>
-                </table>
-            {% endif %}
-        {% else %}
-            <p>Pro vybrané období nejsou k dispozici žádné údržby.</p>
-        {% endfor %}
+        <div id="calendar"></div>
     </div>
 {% endblock %}
 

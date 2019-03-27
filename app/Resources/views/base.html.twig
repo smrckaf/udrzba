@@ -29,69 +29,109 @@
 
         {% block javascripts %}
             {#<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>#}
-            <script src="{{ asset('js/jquery-latest.min.js') }}"></script>
-            <script src='/components/moment/min/moment-with-locales.min.js'></script>
-            <script src="/components/fullcalendar/dist/fullcalendar.js"></script>
-            <script src="{{ asset('vendor/bootstrap/site/docs/4.2/assets/js/vendor/jquery-slim.min.js') }}"></script>
-            <script src="{{ asset('vendor/bootstrap/dist/js/bootstrap.min.js') }}"></script>
-            <script src="{{ asset('js/main.js') }}"></script>
-            <script type="text/javascript">
-                $(document).ready(function () {
-                    $('label.required').append(" <span class=\"text-danger\">*</span>");
-                });
-            </script>
+            <script src="{{ asset('/components/jquery/jquery.js') }}"></script>
+                    {#<script src="{{ asset('vendor/bootstrap/site/docs/4.2/assets/js/vendor/jquery.min.js') }}"></script>#}
+                    <script src="{{ asset('vendor/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+                    <script src='/components/moment/min/moment-with-locales.min.js'></script>
+                    <script src="/components/moment/locale/cs.js"></script>
+                    <script src="/components/fullcalendar/dist/fullcalendar.js"></script>
+                    <script src="{{ asset('js/main.js') }}"></script>
+                    <script type="text/javascript">
+                        $(document).ready(function () {
+                            $('label.required').append(" <span class=\"text-danger\">*</span>");
+                        });
+                    </script>
 
-            <!-- Tablesorter: required for bootstrap -->
+                    <!-- Tablesorter: required for bootstrap -->
 
-            <script src="{{ asset('js/jquery.tablesorter.js') }}"></script>
-            <script src="{{ asset('js/jquery.tablesorter.widgets.js') }}"></script>
+                    <script src="{{ asset('js/jquery.tablesorter.js') }}"></script>
+                    <script src="{{ asset('js/jquery.tablesorter.widgets.js') }}"></script>
 
-            <script src="{{ asset('vendor/lightbox2/dist/js/lightbox.min.js') }}"></script>
+                    <script src="{{ asset('vendor/lightbox2/dist/js/lightbox.min.js') }}"></script>
 
-            <script type="text/javascript">
-                $(function() {
+                    <script type="text/javascript">
+                    $(function() {
 
                     $(".sorter").tablesorter({
-                        theme : "bootstrap",
+                    theme : "bootstrap",
 
-                        widthFixed: true,
+                    widthFixed: true,
 
-                        // widget code contained in the jquery.tablesorter.widgets.js file
-                        // use the zebra stripe widget if you plan on hiding any rows (filter widget)
-                        // the uitheme widget is NOT REQUIRED!
-                        //widgets : [ "filter", "columns", "zebra" ],
-                        widgets : [ "filter", "columns" ],
+                    // widget code contained in the jquery.tablesorter.widgets.js file
+                    // use the zebra stripe widget if you plan on hiding any rows (filter widget)
+                    // the uitheme widget is NOT REQUIRED!
+                    //widgets : [ "filter", "columns", "zebra" ],
+                    widgets : [ "filter", "columns" ],
 
-                        widgetOptions : {
-                            // using the default zebra striping class name, so it actually isn't included in the theme variable above
-                            // this is ONLY needed for bootstrap theming if you are using the filter widget, because rows are hidden
-                            //zebra : ["even", "odd"],
+                    widgetOptions : {
+                        // using the default zebra striping class name, so it actually isn't included in the theme variable above
+                        // this is ONLY needed for bootstrap theming if you are using the filter widget, because rows are hidden
+                        //zebra : ["even", "odd"],
 
-                            // class names added to columns when sorted
-                            columns: [ "primary", "secondary", "tertiary" ],
+                        // class names added to columns when sorted
+                        columns: [ "primary", "secondary", "tertiary" ],
 
-                            // reset filters button
-                            filter_reset : ".reset",
+                        // reset filters button
+                        filter_reset : ".reset",
 
-                            // extra css class name (string or array) added to the filter element (input or select)
-                            filter_cssFilter: [
-                                'form-control',
-                                'form-control',
-                                'form-control',
-                                //'form-control custom-select', // select needs custom class names :(
-                                'form-control',
-                                'form-control',
-                                'form-control',
-                                'form-control',
-                                'form-control',
-                                'form-control'
-                            ]
+                        // extra css class name (string or array) added to the filter element (input or select)
+                        filter_cssFilter: [
+                            'form-control',
+                            'form-control',
+                            'form-control',
+                            //'form-control custom-select', // select needs custom class names :(
+                            'form-control',
+                            'form-control',
+                            'form-control',
+                            'form-control',
+                            'form-control',
+                            'form-control'
+                        ]
 
-                        }
+                    }
                     })
-                });
-            </script>
+                    });
+                    </script>
 
-        {% endblock %}
-    </body>
+                    <script>
+                    $( document ).ready(function() {
+                    $('#calendar').fullCalendar({
+                        themeSystem: 'bootstrap4',
+                        locale: 'cs',
+                        timeFormat: 'H(:mm)',
+                        displayEventTime: false,
+                        header: {
+                            left: 'prev,next today',
+                            center: 'title',
+                            right: 'month,agendaWeek,agendaDay,listWeek'
+                        },
+                        buttonText: {
+                            today:    'Dnes',
+                            month:    'Měsíc',
+                            week:     'Týden',
+                            day:      'Den',
+                            list:     'Seznam'
+                        },
+                        timeFormat: 'hh:mm',
+                        slotLabelFormat:'HH:mm',
+                        selectable: true,
+                        eventClick: function(event) {
+                            if (event.url) {
+                                window.open(event.url);
+                                return false;
+                            }
+                        },
+                        eventSources: [
+                            {
+                                url: '/pravidelna-udrzba/kalendar-data', // use the `url` property
+                                color: 'lightgrey',    // an option!
+                                textColor: 'black'  // an option!
+                            }
+
+                        ]
+                        });
+                        });
+                    </script>
+             {% endblock %}
+</body>
 </html>

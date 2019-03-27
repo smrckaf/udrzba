@@ -55,6 +55,13 @@ class UpravitPravidelnouUdrzbuType extends AbstractType
         ]);
 
 
+        $builder->add('kdozadal', EntityType::class, [
+            'class' => Pracovnik::class,
+            'choice_label' => 'prijmeni',
+            'label' => 'Pracovnik',
+            'required' => false,
+        ]);
+
         $builder->add('odeslat', SubmitType::class, [
             'label' => 'Odeslat',
             'attr' => [
@@ -62,12 +69,7 @@ class UpravitPravidelnouUdrzbuType extends AbstractType
             ]
         ]);
 
-        $builder->add('kdozadal', EntityType::class, [
-            'class' => Pracovnik::class,
-            'choice_label' => 'prijmeni',
-            'label' => 'Pracovnik',
-            'required' => false,
-        ]);
+
 
     }
 
