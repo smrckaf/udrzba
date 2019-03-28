@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block title %}Plánovaná údržba{% endblock %}
+
+{% block body %}
+	{% include 'menu.html.twig' with {'zalozka': 5} %}
+    <div class="container">
+        <div class="border-bottom pb-1 mt-4 mb-3">
+            <h1 class="text-center">Plánovaná údržba - {{ stroj.nazev }}</h1>
+        </div>
+
+        <div id="calendarStroje"></div>
+
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        $( document ).ready(function() {
+            $('#calendarStroje').fullCalendar({
+                themeSystem: 'bootstrap4',
+                locale: 'cs',
+                timeFormat: 'H(:mm)',
+                displayEventTime: false,
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay,listWeek'
+                },
+                buttonText: {
+                    today:    'Dnes',
+                    month:    'Měsíc',
+                    week:     'Týden',
+                    day:      'Den',
+                    list:     'Seznam'
+                },
+                timeFormat: 'hh:mm',
+                slotLabelFormat:'HH:mm',
+                selectable: true,
+                eventClick: function(event) {
+                    if (event.url) {
+                        window.open(event.url);
+                        return false;
+                    }
+                },
+                eventSources: [
+                    {
+                        url: '/pravidelna-udrzba/kalendar-data-stroj/{{ stroj.id }}', // use the `url` property
+                        color: 'lightgrey',    // an option!
+                        textColor: 'black'  // an option!
+                    }
+
+                ]
+            });
+        });
+    </script>
+{% endblock %}

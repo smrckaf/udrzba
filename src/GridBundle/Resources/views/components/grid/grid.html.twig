@@ -65,7 +65,6 @@
                 <tr class="{{ classColors }}">
                     {# Výpis dat #}
                     {% for column in grid.getColumns() %}
-                        {% dump(column.getSourceColumnName()) %}
                         <td class="{{ column.getClasses() }}">{{ column.doFormatting(attribute(data, column.getSourceColumnName()), data)|raw }}</td>
                     {% endfor %}
 

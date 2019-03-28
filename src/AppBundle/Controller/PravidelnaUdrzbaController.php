@@ -119,6 +119,41 @@ class PravidelnaUdrzbaController extends Controller
         return new JsonResponse($data);
     }
 
+    /**
+     * @Route("/kalendar-data-stroj/{stroj}", name="pravidelna-udrzba-kalendar-stroj")
+     */
+    public function kalendarStroj(Stroj $stroj)
+    {
+
+        $udrzbaStroje = $this->udrzbaManager->getPravidelneUdrzbyByStroj($stroj);
+
+
+        $data = array();
+
+        foreach ($udrzbaStroje as $udrzba) {
+            $data[] = [
+                "id" =>$udrzba["id"],
+                "title" =>$udrzba["kprijmeni"]." od ".$udrzba["datumUdrzbyod"]->format('H:i'),
+                "start" =>$udrzba["datumUdrzbyod"]->format('Y-m-d')."T".$udrzba["datumUdrzbyod"]->format('H:i:s'),
+                "end" =>$udrzba["datumUdrzbydo"]->format('Y-m-d')."T".$udrzba["datumUdrzbyod"]->format('H:i:s'),
+                "url" =>"/pravidelna-udrzba/upravit/".$udrzba["id"]."?obdobi=3"];
+        }
+
+        return new JsonResponse($data);
+    }
+
+    /**
+     * @Route("/udrzba-stroje/{stroj}", name="udrzba-stroje")
+     */
+    public function udrzbaStrojeAction(Stroj $stroj)
+    {
+
+        return $this->render("pravidelnaUdrzba/stroj.html.twig", [
+            'stroj' => $stroj
+        ]);
+    }
+
+
 
 
 

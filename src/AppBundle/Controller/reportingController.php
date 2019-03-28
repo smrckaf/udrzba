@@ -85,50 +85,42 @@ class reportingController extends Controller
             $stroje[$p->getNazev()] = $p->getId();
         }
         $filter->addField(new Fields\Date('od', 'datuod', 'l', 'start',Null ,Fields\Date::OPERATION_EQUAL_GREATER_THAN));
-        $filter->addField(new Fields\Date('do',  'datudo', 'l', 'start',Null ,Fields\Date::OPERATION_EQUAL_LESS_THAN));
+        $filter->addField(new Fields\Date('do', 'datudo', 'l', 'start',Null ,Fields\Date::OPERATION_EQUAL_LESS_THAN));
 
 
 
         //$filter->addField(new Fields\Date('od', 'Od', 'l', 'start'));
 
 
-        $log = $this->getDoctrine()->getManager()
-            ->createQueryBuilder('l')
-            ->from(LogObsluhy::class, 'l')
-            ->addSelect("l.id, s.nazev stroj, prac.prijmeni pracovnik, l.start, l.konec")
-            ->join('l.prevzal', 'prev')
-            ->join('prev.idPoruchy', 'porucha')
-            ->join('porucha.stroj', 's')
-            ->join('prev.idPracovnika', 'prac')
-            ->getQuery()
-            ->getArrayResult();
+
+
 
         $grid = new Grid(
-            $log,
+            $this->getDoctrine()->getRepository(LogObsluhy::class)->createQueryBuilder('l')
+                ->join('l.prevzal', 'prev')
+                ->join('prev.idPoruchy', 'porucha')
+                ->join('porucha.stroj', 'stroj')
+                ->join('prev.idPracovnika', 'prac'),
             $paginator,
             $filter
         );
-         $soucet=0;
-        $grid->addColumn(new Column('ID', 'id', 'l',function($id) use (&$soucet)
-        {
-            $soucet++;
-        return $id;
-        } ));
 
-        $grid->addColumn(new Column('Pracovník', 'pracovnik', 'l'));
-        $grid->addColumn(new Column('Stroj', 'stroj', 'l'));
-        /*$grid->addColumn(new Column('Datum poruchy', 'porucha', 'l', function ($id, LogObsluhy $logObsluhy) {
+        $grid->addColumn(new Column('ID', 'id', 'l'));
+
+        $grid->addColumn(new Column('Pracovník', 'idprevzal', 'l', function ($id, LogObsluhy $logObsluhy) {
+            return $logObsluhy->getIdprevzal()->getIdPracovnika()->getPrijmeni();
+        }));
+        $grid->addColumn(new Column('Stroj', 'stroj', 'l', function ($id, LogObsluhy $logObsluhy) {
+            return $logObsluhy->getIdprevzal()->getIdPoruchy()->getStroj()->getNazev();
+        }));
+        $grid->addColumn(new Column('Datum poruchy', 'porucha', 'l', function ($id, LogObsluhy $logObsluhy) {
             return $logObsluhy->getIdprevzal()->getIdPoruchy()->getCasVzniku()->format('d.m.Y');
-        }));*/
+        }));
 //        $grid->addColumn(new Column('products.grid.category', 'cat_name', 'c'));
         $grid->addColumn(new DateTimeColumn('Start', 'l', 'start'));
         $grid->addColumn(new DateTimeColumn('Konec', 'l', 'konec'));
-        //$grid->setFooter(['id'=>20]);
-        $grid->setFooter(['id'=>$soucet]);
-        //soucty dole
 
-
-       // $grid->addButton(new Button('add', Button::BTN_EDIT, 'homepage_edit'));
+        // $grid->addButton(new Button('add', Button::BTN_EDIT, 'homepage_edit'));
         //udelat routu pro detail bude mit parametr id
 //        $grid->addButton(new Button('add', Button::BTN_ADD, 'homepage'));
 

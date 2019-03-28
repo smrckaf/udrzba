@@ -58,7 +58,7 @@
         {#{{ grid_service.render(grid)|raw }}#}
         {% for stroj in stroje %}
         {% if loop.first %}
-            <table class="table table-bordered table-striped table-hover">
+            <table class="table table-bordered table-striped table-hover sorter">
                 <thead>
                 <tr>
                     <th class="text-center" scope="col">ID (1P Control)</th>
@@ -68,7 +68,7 @@
                     <th class="text-center" scope="col">Skupina</th>
                     <th class="text-center" scope="col">Lokace</th>
                     <th class="text-center" scope="col">Obrázky</th>
-                    <th class="text-center no-filter-sorter" scope="col">Operace</th>
+                    <th class="text-center no-filter-sorter" scope="col" data-sorter = "false" >Operace</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -118,6 +118,11 @@
                 <a href="{{ path('motohodiny-index', {'stroj': stroj.id})}}" class="btn btn-warning" title="Spravovat motohodiny stroje">
                     <span class="fa fa-clock-o"></span>
                 </a>
+
+                <a href="{{ path('udrzba-stroje', {'stroj': stroj.id})}}" class="btn btn-default" title="Naplánovat údržbu stroje" style="background-color: #00cc00">
+                    <span class="fa fa-calendar"></span>
+                </a>
+
                 <a href="{{ path('stroj-smazat', {'stroj': stroj.id})}}" class="btn btn-danger" onclick="return confirm('Opravdu si přejete smazat vybraný stroj?')" title="Odstranit stroj">
                     <span class="fa fa-trash"></span>
                 </a>

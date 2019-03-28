@@ -218,6 +218,28 @@ class UdrzbaManager
     }
 
     /**
+     * @param $stroj
+     * @return Pravidelnaudrzba[]
+     */
+    public function getPravidelneUdrzbyByStroj(Stroj $stroj)
+    {
+        $qb = $this->em->createQueryBuilder()
+            ->select('p.id, p.provedeni, p.poznUdrzbare, p.popisUdrzby, p.datumUdrzbyod, p.datumUdrzbydo, s.nazev, u.jmeno, u.prijmeni,k.jmeno as kjmeno, k.prijmeni as kprijmeni')
+            ->from(Pravidelnaudrzba::class, 'p')
+            ->join('p.idStroje', 's')
+            ->leftJoin('p.provedl', 'u')
+            ->leftJoin('p.kdozadal', 'k')
+            ->where('p.idStroje = :stroj')
+            ->setParameter('stroj', $stroj);
+
+
+        return $qb
+            ->orderBy('p.datumUdrzbyod', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @param $obdobi
      * @return Pravidelnaudrzba[]
      */
