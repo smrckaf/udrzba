@@ -34,23 +34,7 @@
                         </div>
                         #}
 
-                        <ul class="nav nav-tabs">
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ path("stroj-upravit", {'stroj': stroj.id}) }}" title="Upravit stroj">Stroj</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ path("stroj-upravit-kmenova-data", {'stroj': stroj.id}) }}" title="Upravit kmenová data stroje">Kmenová data</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ path("nastroj-index", {'stroj': stroj.id}) }}" title="Upravit nástroje stroje">Nástroje</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ path("pripravek-index", {'stroj': stroj.id}) }}" title="Upravit přípravky stroje">Přípravky</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ path("nahradni-dil-index", {'stroj': stroj.id}) }}" title="Upravit náhradní díly stroje">Náhradní díly</a>
-                            </li>
-                        </ul>
+                        {% include 'stroj/stroj-tabs.html.twig' %}
 
                     </div>
             {% endfor %}
@@ -112,8 +96,8 @@
 
 
             <td class="text-center">
-                <a data-toggle="collapse" href="#collapseExample{{ stroj.id }}" role="button" aria-expanded="false" aria-controls="collapseExample" class="btn btn-info" title="Upravit stroj">
-                    <span class="fa fa-pencil"></span>
+                <a data-toggle="collapse" href="#collapseExample{{ stroj.id }}" role="button" aria-expanded="false" aria-controls="collapseExample" class="btn btn-info stroj-upravit" title="Upravit stroj">
+                    <span class="fa fa-pencil stroj-upravit"></span>
                 </a>
                 <a href="{{ path('motohodiny-index', {'stroj': stroj.id})}}" class="btn btn-warning" title="Spravovat motohodiny stroje">
                     <span class="fa fa-clock-o"></span>
@@ -140,4 +124,32 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script type="text/javascript">
+        $(function() {
+            $('a.stroj-upravit').each(function (index) {
+               $(this).click(function (event) {
+                   var tlacitko = $(event.target);
+                   if (tlacitko.is('span')) {
+                       tlacitko = tlacitko.closest('a');
+                   }
+                   if (tlacitko.hasClass('btn-info')) {
+                       tlacitko.removeClass('btn-info');
+                       tlacitko.addClass('btn-outline-info');
+                       //schovat vsechny ostatni
+                       var tr = tlacitko.closest('tr');
+                       var tbody = tlacitko.closest('tbody');
+                       tbody.find('tr').not(tr).hide();
+                   }
+                   else {
+                       tlacitko.removeClass('btn-outline-info');
+                       tlacitko.addClass('btn-info');
+                       //zobrazit vsechny ostatni
+                       var tr = tlacitko.closest('tr');
+                       var tbody = tlacitko.closest('tbody');
+                       tbody.find('tr').not(tr).show();
+                   }
+               })
+            })
+        });
+    </script>
 {% endblock %}

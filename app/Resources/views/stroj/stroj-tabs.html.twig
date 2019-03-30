@@ -1,0 +1,18 @@
+{% set path = app.request.uri %}
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link{% if '/stroj/upravit/' in path %} active{% endif %}" href="{{ path("stroj-upravit", {'stroj': stroj.id}) }}" title="Upravit stroj">Stroj</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link{% if '/stroj/upravit-kmenova-data' in path %} active{% endif %}" href="{{ path("stroj-upravit-kmenova-data", {'stroj': stroj.id}) }}" title="Upravit kmenová data stroje">Kmenová data</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link{% if '/nastroj/index' in path %} active{% endif %}" href="{{ path("nastroj-index", {'stroj': stroj.id}) }}" title="Upravit nástroje stroje">Nástroje</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link{% if '/pripravek/index' in path %} active{% endif %}" href="{{ path("pripravek-index", {'stroj': stroj.id}) }}" title="Upravit přípravky stroje">Přípravky</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link{% if '/nahradni-dil/index' in path %} active{% endif %}" href="{{ path("nahradni-dil-index", {'stroj': stroj.id}) }}" title="Upravit náhradní díly stroje">Náhradní díly</a>
+    </li>
+</ul>

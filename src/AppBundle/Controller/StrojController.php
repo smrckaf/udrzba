@@ -70,6 +70,7 @@ class StrojController extends Controller
         }
         return $this->render('stroj/upravit.html.twig', [
             'form' => $form->createView(),
+            'stroj' => $stroj,
         ]);
     }
 

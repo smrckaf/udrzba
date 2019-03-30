@@ -17,7 +17,7 @@
         {% include 'stroj/stroj-detail.html.twig' with {'stroj': stroj} %}
 
         <hr class="my-5">
-
+        {% include 'stroj/stroj-tabs.html.twig' %}
         <p>
             <a href="{{ path('pripravek-upravit', {'stroj': stroj.id}) }}" class="btn btn-success"><span class="fa fa-plus"></span> Přidat nový přípravek</a>
         </p>
