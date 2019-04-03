@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\View\View;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use GridBundle\Components\Grid\Filter\Fields;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @Route("/pracovnik")
@@ -71,6 +72,40 @@ class PracovnikController extends Controller
             'form' => $form->createView(),
             'skupiny' => $this->udrzbaManager->getNazvySkupin(),
         ]);
+    }
+
+    /**
+     * @Route("/kalendar/{pracovnik}", name="pracovnik-kalendar")
+     */
+    public function kalendar(Pracovnik $pracovnik = null)
+    {
+
+        return $this->render('pracovnik/kalendar.html.twig', [
+            'pracovnik' => $pracovnik,
+            'skupiny' => $this->udrzbaManager->getNazvySkupin(),
+        ]);
+    }
+
+    /**
+     * @Route("/kalendar-data-ajax/{pracovnik}", name="pracovnik-kalendar-ajax")
+     */
+    public function kalendarDataAjax(Pracovnik $pracovnik = null)
+    {
+        $udrzbaStroje = $this->udrzbaManager->getPravidelneUdrzbyByPracovnik($pracovnik);
+
+
+        $data = array();
+
+        foreach ($udrzbaStroje as $udrzba) {
+            $data[] = [
+                "id" =>$udrzba["id"],
+                "title" =>$udrzba["nazev"]." od ".$udrzba["datumUdrzbyod"]->format('H:i'),
+                "start" =>$udrzba["datumUdrzbyod"]->format('Y-m-d')."T".$udrzba["datumUdrzbyod"]->format('H:i:s'),
+                "end" =>$udrzba["datumUdrzbydo"]->format('Y-m-d')."T".$udrzba["datumUdrzbyod"]->format('H:i:s'),
+                "url" =>"/pravidelna-udrzba/upravit/".$udrzba["id"]."?obdobi=3"];
+        }
+
+        return new JsonResponse($data);
     }
 
     /**

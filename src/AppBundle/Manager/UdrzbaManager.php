@@ -240,6 +240,28 @@ class UdrzbaManager
     }
 
     /**
+     * @param $pracovnik
+     * @return Pravidelnaudrzba[]
+     */
+    public function getPravidelneUdrzbyByPracovnik(Pracovnik $pracovnik)
+    {
+        $qb = $this->em->createQueryBuilder()
+            ->select('p.id, p.provedeni, p.poznUdrzbare, p.popisUdrzby, p.datumUdrzbyod, p.datumUdrzbydo, s.nazev, u.jmeno, u.prijmeni,k.jmeno as kjmeno, k.prijmeni as kprijmeni')
+            ->from(Pravidelnaudrzba::class, 'p')
+            ->join('p.idStroje', 's')
+            ->leftJoin('p.provedl', 'u')
+            ->leftJoin('p.kdozadal', 'k')
+            ->where('p.kdozadal = :pracovnik')
+            ->setParameter('pracovnik', $pracovnik);
+
+
+        return $qb
+            ->orderBy('p.datumUdrzbyod', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @param $obdobi
      * @return Pravidelnaudrzba[]
      */

@@ -54,6 +54,11 @@
                 <a href="{{ path('pracovnik-upravit', {'pracovnik': pracovnik.id})}}" class="btn btn-info" title="Upravit pracovníka">
                     <span class="fa fa-pencil"></span>
                 </a>
+
+                <a href="{{ path('pracovnik-kalendar', {'pracovnik': pracovnik.id})}}" class="btn btn-default" title="Naplánovat údržbu stroje" style="background-color: #00cc00">
+                    <span class="fa fa-calendar"></span>
+                </a>
+
                 <a href="{{ path('pracovnik-smazat', {'pracovnik': pracovnik.id})}}" class="btn btn-danger" onclick="return confirm('Opravdu si přejete smazat vybraného pracovníka?')" title="Odstranit pracovníka">
                     <span class="fa fa-trash"></span>
                 </a>

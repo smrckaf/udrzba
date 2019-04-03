@@ -1258,7 +1258,7 @@ return new JsonResponse("  Update LoguObsluhy bylo uspesne", Response::HTTP_OK);
         $nalezene = $query->setMaxResults(1)->getOneOrNullResult();
         $id_pracovnika = $nalezene->getId();
 
-        //return new JsonResponse($id_pracovnika. "Test idpracovnika", Response::HTTP_NOT_ACCEPTABLE);
+
 
 
 
@@ -1278,7 +1278,7 @@ return new JsonResponse("  Update LoguObsluhy bylo uspesne", Response::HTTP_OK);
         foreach($poruchy as $porucha){
             $response[] = [
                 'id' => $porucha->getId(),
-                'stroj' => $porucha->getStroj(),
+                'stroj' => $porucha->getStroj()->getId(),
                 'casvzniku' => $porucha->getCasvzniku(),
                 'oblastpriciny' => $porucha->getOblastpriciny(),
                 'priorita' => $porucha->getPriorita(),
@@ -1356,7 +1356,7 @@ return new JsonResponse($result);*/
         foreach($poruchy as $porucha){
             $response[] = [
                 'id' => $porucha->getId(),
-                'stroj' => $porucha->getStroj(),
+                'stroj' => $porucha->getStroj()->getId(),
                 'casvzniku' => $porucha->getCasvzniku(),
                 'oblastpriciny' => $porucha->getOblastpriciny(),
                 'priorita' => $porucha->getPriorita(),
